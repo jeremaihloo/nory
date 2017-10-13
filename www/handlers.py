@@ -12,9 +12,9 @@ import markdown2
 from aiohttp import web
 
 from coroweb import get, post
-from apis import Page, APIValueError, APIResourceNotFoundError
+from apis import Page, APIValueError, APIResourceNotFoundError, APIPermissionError, APIError
 
-from models import User, Comment, Blog, next_id
+from models import User, next_id, ContentField, ContentModel
 from config import configs
 
 COOKIE_NAME = 'awesession'
@@ -82,51 +82,7 @@ def cookie2user(cookie_str):
         return None
 
 
-@get('/')
-def index(*, page='1'):
-    page_index = get_page_index(page)
-    num = yield from Blog.findNumber('count(id)')
-    page = Page(num)
-    if num == 0:
-        blogs = []
-    else:
-        blogs = yield from Blog.findAll(orderBy='created_at desc', limit=(page.offset, page.limit))
-    return {
-        '__template__': 'blogs.html',
-        'page': page,
-        'blogs': blogs
-    }
-
-
-@get('/blog/{id}')
-def get_blog(id):
-    blog = yield from Blog.find(id)
-    comments = yield from Comment.findAll('blog_id=?', [id], orderBy='created_at desc')
-    for c in comments:
-        c.html_content = text2html(c.content)
-    blog.html_content = markdown2.markdown(blog.content)
-    return {
-        '__template__': 'blog.html',
-        'blog': blog,
-        'comments': comments
-    }
-
-
-@get('/register')
-def register():
-    return {
-        '__template__': 'register.html'
-    }
-
-
-@get('/signin')
-def signin():
-    return {
-        '__template__': 'signin.html'
-    }
-
-
-@post('/api/authenticate')
+@post('/api/auth')
 def authenticate(*, email, passwd):
     if not email:
         raise APIValueError('email', 'Invalid email.')
@@ -150,99 +106,6 @@ def authenticate(*, email, passwd):
     r.content_type = 'application/json'
     r.body = json.dumps(user, ensure_ascii=False).encode('utf-8')
     return r
-
-
-@get('/signout')
-def signout(request):
-    referer = request.headers.get('Referer')
-    r = web.HTTPFound(referer or '/')
-    r.set_cookie(COOKIE_NAME, '-deleted-', max_age=0, httponly=True)
-    logging.info('user signed out.')
-    return r
-
-
-@get('/manage/')
-def manage():
-    return 'redirect:/manage/comments'
-
-
-@get('/manage/comments')
-def manage_comments(*, page='1'):
-    return {
-        '__template__': 'manage_comments.html',
-        'page_index': get_page_index(page)
-    }
-
-
-@get('/manage/blogs')
-def manage_blogs(*, page='1'):
-    return {
-        '__template__': 'manage_blogs.html',
-        'page_index': get_page_index(page)
-    }
-
-
-@get('/manage/blogs/create')
-def manage_create_blog():
-    return {
-        '__template__': 'manage_blog_edit.html',
-        'id': '',
-        'action': '/api/blogs'
-    }
-
-
-@get('/manage/blogs/edit')
-def manage_edit_blog(*, id):
-    return {
-        '__template__': 'manage_blog_edit.html',
-        'id': id,
-        'action': '/api/blogs/%s' % id
-    }
-
-
-@get('/manage/users')
-def manage_users(*, page='1'):
-    return {
-        '__template__': 'manage_users.html',
-        'page_index': get_page_index(page)
-    }
-
-
-@get('/api/comments')
-def api_comments(*, page='1'):
-    page_index = get_page_index(page)
-    num = yield from Comment.findNumber('count(id)')
-    p = Page(num, page_index)
-    if num == 0:
-        return dict(page=p, comments=())
-    comments = yield from Comment.findAll(orderBy='created_at desc', limit=(p.offset, p.limit))
-    return dict(page=p, comments=comments)
-
-
-@post('/api/blogs/{id}/comments')
-def api_create_comment(id, request, *, content):
-    user = request.__user__
-    if user is None:
-        raise APIPermissionError('Please signin first.')
-    if not content or not content.strip():
-        raise APIValueError('content')
-    blog = yield from Blog.find(id)
-    if blog is None:
-        raise APIResourceNotFoundError('Blog')
-    comment = Comment(blog_id=blog.id, user_id=user.id, user_name=user.name, user_image=user.image,
-                      content=content.strip())
-    yield from comment.save()
-    return comment
-
-
-@post('/api/comments/{id}/delete')
-def api_delete_comments(id, request):
-    check_admin(request)
-    c = yield from Comment.find(id)
-    if c is None:
-        raise APIResourceNotFoundError('Comment')
-    yield from c.remove()
-    return dict(id=id)
 
 
 @get('/api/users')
@@ -287,58 +150,21 @@ def api_register_user(*, email, name, passwd):
     return r
 
 
-@get('/api/blogs')
-def api_blogs(*, page='1'):
-    page_index = get_page_index(page)
-    num = yield from Blog.findNumber('count(id)')
-    p = Page(num, page_index)
-    if num == 0:
-        return dict(page=p, blogs=())
-    blogs = yield from Blog.findAll(orderBy='created_at desc', limit=(p.offset, p.limit))
-    return dict(page=p, blogs=blogs)
+@post('/api/fields')
+def api_create_content_field(*, name, title, field_type):
+    pass
 
 
-@get('/api/blogs/{id}')
-def api_get_blog(*, id):
-    blog = yield from Blog.find(id)
-    return blog
+@post('/api/models')
+def api_create_content_model(*, name, title, fields):
+    pass
 
 
-@post('/api/blogs')
-def api_create_blog(request, *, name, summary, content):
-    check_admin(request)
-    if not name or not name.strip():
-        raise APIValueError('name', 'name cannot be empty.')
-    if not summary or not summary.strip():
-        raise APIValueError('summary', 'summary cannot be empty.')
-    if not content or not content.strip():
-        raise APIValueError('content', 'content cannot be empty.')
-    blog = Blog(user_id=request.__user__.id, user_name=request.__user__.name, user_image=request.__user__.image,
-                name=name.strip(), summary=summary.strip(), content=content.strip())
-    yield from blog.save()
-    return blog
+@post('/api/contents/{model_name}')
+def api_create_content(*, model_name, data):
+    pass
 
 
-@post('/api/blogs/{id}')
-def api_update_blog(id, request, *, name, summary, content):
-    check_admin(request)
-    blog = yield from Blog.find(id)
-    if not name or not name.strip():
-        raise APIValueError('name', 'name cannot be empty.')
-    if not summary or not summary.strip():
-        raise APIValueError('summary', 'summary cannot be empty.')
-    if not content or not content.strip():
-        raise APIValueError('content', 'content cannot be empty.')
-    blog.name = name.strip()
-    blog.summary = summary.strip()
-    blog.content = content.strip()
-    yield from blog.update()
-    return blog
-
-
-@post('/api/blogs/{id}/delete')
-def api_delete_blog(request, *, id):
-    check_admin(request)
-    blog = yield from Blog.find(id)
-    yield from blog.remove()
-    return dict(id=id)
+@get('/api/contents/{model_name}/{page_size}/{page_index}')
+def api_get_contents(*, model_name, page_index=1, page_size=15):
+    pass

@@ -28,26 +28,30 @@ class User(Model):
     created_at = FloatField(default=time.time)
 
 
-class Blog(Model):
-    __table__ = 'blogs'
+class ContentField(Model):
+    __table__ = 'content_fields'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-    user_id = StringField(ddl='varchar(50)')
-    user_name = StringField(ddl='varchar(50)')
-    user_image = StringField(ddl='varchar(500)')
+    content_model_id = StringField(ddl='varchar(50)')
     name = StringField(ddl='varchar(50)')
-    summary = StringField(ddl='varchar(200)')
-    content = TextField()
+    title = StringField(ddl='varchar(50)')
+    field_type = StringField(ddl='varchar(50)')
     created_at = FloatField(default=time.time)
 
 
-class Comment(Model):
-    __table__ = 'comments'
+class ContentModel(Model):
+    __table__ = 'content_models'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-    blog_id = StringField(ddl='varchar(50)')
-    user_id = StringField(ddl='varchar(50)')
-    user_name = StringField(ddl='varchar(50)')
-    user_image = StringField(ddl='varchar(500)')
-    content = TextField()
+    name = StringField(ddl='varchar(50)')
+    title = StringField(ddl='varchar(50)')
+    created_at = FloatField(default=time.time)
+
+
+class Content(Model):
+    __table__ = 'contents'
+
+    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
+    field_id = StringField(ddl='varchar(50)')
+    model_id = StringField(ddl='varchar(50)')
     created_at = FloatField(default=time.time)

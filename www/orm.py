@@ -47,7 +47,7 @@ def select(sql, args, size=None):
 
 
 @asyncio.coroutine
-def execute(sql, args, autocommit=True):
+def execute(sql, args=(), autocommit=True):
     log(sql)
     with (yield from __pool) as conn:
         if not autocommit:
