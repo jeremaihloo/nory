@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import time
 
 import orm
@@ -85,16 +86,22 @@ def db_migrations():
         yield from orm.execute(migration_table_sql)
 
     db_migrations_file_names = os.listdir('do_migrations')
-    file_names = list(filter(lambda x:x.startswith('migration'), db_migrations_file_names))
-    file_names = list(map(lambda x:x[:-3], file_names))
+    file_names = list(filter(lambda x: x.startswith('migration'), db_migrations_file_names))
+    file_names = list(map(lambda x: x[:-3], file_names))
 
     builders = []
     for file_name in file_names:
         migration = importlib.import_module('do_migrations.{}'.format(file_name))
         builders.append(migration.create_builder())
 
+    # sort
+    sorted(builders, key=lambda x: x.version)
+
     for item in builders:
-        fr = yield from Migration.findAll(where='name = ?', args=(item.name,))
-        if fr is not None and len(list(fr)) > 0:
-            raise MigrationError(message='migration may be excuted ! name: {}'.format(item.name))
-        yield from item.do()
+        try:
+            fr = yield from Migration.findAll(where='name = ?', args=(item.name,))
+            if fr is not None and len(list(fr)) > 0:
+                raise MigrationError(message='migration may be excuted ! name: {}'.format(item.name))
+            yield from item.do()
+        except Exception as e:
+            logging.error('migration error', e)
