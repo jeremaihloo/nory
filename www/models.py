@@ -17,6 +17,7 @@ def next_id():
 
 
 class User(Model):
+    """Users"""
     __table__ = 'users'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
@@ -29,6 +30,7 @@ class User(Model):
 
 
 class ContentField(Model):
+    """Content Field"""
     __table__ = 'content_fields'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
@@ -40,6 +42,7 @@ class ContentField(Model):
 
 
 class ContentModel(Model):
+    """Content MOdel"""
     __table__ = 'content_models'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
@@ -49,9 +52,19 @@ class ContentModel(Model):
 
 
 class Content(Model):
+    """Content"""
     __table__ = 'contents'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
     field_id = StringField(ddl='varchar(50)')
     model_id = StringField(ddl='varchar(50)')
+    value = TextField()
+    created_at = FloatField(default=time.time)
+
+class ContentType(Model):
+    __table__ = 'content_types'
+
+    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
+    name = StringField(ddl='varchar(50)')
+    title = StringField(ddl='varchar(50)')
     created_at = FloatField(default=time.time)

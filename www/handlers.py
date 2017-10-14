@@ -14,7 +14,7 @@ from aiohttp import web
 from coroweb import get, post
 from apis import Page, APIValueError, APIResourceNotFoundError, APIPermissionError, APIError
 
-from models import User, next_id, ContentField, ContentModel
+from models import User, next_id, ContentField, ContentModel, ContentType, Content
 from config import configs
 
 COOKIE_NAME = 'awesession'
@@ -150,19 +150,60 @@ def api_register_user(*, email, name, passwd):
     return r
 
 
+@post('/api/content-type')
+def api_create_content_type(*, name, title):
+    field_type = ContentType()
+    field_type.name = name
+    field_type.title = title
+    yield from field_type.save()
+    return field_type
+
 @post('/api/fields')
 def api_create_content_field(*, name, title, field_type):
-    pass
+    field = ContentField()
+    field.name = name
+    field.title = title
+    field.field_type = field_type
+    yield from field.save()
+    return field
 
 
 @post('/api/models')
 def api_create_content_model(*, name, title, fields):
-    pass
+    m = ContentModel()
+    m.name = name
+    m.title = title
+    m.save()
+    for item in fields:
+        f = ContentField()
+        f.name = item.name
+        f.title = item.title
+        f.field_type = item.field_type
+        f.content_model_id = m.id
+        f.save()
+    return m
 
 
 @post('/api/contents/{model_name}')
 def api_create_content(*, model_name, data):
-    pass
+    m = list(ContentModel.findAll(where='name = ?', args=(model_name,)))
+    if m is None or len(m) == 0:
+        raise Exception('model not found ! model name : {}'.format(model_name))
+
+    m = m[0]
+    for item in data:
+        f = list(ContentModel.findAll(where='name = ?', args=(item.field,)))
+        if f is None or len(f) == 0:
+            raise Exception('field not found ! field name : {}'.format(item.field))
+        f = f[0]
+
+        content = Content()
+        content.field_id = f.id
+        content.model_id = m.id
+        content.value = item.value
+        content.save()
+
+    return m
 
 
 @get('/api/contents/{model_name}/{page_size}/{page_index}')

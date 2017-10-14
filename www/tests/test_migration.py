@@ -1,12 +1,7 @@
 import unittest
-
-import asyncio
-from pprint import pprint
-
-from config import configs
 from migrations import MigrationBuilder
 import models
-import orm
+
 
 class MyTestCase(unittest.TestCase):
     def setUp(self):
