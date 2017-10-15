@@ -3,24 +3,33 @@ import unittest
 import pytest
 
 import handlers
+import orm
+from config import configs
 
-class MyTestCase(unittest.TestCase):
+@pytest.mark.asyncio
+async def test_create_content_type(event_loop):
+    await orm.create_pool(event_loop, **configs.db)
+    content_type = await handlers.api_create_content_type(name='name', title='Name')
+    assert content_type is not None
+    print(content_type)
 
-    @pytest.mark.asyncio
-    async def test_create_content_type(self):
-        content_type = await handlers.api_create_content_type(name='name', title='Name')
-        assert content_type is not None
-        print(content_type)
+@pytest.mark.asyncio
+async def test_create_field(event_loop):
+    await orm.create_pool(event_loop, **configs.db)
+    content_type = await handlers.api_create_content_field(name='name', title='Name')
+    assert content_type is not None
+    print(content_type)
 
-    # def test_create_field(self):
-    #     self.assertEqual(True, False)
-    #
-    # def test_create_model(self):
-    #     self.assertEqual(True, False)
-    #
-    # def test_create_content(self):
-    #     self.assertEqual(True, False)
+@pytest.mark.asyncio
+async def test_create_model(event_loop):
+    await orm.create_pool(event_loop, **configs.db)
+    content_type = await handlers.api_create_content_type(name='name', title='Name')
+    assert content_type is not None
+    print(content_type)
 
-
-if __name__ == '__main__':
-    unittest.main()
+@pytest.mark.asyncio
+async def test_create_content(event_loop):
+    await orm.create_pool(event_loop, **configs.db)
+    content_type = await handlers.api_create_content_type(name='name', title='Name')
+    assert content_type is not None
+    print(content_type)

@@ -54,8 +54,8 @@ def text2html(text):
     return ''.join(lines)
 
 
-@asyncio.coroutine
-def cookie2user(cookie_str):
+
+async def cookie2user(cookie_str):
     '''
     Parse cookie and load user if cookie is valid.
     '''
@@ -68,7 +68,7 @@ def cookie2user(cookie_str):
         uid, expires, sha1 = L
         if int(expires) < time.time():
             return None
-        user = yield from User.find(uid)
+        user = await User.find(uid)
         if user is None:
             return None
         s = '%s-%s-%s-%s' % (uid, user.passwd, expires, _COOKIE_KEY)
@@ -83,12 +83,12 @@ def cookie2user(cookie_str):
 
 
 @post('/api/auth')
-def authenticate(*, email, passwd):
+async def authenticate(*, email, passwd):
     if not email:
         raise APIValueError('email', 'Invalid email.')
     if not passwd:
         raise APIValueError('passwd', 'Invalid password.')
-    users = yield from User.findAll('email=?', [email])
+    users = await User.findAll('email=?', [email])
     if len(users) == 0:
         raise APIValueError('email', 'Email not exist.')
     user = users[0]
@@ -109,13 +109,13 @@ def authenticate(*, email, passwd):
 
 
 @get('/api/users')
-def api_get_users(*, page='1'):
+async def api_get_users(*, page='1'):
     page_index = get_page_index(page)
-    num = yield from User.findNumber('count(id)')
+    num = await User.findNumber('count(id)')
     p = Page(num, page_index)
     if num == 0:
         return dict(page=p, users=())
-    users = yield from User.findAll(orderBy='created_at desc', limit=(p.offset, p.limit))
+    users = await User.findAll(orderBy='created_at desc', limit=(p.offset, p.limit))
     for u in users:
         u.passwd = '******'
     return dict(page=p, users=users)
@@ -126,21 +126,21 @@ _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
 
 @post('/api/users')
-def api_register_user(*, email, name, passwd):
+async def api_register_user(*, email, name, passwd):
     if not name or not name.strip():
         raise APIValueError('name')
     if not email or not _RE_EMAIL.match(email):
         raise APIValueError('email')
     if not passwd or not _RE_SHA1.match(passwd):
         raise APIValueError('passwd')
-    users = yield from User.findAll('email=?', [email])
+    users = await User.findAll('email=?', [email])
     if len(users) > 0:
         raise APIError('register:failed', 'email', 'Email is already in use.')
     uid = next_id()
     sha1_passwd = '%s:%s' % (uid, passwd)
     user = User(id=uid, name=name.strip(), email=email, passwd=hashlib.sha1(sha1_passwd.encode('utf-8')).hexdigest(),
                 image='http://www.gravatar.com/avatar/%s?d=mm&s=120' % hashlib.md5(email.encode('utf-8')).hexdigest())
-    yield from user.save()
+    await user.save()
     # make session cookie:
     r = web.Response()
     r.set_cookie(COOKIE_NAME, user2cookie(user, 86400), max_age=86400, httponly=True)
@@ -151,48 +151,48 @@ def api_register_user(*, email, name, passwd):
 
 
 @post('/api/content-type')
-def api_create_content_type(*, name, title):
+async def api_create_content_type(*, name, title):
     field_type = ContentType()
     field_type.name = name
     field_type.title = title
-    yield from field_type.save()
+    await field_type.save()
     return field_type
 
 @post('/api/fields')
-def api_create_content_field(*, name, title, field_type):
+async def api_create_content_field(*, name, title, field_type):
     field = ContentField()
     field.name = name
     field.title = title
     field.field_type = field_type
-    yield from field.save()
+    await field.save()
     return field
 
 
 @post('/api/models')
-def api_create_content_model(*, name, title, fields):
+async def api_create_content_model(*, name, title, fields):
     m = ContentModel()
     m.name = name
     m.title = title
-    m.save()
+    await m.save()
     for item in fields:
         f = ContentField()
         f.name = item.name
         f.title = item.title
         f.field_type = item.field_type
         f.content_model_id = m.id
-        f.save()
+        await f.save()
     return m
 
 
 @post('/api/contents/{model_name}')
-def api_create_content(*, model_name, data):
-    m = list(ContentModel.findAll(where='name = ?', args=(model_name,)))
+async def api_create_content(*, model_name, data):
+    m = list(await ContentModel.findAll(where='name = ?', args=(model_name,)))
     if m is None or len(m) == 0:
         raise Exception('model not found ! model name : {}'.format(model_name))
 
     m = m[0]
     for item in data:
-        f = list(ContentModel.findAll(where='name = ?', args=(item.field,)))
+        f = list(await ContentModel.findAll(where='name = ?', args=(item.field,)))
         if f is None or len(f) == 0:
             raise Exception('field not found ! field name : {}'.format(item.field))
         f = f[0]
@@ -201,11 +201,11 @@ def api_create_content(*, model_name, data):
         content.field_id = f.id
         content.model_id = m.id
         content.value = item.value
-        content.save()
+        await content.save()
 
     return m
 
 
 @get('/api/contents/{model_name}/{page_size}/{page_index}')
-def api_get_contents(*, model_name, page_index=1, page_size=15):
+async def api_get_contents(*, model_name, page_index=1, page_size=15):
     pass
