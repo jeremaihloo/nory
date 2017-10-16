@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from plugins import PluginManager
 
 __author__ = 'Michael Liao'
 
@@ -60,16 +61,18 @@ async def logger_factory(app, handler):
 
 async def auth_factory(app, handler):
     async def auth(request):
-        logging.info('check user: %s %s' % (request.method, request.path))
-        request.__user__ = None
-        cookie_str = request.cookies.get(COOKIE_NAME)
-        if cookie_str:
-            user = await cookie2user(cookie_str)
-            if user:
-                logging.info('set current user: %s' % user.email)
-                request.__user__ = user
-        if request.path.startswith('/manage/') and (request.__user__ is None or not request.__user__.admin):
-            return web.HTTPFound('/signin')
+        logging.info('auth user: %s %s' % (request.method, request.path))
+        flag = False
+        for fn in app.plugin_manager['__auth__']:
+            if fn(app, request) is True:
+                logging.info('auth fn : {} passed'.format(getattr(fn, '__plugin_fn_name__')))
+                flag = True
+            else:
+                logging.info('auth fn : {} unpass'.format(getattr(fn, '__plugin_fn_name__')))
+
+        if not flag:
+            for fn in app.plugin_manager['__auth_false__']:
+                fn(app, request)
         return (await handler(request))
 
     return auth
@@ -147,10 +150,17 @@ def datetime_filter(t):
 
 async def init(loop):
     await orm.create_pool(loop=loop, **configs.db)
+
     await db_migrations()
+
     app = web.Application(loop=loop, middlewares=[
         logger_factory, auth_factory, response_factory
     ])
+
+    plugin_manager = PluginManager()
+    plugin_manager.load_plugins()
+    app.plugin_manager = plugin_manager
+
     init_jinja2(app, filters=dict(datetime=datetime_filter))
     add_routes(app, 'handlers')
     srv = await loop.create_server(app.make_handler(), '127.0.0.1', 9000)

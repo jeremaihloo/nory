@@ -3,6 +3,7 @@ import logging
 import time
 
 import orm
+import utils
 from models import next_id
 from orm import Model, execute, IntegerField, TextField, StringField, FloatField
 import importlib
@@ -82,9 +83,7 @@ async def db_migrations():
         mbuilder = MigrationBuilder(0, 'migrations')
         migration_table_sql = mbuilder.build_create_table_sql(Migration)
         await orm.execute(migration_table_sql)
-    curDir = os.getcwd()
-    abs_p = os.path.abspath(curDir)
-    abs_p = abs_p[:abs_p.find('tests')]
+    abs_p = utils.get_ncms_path()
     db_migrations_file_names = os.listdir(os.path.join(abs_p, 'do_migrations'))
     file_names = list(filter(lambda x: x.startswith('migration'), db_migrations_file_names))
     file_names = list(map(lambda x: x[:-3], file_names))

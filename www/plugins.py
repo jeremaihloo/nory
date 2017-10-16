@@ -7,6 +7,8 @@ import importlib
 
 import functools
 
+import utils
+
 
 def plugin_fn(event, name, description):
     def decorator(func):
@@ -15,8 +17,8 @@ def plugin_fn(event, name, description):
             return func(*args, **kw)
 
         wrapper.__plugin_event__ = event
-        wrapper.__plugin_name__ = name
-        wrapper.__plugin_description__ = description
+        wrapper.__plugin_fn_name__ = name
+        wrapper.__plugin_fn_description__ = description
 
         return wrapper
 
@@ -30,14 +32,14 @@ class Plugin(object):
         self.features = []
 
 
-class PluginManager(dict):
+class PluginManager(utils.DictClass):
     def __init__(self):
         self.plugins = []
         self.__auth__ = []
+        self.__auth_false__ = []
 
     def load_plugins(self):
-        abs_p = os.path.abspath('.')
-        abs_p = abs_p[:abs_p.find('tests')]
+        abs_p = utils.get_ncms_path()
         plugin_modules = os.listdir(os.path.join(abs_p, 'installed_plugins'))
         plugin_modules = list(filter(lambda x: not x.startswith('_'), plugin_modules))
         for item in plugin_modules:
