@@ -1,3 +1,6 @@
-import logging
-logging.basicConfig(level=logging.INFO)
-logging.info('sfsdfsdfs')
+
+import importlib
+
+m = importlib.import_module('installed_plugins.jwt')
+
+print(m)
