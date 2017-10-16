@@ -29,25 +29,41 @@ class User(Model):
     created_at = FloatField(default=time.time)
 
 
+class ContentType(Model):
+    """Content Type"""
+    __table__ = 'content_types'
+
+    name = StringField(primary_key=True, ddl='varchar(50)')
+    title = StringField(ddl='varchar(50)')
+    created_at = FloatField(default=time.time)
+
+
 class ContentField(Model):
     """Content Field"""
     __table__ = 'content_fields'
 
-    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-    content_model_id = StringField(ddl='varchar(50)')
-    name = StringField(ddl='varchar(50)')
+    name = StringField(primary_key=True, ddl='varchar(50)')
     title = StringField(ddl='varchar(50)')
-    field_type = StringField(ddl='varchar(50)')
+    content_type = StringField(ddl='varchar(50)')
     created_at = FloatField(default=time.time)
 
 
 class ContentModel(Model):
-    """Content MOdel"""
+    """Content Model"""
     __table__ = 'content_models'
 
-    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-    name = StringField(ddl='varchar(50)')
+    name = StringField(primary_key=True, ddl='varchar(50)')
     title = StringField(ddl='varchar(50)')
+    created_at = FloatField(default=time.time)
+
+
+class ContentModelField(Model):
+    """Content Field"""
+    __table__ = 'content_model_fields'
+
+    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
+    model = StringField(ddl='varchar(50)')
+    content_field = StringField(ddl='varchar(50)')
     created_at = FloatField(default=time.time)
 
 
@@ -56,15 +72,16 @@ class Content(Model):
     __table__ = 'contents'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-    field_id = StringField(ddl='varchar(50)')
-    model_id = StringField(ddl='varchar(50)')
-    value = TextField()
     created_at = FloatField(default=time.time)
 
-class ContentType(Model):
-    __table__ = 'content_types'
+
+class ContentItem(Model):
+    """Content"""
+    __table__ = 'content_items'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-    name = StringField(ddl='varchar(50)')
-    title = StringField(ddl='varchar(50)')
+    model = StringField(ddl='varchar(50)')
+    model_field_id = StringField(ddl='varchar(50)')
+    content_id = StringField(ddl='varchar(50)')
+    value = TextField()
     created_at = FloatField(default=time.time)

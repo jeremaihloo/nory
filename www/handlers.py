@@ -14,7 +14,7 @@ from aiohttp import web
 from coroweb import get, post
 from apis import Page, APIValueError, APIResourceNotFoundError, APIPermissionError, APIError
 
-from models import User, next_id, ContentField, ContentModel, ContentType, Content
+from models import User, next_id, ContentField, ContentModel, ContentType, ContentItem, ContentModelField, Content
 from config import configs
 
 COOKIE_NAME = 'awesession'
@@ -52,7 +52,6 @@ def text2html(text):
     lines = map(lambda s: '<p>%s</p>' % s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'),
                 filter(lambda s: s.strip() != '', text.split('\n')))
     return ''.join(lines)
-
 
 
 async def cookie2user(cookie_str):
@@ -152,18 +151,22 @@ async def api_register_user(*, email, name, passwd):
 
 @post('/api/content-type')
 async def api_create_content_type(*, name, title):
+    fc = await ContentType.find(name)
+    if fc is not None:
+        raise APIError(None, name, 'ContentType {} existed !'.format(name))
     field_type = ContentType()
     field_type.name = name
     field_type.title = title
     await field_type.save()
     return field_type
 
+
 @post('/api/fields')
 async def api_create_content_field(*, name, title, field_type):
     field = ContentField()
     field.name = name
     field.title = title
-    field.field_type = field_type
+    field.content_type = field_type
     await field.save()
     return field
 
@@ -174,38 +177,55 @@ async def api_create_content_model(*, name, title, fields):
     m.name = name
     m.title = title
     await m.save()
+
     for item in fields:
-        f = ContentField()
-        f.name = item.name
-        f.title = item.title
-        f.field_type = item.field_type
-        f.content_model_id = m.id
+        f = ContentModelField()
+        f.model = m.name
+        f.content_field = item
         await f.save()
     return m
 
 
 @post('/api/contents/{model_name}')
 async def api_create_content(*, model_name, data):
-    m = list(await ContentModel.findAll(where='name = ?', args=(model_name,)))
+    m = list(await ContentModel.find(model_name))
     if m is None or len(m) == 0:
         raise Exception('model not found ! model name : {}'.format(model_name))
 
     m = m[0]
-    for item in data:
-        f = list(await ContentModel.findAll(where='name = ?', args=(item.field,)))
+    content = Content()
+    content.model = model_name
+    await content.save()
+
+    for field_type, field_value in data.items():
+        """
+        data = 
+            {
+                'content':'hello world !'
+            }
+        """
+        f = list(await ContentModelField.findAll(where='model = ? and content_field = ?', args=(model_name, field_type)))
         if f is None or len(f) == 0:
-            raise Exception('field not found ! field name : {}'.format(item.field))
+            raise Exception('field not found ! field name : {}'.format(field_type))
         f = f[0]
 
-        content = Content()
-        content.field_id = f.id
-        content.model_id = m.id
-        content.value = item.value
-        await content.save()
+        item = ContentItem()
+        item.content_id = content.id
+        item.value = field_value
+        item.model_field_id = f.id
+        item.model = model_name
+        await item.save()
 
     return m
 
 
 @get('/api/contents/{model_name}/{page_size}/{page_index}')
 async def api_get_contents(*, model_name, page_index=1, page_size=15):
-    pass
+    contents = await ContentItem.findAll(where='model = ?', args=(model_name,))
+    results = {}
+    for line in contents:
+        if results.get(line.content_id, None) is None:
+            results[line.content_id] = {}
+        content_model_field = await ContentModelField.find(line['model_field_id'])
+        results[line.content_id][content_model_field.content_field] = line['value']
+    return results

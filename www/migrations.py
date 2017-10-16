@@ -43,7 +43,6 @@ class MigrationBuilder(object):
     def alter_tables(self, models):
         pass
 
-
     async def do(self):
         sql = []
         for line in self.lines:
@@ -83,8 +82,10 @@ async def db_migrations():
         mbuilder = MigrationBuilder(0, 'migrations')
         migration_table_sql = mbuilder.build_create_table_sql(Migration)
         await orm.execute(migration_table_sql)
-
-    db_migrations_file_names = os.listdir('do_migrations')
+    curDir = os.getcwd()
+    abs_p = os.path.abspath(curDir)
+    abs_p = abs_p[:abs_p.find('tests')]
+    db_migrations_file_names = os.listdir(os.path.join(abs_p, 'do_migrations'))
     file_names = list(filter(lambda x: x.startswith('migration'), db_migrations_file_names))
     file_names = list(map(lambda x: x[:-3], file_names))
 
