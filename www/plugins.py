@@ -33,6 +33,7 @@ class Plugin(object):
     def __init__(self):
         self.features = []
 
+
 @utils.singleton
 class PluginManager(utils.DictClass):
     def __init__(self):

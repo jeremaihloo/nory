@@ -9,7 +9,7 @@ __description__ = 'provide jwt auth'
 __home_page__ = 'https://github.com/jeremaihloo/ncms-rbacm'
 
 __permissions__ = [
-    'db_curd'
+    'DB'
 ]
 
 __user_agreement__ = """
@@ -28,6 +28,22 @@ class Role(Model):
     name = StringField(primary_key=True, ddl='varchar(50)')
     title = StringField(ddl='varchar(50)')
     description = StringField(ddl='varchar(50)')
+    created_at = FloatField(default=time.time)
+
+
+class Permission(Model):
+    __table__ = 'permissions'
+
+    name = StringField(primary_key=True, ddl='varchar(50)')
+    created_at = FloatField(default=time.time)
+
+
+class RolePemissionMappings(Model):
+    __table__ = 'role_pemission_mappings'
+
+    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
+    permission = StringField(ddl='varchar(50)')
+    role = StringField(ddl='varchar(50)')
     created_at = FloatField(default=time.time)
 
 

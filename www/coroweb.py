@@ -169,6 +169,10 @@ def add_route(app, fn):
         'add route %s %s => %s(%s)' % (method, path, fn.__name__, ', '.join(inspect.signature(fn).parameters.keys())))
     app.router.add_route(method, path, RequestHandler(app, fn))
 
+    for item in app.plugin_manager['__add_route__']:
+        params = [x for x in inspect.signature(fn).parameters.keys()]
+        item(method, path, params)
+
 
 def add_routes(app, module_name):
     n = module_name.rfind('.')
@@ -187,7 +191,6 @@ def add_routes(app, module_name):
             if method and path:
                 add_route(app, fn)
 
-    print(app.plugin_manager['__routes__'])
     for item in app.plugin_manager['__routes__']:
         # print(getattr(item, '__event__'))
         add_route(app, item)
