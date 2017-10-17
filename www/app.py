@@ -25,9 +25,6 @@ from config import configs
 import orm
 from coroweb import add_routes
 
-from handlers import cookie2user, COOKIE_NAME
-
-
 def init_jinja2(app, **kw):
     logging.info('init jinja2...')
     options = dict(
@@ -64,7 +61,7 @@ async def auth_factory(app, handler):
         logging.info('auth user: %s %s' % (request.method, request.path))
         flag = False
         for fn in app.plugin_manager['__auth__']:
-            if fn(app, request) is True:
+            if await fn(app, request) is True:
                 logging.info('auth fn : {} passed'.format(getattr(fn, '__plugin_fn_name__')))
                 flag = True
             else:
@@ -72,7 +69,7 @@ async def auth_factory(app, handler):
 
         if not flag:
             for fn in app.plugin_manager['__auth_false__']:
-                fn(app, request)
+                await fn(app, request)
         return (await handler(request))
 
     return auth
@@ -96,6 +93,7 @@ async def response_factory(app, handler):
     async def response(request):
         logging.info('Response handler...')
         r = await handler(request)
+        logging.info('response is instance of {}'.format(type(r)))
         if isinstance(r, web.StreamResponse):
             return r
         if isinstance(r, bytes):

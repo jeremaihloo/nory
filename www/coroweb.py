@@ -186,3 +186,8 @@ def add_routes(app, module_name):
             path = getattr(fn, '__route__', None)
             if method and path:
                 add_route(app, fn)
+
+    print(app.plugin_manager['__routes__'])
+    for item in app.plugin_manager['__routes__']:
+        # print(getattr(item, '__event__'))
+        add_route(app, item)

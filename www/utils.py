@@ -7,8 +7,8 @@ def get_ncms_path():
     cwd = cwd[:cwd.find('ncms/www') + 8]
     return cwd
 
-class DictClass(dict):
 
+class DictClass(dict):
     def __getattr__(self, item):
         if self.get(item, None) is None:
             raise KeyError('{} key not exist !'.format(item))
@@ -16,3 +16,14 @@ class DictClass(dict):
 
     def __setattr__(self, key, value):
         self[key] = value
+
+
+def singleton(cls, *args, **kw):
+    instances = {}
+
+    def _singleton():
+        if cls not in instances:
+            instances[cls] = cls(*args, **kw)
+        return instances[cls]
+
+    return _singleton

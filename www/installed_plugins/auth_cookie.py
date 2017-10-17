@@ -1,7 +1,13 @@
+__author__ = 'jeremaihloo'
+
+__version__ = '0.0.1'
+
+__description__ = 'provide jwt auth'
+
+__home_page__ = 'https://github.com/jeremaihloo/ncms-auth-jwt'
+
 import logging
-
 from aiohttp import web
-
 from handlers import cookie2user, COOKIE_NAME
 from plugins import plugin_fn
 
