@@ -12,7 +12,7 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-from migrations import MigrationBuilder, Migration, db_migrations
+from migrations import MigrationBuilder, MigrationRecord, db_localsystem_migrations
 
 import asyncio, os, json, time
 from datetime import datetime
@@ -149,7 +149,7 @@ def datetime_filter(t):
 async def init(loop):
     await orm.create_pool(loop=loop, **configs.db)
 
-    await db_migrations()
+    await db_localsystem_migrations()
 
     app = web.Application(loop=loop, middlewares=[
         logger_factory, auth_factory, response_factory

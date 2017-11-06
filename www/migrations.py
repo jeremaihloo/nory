@@ -2,6 +2,8 @@ import asyncio
 import logging
 import time
 
+import pymysql
+
 import orm
 import utils
 from models import next_id
@@ -10,13 +12,28 @@ import importlib
 import os
 
 
-class Migration(Model):
+class MigrationRecord(Model):
     __table__ = 'migrations'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
     version = IntegerField()
     name = StringField(ddl='nvarchar(50)')
     created_at = FloatField(default=time.time)
+
+
+class Migration(object):
+    def __init__(self, version, name):
+        self.version = version
+        self.name = name
+        self.lines = []
+
+
+    async def do(self):
+        builder = MigrationBuilder()
+        return builder
+
+    async def undo(self):
+        pass
 
 
 class MigrationBuilder(object):
@@ -44,11 +61,14 @@ class MigrationBuilder(object):
     def alter_tables(self, models):
         pass
 
-    async def do(self):
+    async def do(self, conn):
         sql = []
         for line in self.lines:
             sql.append(line['sqls'])
         await execute(';\n'.join(sql))
+
+    async def undo(self):
+        pass
 
     def build_create_table_sql(self, model: Model):
         sqls = []
@@ -76,12 +96,12 @@ class MigrationError(Exception):
         self.message = message
 
 
-async def db_migrations():
+async def db_localsystem_migrations():
     r = await orm.select('show tables', None)
     tables = map(lambda x: x['Tables_in_ncms'], r)
     if 'migrations' not in tables:
         mbuilder = MigrationBuilder(0, 'migrations')
-        migration_table_sql = mbuilder.build_create_table_sql(Migration)
+        migration_table_sql = mbuilder.build_create_table_sql(MigrationRecord)
         await orm.execute(migration_table_sql)
     abs_p = utils.get_ncms_path()
     db_migrations_file_names = os.listdir(os.path.join(abs_p, 'do_migrations'))
@@ -96,11 +116,26 @@ async def db_migrations():
     # sort
     sorted(builders, key=lambda x: x.version)
 
+    await do_migrations(builders)
+
+
+async def do_migrations(builders):
     for item in builders:
         try:
-            fr = await Migration.findAll(where='name = ?', args=(item.name,))
+            fr = await MigrationRecord.findAll(where='name = ?', args=(item.name,))
             if fr is not None and len(list(fr)) > 0:
                 raise MigrationError(message='migration may be excuted ! name: {}'.format(item.name))
             await item.do()
         except Exception as e:
-            logging.error('migration error', e)
+            logging.error('migration error : {}'.format((str(e))))
+
+
+async def undo_migrations(builders):
+    for item in builders:
+        try:
+            fr = await MigrationRecord.findAll(where='name = ?', args=(item.name,))
+            if fr is not None and len(list(fr)) > 0:
+                raise MigrationError(message='migration may be excuted ! name: {}'.format(item.name))
+            await item.undo()
+        except Exception as e:
+            logging.error('migration error : {}'.format((str(e))))

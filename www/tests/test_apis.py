@@ -5,12 +5,12 @@ import pytest
 import handlers
 import orm
 from config import configs
-from migrations import db_migrations
+from migrations import db_localsystem_migrations
 
 
 @pytest.mark.asyncio
 async def reinit_dbs():
-    await db_migrations()
+    await db_localsystem_migrations()
 
 
 @pytest.mark.asyncio

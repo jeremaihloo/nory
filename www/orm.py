@@ -44,6 +44,10 @@ async def select(sql, args, size=None):
         return rs
 
 
+async def new_conn():
+    return await __pool
+
+
 async def execute(sql, args=(), autocommit=True):
     log(sql)
     with (await __pool) as conn:
