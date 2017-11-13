@@ -1,13 +1,4 @@
 import app_cores
-
-__author__ = 'jeremaihloo'
-
-__version__ = '0.0.1'
-
-__description__ = 'plugin manager'
-
-__home_page__ = 'https://github.com/jeremaihloo/ncms-plugin-manager'
-
 from app_cores import app_fn, AppManager
 from coroweb import get
 
