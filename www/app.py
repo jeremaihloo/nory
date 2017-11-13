@@ -39,17 +39,14 @@ def init_jinja2(app, **kw):
         variable_end_string=kw.get('variable_end_string', '}}'),
         auto_reload=kw.get('auto_reload', True)
     )
-    paths = []
-    for item in app.plugin_manager.__apps__:
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps', item.name, 'templates')
-        logging.info('set jinja2 template path: %s' % path)
-        paths.append(path)
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps')
+    logging.info('set jinja2 template path: %s' % path)
 
-    env = Environment(loader=FileSystemLoader(paths), **options)
+    env = Environment(loader=FileSystemLoader(path), **options)
     filters = app.plugin_manager.__app_fns__[app_cores.__EVENT_TEMPLATE_FILTER__]
     if filters is not None:
         for f in filters:
-            env.filters[getattr(f, 'name')] = f
+            env.filters[getattr(f, '__app_fn_name__')] = f
     app['__templating__'] = env
 
 
