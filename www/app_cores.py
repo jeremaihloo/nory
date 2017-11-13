@@ -60,6 +60,8 @@ class AppManager(utils.DictClass):
             self.__app_fns__[__EVENT_ROUTING__] = []
         if not self.__app_fns__.get(__EVENT_REQUEST__, None):
             self.__app_fns__[__EVENT_REQUEST__] = []
+        if not self.__app_fns__.get(__EVENT_TEMPLATE_FILTER__, None):
+            self.__app_fns__[__EVENT_TEMPLATE_FILTER__] = []
 
     def reload_apps(self):
         self.__apps__ = []
@@ -97,7 +99,7 @@ class AppManager(utils.DictClass):
                         for attr in dir(m):
                             fn = getattr(m, attr, None)
                             if fn is not None and inspect.isfunction(fn):
-                                event = getattr(fn, '__plugin_event__', None)
+                                event = getattr(fn, '__app_event__', None)
                                 if event is not None:
                                     if self.get(event, None) is None:
                                         self.__app_fns__[event] = []
