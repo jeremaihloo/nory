@@ -6,34 +6,34 @@ __description__ = 'plugin manager'
 
 __home_page__ = 'https://github.com/jeremaihloo/ncms-plugin-manager'
 
-from plugins import plugin_fn, PluginManager
+from app_cores import app_fn, AppManager
 from coroweb import get
 
 
-@plugin_fn('__routes__', 'get_plugins', 'get plugin infos')
+@app_fn('__routes__', 'get_plugins', 'get plugin infos')
 @get('/api/plugins')
 async def api_get_plugins():
-    manager = PluginManager()
+    manager = AppManager()
     infos = list(manager.get_plugin_infos())
     return {
         'infos': infos
     }
 
 
-@plugin_fn('__routes__', 'get_plugin_features', 'get plugin feautures')
+@app_fn('__routes__', 'get_plugin_features', 'get plugin feautures')
 @get('/api/plugins/features')
 async def api_get_features():
-    manager = PluginManager()
+    manager = AppManager()
     return {
         'features': manager.get_features()
     }
 
 
-@plugin_fn('__routes__', 'reload_plugins', 'reload plugins')
+@app_fn('__routes__', 'reload_plugins', 'reload plugins')
 @get('/api/plugins/reload')
 async def api_get_features():
-    manager = PluginManager()
-    manager.reload_plugins()
+    manager = AppManager()
+    manager.reload_apps()
     return {
         'ok': True
     }

@@ -8,12 +8,12 @@ __description__ = 'provide jwt auth'
 
 __home_page__ = 'https://github.com/jeremaihloo/ncms-rbacm'
 
-from plugins import plugin_fn
+from app_cores import app_fn
 
 routes = []
 
 
-@plugin_fn('__add_route__', 'add_route_to_table', 'on add route do this ')
+@app_fn('__add_route__', 'add_route_to_table', 'on add route do this ')
 def add_route_to_table(method, url, params):
     routes.append({
         'method': method,
@@ -22,7 +22,7 @@ def add_route_to_table(method, url, params):
     })
 
 
-@plugin_fn('__routes__', 'get_routes', 'on add route do this ')
+@app_fn('__routes__', 'get_routes', 'on add route do this ')
 @get('/api/routes')
 async def api_get_routes():
     return {
@@ -30,7 +30,7 @@ async def api_get_routes():
     }
 
 
-@plugin_fn('__routes__', 'get_api_table', 'get api table')
+@app_fn('__routes__', 'get_api_table', 'get api table')
 @get('/apis')
 async def api_get_api_tables():
     return {

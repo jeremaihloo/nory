@@ -1,4 +1,4 @@
-from plugins import plugin_fn
+from app_cores import app_fn
 
 __author__ = 'jeremaihloo'
 
@@ -76,7 +76,7 @@ class UserMenuMappings(Model):
     created_at = FloatField(default=time.time)
 
 
-@plugin_fn('__routes__', 'get_plugins', 'get plugin infos')
+@app_fn('__routes__', 'get_plugins', 'get plugin infos')
 @post('/api/roles')
 async def api_create_role(name, title, desc):
     role = Role()
@@ -89,7 +89,7 @@ async def api_create_role(name, title, desc):
     }
 
 
-@plugin_fn('__routes__', 'get_plugins', 'get plugin infos')
+@app_fn('__routes__', 'get_plugins', 'get plugin infos')
 @post('/api/menus')
 async def api_create_menu(name, title, icon, parent, target):
     menu = Menu()
@@ -104,7 +104,7 @@ async def api_create_menu(name, title, icon, parent, target):
     }
 
 
-@plugin_fn('__routes__', 'get_plugins', 'get plugin infos')
+@app_fn('__routes__', 'get_plugins', 'get plugin infos')
 @post('/api/user-role-mappings')
 async def api_create_user_role_mapping(user_id, role):
     mapping = UserRoleMappings()
@@ -116,7 +116,7 @@ async def api_create_user_role_mapping(user_id, role):
     }
 
 
-@plugin_fn('__routes__', 'get_plugins', 'get plugin infos')
+@app_fn('__routes__', 'get_plugins', 'get plugin infos')
 @post('/api/user-menu-mappings')
 async def api_create_user_role_mapping(user_id, menu):
     mapping = UserMenuMappings()

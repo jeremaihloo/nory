@@ -1,6 +1,6 @@
 
 import importlib
 
-m = importlib.import_module('installed_plugins.jwt')
+m = importlib.import_module('apps.jwt')
 
 print(m)

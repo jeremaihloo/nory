@@ -7,10 +7,10 @@ __description__ = 'provide jwt auth'
 __home_page__ = 'https://github.com/jeremaihloo/ncms-auth-cookie'
 
 import jwt
-from plugins import plugin_fn
+from app_cores import app_fn
 
 
-@plugin_fn('__auth__', 'auth-jwt', 'auth use perssions')
+@app_fn('__auth__', 'auth-jwt', 'auth use perssions')
 async def auth(app, request):
     au_header_value = request.headers.get('Authorization', None)
     if au_header_value is None:

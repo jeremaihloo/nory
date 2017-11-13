@@ -14,3 +14,7 @@ class MyTestCase(unittest.TestCase):
     def test_drop(self):
         self.builder.drop_tables([models.ContentModel, models.ContentField, models.ContentItem, models.User])
         print(self.builder.lines[0]['sqls'])
+
+    def test_migration_str(self):
+        sql = self.builder.add_tables([models.ContentField, models.User])
+        print(sql)

@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from utils import hash_pwd
 
 __author__ = 'Michael Liao'
 
 ' url handlers '
 
-import re, time, json, logging, hashlib, base64, asyncio
-
-import markdown2
-
-from aiohttp import web
+import re, hashlib
 
 from coroweb import get, post
-from apis import Page, APIValueError, APIResourceNotFoundError, APIPermissionError, APIError
+from apis import Page, APIValueError, APIError
 
 from models import User, next_id, ContentField, ContentModel, ContentType, ContentItem, ContentModelField, Content
 from config import configs
@@ -35,6 +32,15 @@ def text2html(text):
     return ''.join(lines)
 
 
+@post('/login')
+async def api_post_login(*, name, password):
+    rs = await User.findAll(where='name=? and passwd = ?', args=(name, hash_pwd(password)))
+    if rs is not None and len(rs) == 1:
+        return 200
+    else:
+        return 404
+
+
 @get('/api/users')
 async def api_get_users(*, page='1'):
     page_index = get_page_index(page)
@@ -49,7 +55,6 @@ async def api_get_users(*, page='1'):
 
 
 _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$')
-_RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
 
 @post('/api/users')
@@ -58,18 +63,17 @@ async def api_register_user(*, email, name, passwd):
         raise APIValueError('name')
     if not email or not _RE_EMAIL.match(email):
         raise APIValueError('email')
-    if not passwd or not _RE_SHA1.match(passwd):
+    if not passwd:
         raise APIValueError('passwd')
     users = await User.findAll('email=?', [email])
     if len(users) > 0:
         raise APIError('register:failed', 'email', 'Email is already in use.')
     uid = next_id()
-    sha1_passwd = '%s:%s' % (uid, passwd)
+
     user = User(id=uid,
                 name=name.strip(),
                 email=email,
-                passwd=hashlib.sha1(sha1_passwd.encode('utf-8')).hexdigest(),
-                image='http://www.gravatar.com/avatar/%s?d=mm&s=120' % hashlib.md5(email.encode('utf-8')).hexdigest())
+                passwd=hash_pwd(passwd))
     await user.save()
 
     user.passwd = '******'
@@ -77,7 +81,7 @@ async def api_register_user(*, email, name, passwd):
     return user
 
 
-@post('/api/content-type')
+@post('/api/content-types')
 async def api_create_content_type(*, name, title):
     fc = await ContentType.find(name)
     if fc is not None:
@@ -89,6 +93,14 @@ async def api_create_content_type(*, name, title):
     return field_type
 
 
+@get('/api/content-types')
+async def api_get_content_types():
+    fct = await ContentType.findAll()
+    return {
+        'results': fct
+    }
+
+
 @post('/api/fields')
 async def api_create_content_field(*, name, title, field_type):
     field = ContentField()
@@ -97,6 +109,12 @@ async def api_create_content_field(*, name, title, field_type):
     field.content_type = field_type
     await field.save()
     return field
+
+
+@get('/api/fields')
+async def api_get_fields():
+    rs = await ContentField.findAll()
+    return (200, rs)
 
 
 @post('/api/models')
@@ -148,7 +166,7 @@ async def api_create_content(*, model_name, data):
     return m
 
 
-@get('/api/contents/{model_name}/{page_size}/{page_index}')
+@get('/api/contents/{model_name}')
 async def api_get_contents(*, model_name, page_index=1, page_size=15):
     contents = await ContentItem.findAll(where='model = ?', args=(model_name,))
     results = {}
@@ -158,3 +176,33 @@ async def api_get_contents(*, model_name, page_index=1, page_size=15):
         content_model_field = await ContentModelField.find(line['model_field_id'])
         results[line.content_id][content_model_field.content_field] = line['value']
     return results
+
+
+@get('/index')
+async def page_index():
+    pass
+
+
+@get('/tags/{name}')
+async def page_tags(*, name):
+    pass
+
+
+@get('/categories/{name}')
+async def page_categories(*, name):
+    pass
+
+
+@get('/content/{content-slug}')
+async def page_content():
+    pass
+
+
+@get('/content/id-{id}')
+async def page_id(*, id):
+    pass
+
+
+@get('/page/{name}')
+async def page_name(*, name):
+    pass

@@ -14,7 +14,7 @@ from models import User
 import logging
 import hashlib, json
 from aiohttp import web
-from plugins import plugin_fn
+from app_cores import app_fn
 
 COOKIE_NAME = 'awesession'
 _COOKIE_KEY = configs.session.secret
@@ -58,7 +58,7 @@ def user2cookie(user, max_age):
     return '-'.join(L)
 
 
-@plugin_fn('__auth__', 'auth-cookie', 'auth by cookie')
+@app_fn('__auth__', 'auth-cookie', 'auth by cookie')
 async def auth(app, request):
     request.__user__ = None
     cookie_str = request.cookies.get(COOKIE_NAME)
@@ -72,7 +72,7 @@ async def auth(app, request):
     return (False, 'cookie str empty')
 
 
-@plugin_fn('__routes__', 'auth-cookie', 'auth by cookie')
+@app_fn('__routes__', 'auth-cookie', 'auth by cookie')
 @post('/api/auth-cookie')
 async def authenticate(*, email, passwd):
     if not email:

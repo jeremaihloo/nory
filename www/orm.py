@@ -111,6 +111,9 @@ class TextField(Field):
 
 
 class ModelMetaclass(type):
+    def __getattr__(self, item):
+        return Query(field_name=item, model=self)
+
     def __new__(cls, name, bases, attrs):
         if name == 'Model':
             return type.__new__(cls, name, bases, attrs)
@@ -130,6 +133,7 @@ class ModelMetaclass(type):
                     primaryKey = k
                 else:
                     fields.append(k)
+
         if not primaryKey:
             raise StandardError('Primary key not found.')
         for k in mappings.keys():
@@ -240,3 +244,67 @@ class Model(dict, metaclass=ModelMetaclass):
         rows = await execute(self.__delete__, args)
         if rows != 1:
             logging.warn('failed to remove by primary key: affected rows: %s' % rows)
+
+    @classmethod
+    def query(cls):
+        return Query(model=cls)
+
+
+class Query(object):
+    def __init__(self, field_name=None, model=None, op='SELECT',
+                 right=None, fields=[], where=[], orderby=[], limit=None, offset=0):
+        self.field_name = field_name
+        self.model = model
+        self.op = op
+        self.right = None
+        self.fields = fields
+        self._where = where
+        self._orderby = orderby
+        self._limit = limit
+        self._offset = offset
+
+    def __eq__(self, other):
+        return "{}.{} = {}".format(self.model.__table__, self.field_name, other)
+
+    def sql_select(self):
+        return '{op} {fields} FROM {table} {where} {orderby} {limit} {offset}' \
+            .format(op=self.op,
+                    fields=', '.join(self.fields) if len(self.fields) > 0 else '*',
+                    table=self.model.__table__,
+                    where=''.join(('WHERE ', ' AND '.join(self._where))) if len(self._where) > 0 else '',
+                    orderby=''.join(('ORDER BY ', ' AND '.join(self._orderby))) if len(self._orderby) > 0 else '',
+                    limit=''.join(('LIMIT ', str(self._limit))) if self._limit else '',
+                    offset=''.join(('OFFSET ', str(self._offset))) if self._offset else '')
+
+    def where(self, query):
+        self._where.append(query)
+        return self
+
+    async def select(self, model=None):
+        self.op = 'SELECT'
+        if model is not None:
+            self.model = model
+        sql = self.sql_select()
+        return await select(sql, args=())
+
+    def update(self, dic_args: dict, obj=None):
+        self.op = 'UPDATE'
+        raise NotImplementedError()
+
+    def insert(self):
+        raise NotImplementedError()
+
+    def remove(self):
+        raise NotImplementedError()
+
+    async def one(self):
+        self._limit = 1
+        self._offset = 0
+        r = await self.select()
+        return r[0] if len(r) > 0 else None
+
+    async def all(self):
+        return await self.select()
+
+    async def exist(self):
+        return len(await self.select())

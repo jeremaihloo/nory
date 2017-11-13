@@ -217,7 +217,7 @@ class Markdown(object):
         else:
             self.safe_mode = safe_mode
 
-        # Massaging and building the "extras" info.
+        # Massaging and building the "extras" page_statistics.
         if self.extras is None:
             self.extras = {}
         elif not isinstance(self.extras, dict):

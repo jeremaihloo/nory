@@ -161,7 +161,7 @@ class RequestHandler(object):
 def add_route(app, fn):
     method = getattr(fn, '__method__', None)
     path = getattr(fn, '__route__', None)
-    if path is None or method is None:
+    if path is None or not isinstance(path, str) or method is None or not isinstance(method, str):
         raise ValueError('@get or @post not defined in %s.' % str(fn))
     if not asyncio.iscoroutinefunction(fn) and not inspect.isgeneratorfunction(fn):
         fn = asyncio.coroutine(fn)
@@ -185,12 +185,17 @@ def add_routes(app, module_name):
         if attr.startswith('_'):
             continue
         fn = getattr(mod, attr)
-        if callable(fn):
+        if callable(fn) and inspect.isfunction(fn):
             method = getattr(fn, '__method__', None)
             path = getattr(fn, '__route__', None)
             if method and path:
                 add_route(app, fn)
 
     for item in app.plugin_manager['__routes__']:
-        # print(getattr(item, '__event__'))
         add_route(app, item)
+
+
+def add_static(app, app_name, path):
+    # path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+    app.router.add_static('/' + app_name + '/static/', path)
+    logging.info('add static %s => %s' % ('/' + app_name + '/static/', path))

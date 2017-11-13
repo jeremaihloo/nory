@@ -46,12 +46,12 @@ class MigrationBuilder(object):
         sqls = [self.build_create_table_sql(x) for x in models]
         self.lines.append({
             'action': 'add_tables',
-            'sqls': ';'.join(sqls)
+            'sqls': ';\n'.join(sqls)
         })
         return self
 
     def drop_tables(self, models, safe=True):
-        sqls = [self.build_drop_table_sql(x) for x in models]
+        sqls = [self.build_drop_table_sql(x, safe=safe) for x in models]
         self.lines.append({
             'action': 'drop_tables',
             'sqls': ';\n'.join(sqls)
@@ -67,6 +67,12 @@ class MigrationBuilder(object):
             sql.append(line['sqls'])
         await execute(';\n'.join(sql))
 
+    def __str__(self):
+        sql = []
+        for line in self.lines:
+            sql.append(line['sqls'])
+        return ';\n'.join(sql)
+
     async def undo(self):
         pass
 
@@ -81,12 +87,12 @@ class MigrationBuilder(object):
     def build_drop_table_sql(self, model: Model, safe=True):
         new_table = '{table}_bk_{version}'.format(table=model.__table__, version=self.version)
         bk_sql = ''' 
-                create
-                table
-                {new_table}(select *
-                from {old_table});
+                CREATE
+                TABLE 
+                {new_table}(SELECT *
+                FROM {old_table});
             '''.format(new_table=new_table, old_table=model.__table__)
-        drop_sql = 'drop table {table};'.format(table=model.__table__)
+        drop_sql = 'DROP TABLE IF EXISTS {table};'.format(table=model.__table__)
         return ';\n'.join([bk_sql, drop_sql])
 
 

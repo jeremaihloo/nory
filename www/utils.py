@@ -1,3 +1,4 @@
+import hmac
 import os
 
 
@@ -27,3 +28,9 @@ def singleton(cls, *args, **kw):
         return instances[cls]
 
     return _singleton
+
+
+def hash_pwd(password):
+    hash = hmac.new('ncms'.encode('utf-8'))
+    hash.update(password.encode('utf-8'))
+    return hash.hexdigest()

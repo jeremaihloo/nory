@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from plugins import PluginManager
+from collections import OrderedDict
+
+from app_cores import AppManager
 
 __author__ = 'Michael Liao'
 
@@ -23,7 +25,8 @@ from jinja2 import Environment, FileSystemLoader
 from config import configs
 
 import orm
-from coroweb import add_routes
+from coroweb import add_routes, add_static
+
 
 def init_jinja2(app, **kw):
     logging.info('init jinja2...')
@@ -35,11 +38,13 @@ def init_jinja2(app, **kw):
         variable_end_string=kw.get('variable_end_string', '}}'),
         auto_reload=kw.get('auto_reload', True)
     )
-    path = kw.get('path', None)
-    if path is None:
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
-    logging.info('set jinja2 template path: %s' % path)
-    env = Environment(loader=FileSystemLoader(path), **options)
+    paths = []
+    for item in app.plugin_manager.__apps__:
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps', item.name, 'templates')
+        logging.info('set jinja2 template path: %s' % path)
+        paths.append(path)
+
+    env = Environment(loader=FileSystemLoader(paths), **options)
     filters = kw.get('filters', None)
     if filters is not None:
         for name, f in filters.items():
@@ -89,6 +94,23 @@ async def data_factory(app, handler):
         return parse_data
 
 
+def api_response(r, status_code=200):
+    resp = web.Response(status=status_code, body=json_response_body(api_response_body(r)))
+    resp.content_type = 'application/json;charset=utf-8'
+    return resp
+
+
+def api_response_body(r, status_code=200):
+    o = OrderedDict()
+    o['ok'] = True if status_code == 200 else False
+    o['body'] = r if r is not None else ('everything is ok !' if status_code == 200 else 'got something bad !')
+    return o
+
+
+def json_response_body(r):
+    return json.dumps(r, ensure_ascii=False, default=lambda o: o.__dict__).encode('utf-8')
+
+
 async def response_factory(app, handler):
     async def response(request):
         logging.info('Response handler...')
@@ -96,34 +118,36 @@ async def response_factory(app, handler):
         logging.info('response is instance of {}'.format(type(r)))
         if isinstance(r, web.StreamResponse):
             return r
+
         if isinstance(r, bytes):
             resp = web.Response(body=r)
             resp.content_type = 'application/octet-stream'
             return resp
+
         if isinstance(r, str):
             if r.startswith('redirect:'):
                 return web.HTTPFound(r[9:])
             resp = web.Response(body=r.encode('utf-8'))
             resp.content_type = 'text/html;charset=utf-8'
             return resp
+
         if isinstance(r, dict):
             template = r.get('__template__')
             if template is None:
-                resp = web.Response(
-                    body=json.dumps(r, ensure_ascii=False, default=lambda o: o.__dict__).encode('utf-8'))
-                resp.content_type = 'application/json;charset=utf-8'
-                return resp
+                return api_response(r)
             else:
                 r['__user__'] = request.__user__
                 resp = web.Response(body=app['__templating__'].get_template(template).render(**r).encode('utf-8'))
                 resp.content_type = 'text/html;charset=utf-8'
                 return resp
-        if isinstance(r, int) and t >= 100 and t < 600:
-            return web.Response(t)
+
+        if isinstance(r, int) and r >= 100 and r < 600:
+            return api_response(None, status_code=r)
+
         if isinstance(r, tuple) and len(r) == 2:
             t, m = r
             if isinstance(t, int) and t >= 100 and t < 600:
-                return web.Response(t, str(m))
+                return api_response(m, status_code=t)
         # default:
         resp = web.Response(body=str(r).encode('utf-8'))
         resp.content_type = 'text/plain;charset=utf-8'
@@ -155,12 +179,17 @@ async def init(loop):
         logger_factory, auth_factory, response_factory
     ])
 
-    plugin_manager = PluginManager()
-    plugin_manager.load_plugins()
+    plugin_manager = AppManager()
+    plugin_manager.load_apps()
     app.plugin_manager = plugin_manager
 
     init_jinja2(app, filters=dict(datetime=datetime_filter))
     add_routes(app, 'handlers')
+
+    for item in app.plugin_manager.__apps__:
+        add_static(app, item.name,
+                   os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps', item.name, 'static'))
+
     srv = await loop.create_server(app.make_handler(), '127.0.0.1', 9000)
     logging.info('server started at http://127.0.0.1:9000...')
     return srv
