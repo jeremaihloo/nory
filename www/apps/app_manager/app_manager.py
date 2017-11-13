@@ -1,3 +1,5 @@
+import app_cores
+
 __author__ = 'jeremaihloo'
 
 __version__ = '0.0.1'
@@ -10,7 +12,7 @@ from app_cores import app_fn, AppManager
 from coroweb import get
 
 
-@app_fn('__routes__', 'get_plugins', 'get plugin infos')
+@app_fn(app_cores.__EVENT_ROUTING__, 'get_plugins', 'get plugin infos')
 @get('/api/plugins')
 async def api_get_plugins():
     manager = AppManager()
@@ -20,7 +22,7 @@ async def api_get_plugins():
     }
 
 
-@app_fn('__routes__', 'get_plugin_features', 'get plugin feautures')
+@app_fn(app_cores.__EVENT_ROUTING__, 'get_plugin_features', 'get plugin feautures')
 @get('/api/plugins/features')
 async def api_get_features():
     manager = AppManager()
@@ -29,7 +31,7 @@ async def api_get_features():
     }
 
 
-@app_fn('__routes__', 'reload_plugins', 'reload plugins')
+@app_fn(app_cores.__EVENT_ROUTING__, 'reload_plugins', 'reload plugins')
 @get('/api/plugins/reload')
 async def api_get_features():
     manager = AppManager()

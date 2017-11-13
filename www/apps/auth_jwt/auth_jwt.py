@@ -1,3 +1,5 @@
+import app_cores
+
 __author__ = 'jeremaihloo'
 
 __version__ = '0.0.1'
@@ -10,7 +12,7 @@ import jwt
 from app_cores import app_fn
 
 
-@app_fn('__auth__', 'auth-jwt', 'auth use perssions')
+@app_fn(app_cores.__EVENT_ROUTING__, 'auth-jwt', 'auth use perssions')
 async def auth(app, request):
     au_header_value = request.headers.get('Authorization', None)
     if au_header_value is None:

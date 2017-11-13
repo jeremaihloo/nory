@@ -1,3 +1,4 @@
+import app_cores
 from coroweb import get
 
 __author__ = 'jeremaihloo'
@@ -13,7 +14,7 @@ from app_cores import app_fn
 routes = []
 
 
-@app_fn('__add_route__', 'add_route_to_table', 'on add route do this ')
+@app_fn(app_cores.__EVENT_ADD_ROUTE__, 'add_route_to_table', 'on add route do this ')
 def add_route_to_table(method, url, params):
     routes.append({
         'method': method,
@@ -22,7 +23,7 @@ def add_route_to_table(method, url, params):
     })
 
 
-@app_fn('__routes__', 'get_routes', 'on add route do this ')
+@app_fn(app_cores.__EVENT_ADD_ROUTE__, 'get_routes', 'on add route do this ')
 @get('/api/routes')
 async def api_get_routes():
     return {
@@ -30,7 +31,7 @@ async def api_get_routes():
     }
 
 
-@app_fn('__routes__', 'get_api_table', 'get api table')
+@app_fn(app_cores.__EVENT_ADD_ROUTE__, 'get_api_table', 'get api table')
 @get('/apis')
 async def api_get_api_tables():
     return {

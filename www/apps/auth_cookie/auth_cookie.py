@@ -1,3 +1,5 @@
+import app_cores
+
 __author__ = 'jeremaihloo'
 
 __version__ = '0.0.1'
@@ -58,7 +60,7 @@ def user2cookie(user, max_age):
     return '-'.join(L)
 
 
-@app_fn('__auth__', 'auth-cookie', 'auth by cookie')
+@app_fn(app_cores.__EVENT_AUTHING__, 'auth-cookie', 'auth by cookie')
 async def auth(app, request):
     request.__user__ = None
     cookie_str = request.cookies.get(COOKIE_NAME)
@@ -72,7 +74,7 @@ async def auth(app, request):
     return (False, 'cookie str empty')
 
 
-@app_fn('__routes__', 'auth-cookie', 'auth by cookie')
+@app_fn(app_cores.__EVENT_ROUTING__, 'auth-cookie', 'auth by cookie')
 @post('/api/auth-cookie')
 async def authenticate(*, email, passwd):
     if not email:

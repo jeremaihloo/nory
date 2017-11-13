@@ -15,7 +15,7 @@ __EVENT_AUTHING__ = '__authing__'
 __EVENT_AUTH_FLASE__ = '__auth_false__'
 __EVENT_REQUEST__ = '__request__'
 __EVENT_ADD_ROUTE__ = '__add_route__'
-
+__EVENT_TEMPLATE_FILTER__ = '__template_filter__'
 
 def app_fn(event, name, description):
     def decorator(func):
