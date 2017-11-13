@@ -13,7 +13,7 @@ import utils
 __EVENT_ROUTING__ = '__routing__'
 __EVENT_AUTHING__ = '__authing__'
 __EVENT_AUTH_FLASE__ = '__auth_false__'
-__EVNET_REQUEST__ = '__request__'
+__EVENT_REQUEST__ = '__request__'
 __EVENT_ADD_ROUTE__ = '__add_route__'
 
 
@@ -47,9 +47,25 @@ class AppManager(utils.DictClass):
         self.__apps__ = []
         self.__app_fns__ = {}
 
+        self.init_fns()
+
+    def init_fns(self):
+        if not self.__app_fns__.get(__EVENT_ADD_ROUTE__, None):
+            self.__app_fns__[__EVENT_ADD_ROUTE__] = []
+        if not self.__app_fns__.get(__EVENT_AUTHING__, None):
+            self.__app_fns__[__EVENT_AUTHING__] = []
+        if not self.__app_fns__.get(__EVENT_AUTH_FLASE__, None):
+            self.__app_fns__[__EVENT_AUTH_FLASE__] = []
+        if not self.__app_fns__.get(__EVENT_ROUTING__, None):
+            self.__app_fns__[__EVENT_ROUTING__] = []
+        if not self.__app_fns__.get(__EVENT_REQUEST__, None):
+            self.__app_fns__[__EVENT_REQUEST__] = []
+
     def reload_apps(self):
         self.__apps__ = []
         self.__app_fns__ = {}
+
+        self.init_fns()
 
         self.load_apps()
 

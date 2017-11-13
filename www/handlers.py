@@ -193,7 +193,7 @@ async def page_categories(*, name):
     pass
 
 
-@get('/content/{content-slug}')
+@get('/content/{content_slug}')
 async def page_content():
     pass
 

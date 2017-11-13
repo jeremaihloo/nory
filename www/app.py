@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from collections import OrderedDict
 
+import app_cores
 from app_cores import AppManager
 
 __author__ = 'Michael Liao'
@@ -65,15 +66,15 @@ async def auth_factory(app, handler):
     async def auth(request):
         logging.info('auth user: %s %s' % (request.method, request.path))
         flag = False
-        for fn in app.plugin_manager['__auth__']:
+        for fn in app.plugin_manager.__app_fns__[app_cores.__EVENT_AUTHING__]:
             if await fn(app, request) is True:
-                logging.info('auth fn : {} passed'.format(getattr(fn, '__plugin_fn_name__')))
+                logging.info('auth fn : {} passed'.format(getattr(fn, '__app_fn_name__')))
                 flag = True
             else:
-                logging.info('auth fn : {} unpass'.format(getattr(fn, '__plugin_fn_name__')))
+                logging.info('auth fn : {} unpass'.format(getattr(fn, '__app_fn_name__')))
 
         if not flag:
-            for fn in app.plugin_manager['__auth_false__']:
+            for fn in app.plugin_manager.__app_fns__[app_cores.__EVENT_AUTH_FLASE__]:
                 await fn(app, request)
         return (await handler(request))
 
@@ -187,8 +188,11 @@ async def init(loop):
     add_routes(app, 'handlers')
 
     for item in app.plugin_manager.__apps__:
-        add_static(app, item.name,
-                   os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps', item.name, 'static'))
+        try:
+            add_static(app, item.name,
+                       os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps', item.name, 'static'))
+        except Exception as e:
+            logging.warning(str(e))
 
     srv = await loop.create_server(app.make_handler(), '127.0.0.1', 9000)
     logging.info('server started at http://127.0.0.1:9000...')

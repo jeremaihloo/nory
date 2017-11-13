@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import app_cores
 
 __author__ = 'Michael Liao'
 
@@ -169,7 +170,7 @@ def add_route(app, fn):
         'add route %s %s => %s(%s)' % (method, path, fn.__name__, ', '.join(inspect.signature(fn).parameters.keys())))
     app.router.add_route(method, path, RequestHandler(app, fn))
 
-    for item in app.plugin_manager['__add_route__']:
+    for item in app.plugin_manager.__app_fns__[app_cores.__EVENT_ADD_ROUTE__]:
         params = [x for x in inspect.signature(fn).parameters.keys()]
         item(method, path, params)
 
@@ -191,11 +192,13 @@ def add_routes(app, module_name):
             if method and path:
                 add_route(app, fn)
 
-    for item in app.plugin_manager['__routes__']:
+    for item in app.plugin_manager.__app_fns__[app_cores.__EVENT_ROUTING__]:
         add_route(app, item)
 
 
 def add_static(app, app_name, path):
     # path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+    if not os.path.exists(path):
+        raise Exception('add static error dir not exists : {}'.format(path))
     app.router.add_static('/' + app_name + '/static/', path)
     logging.info('add static %s => %s' % ('/' + app_name + '/static/', path))
