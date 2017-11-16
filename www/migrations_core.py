@@ -1,13 +1,10 @@
-import asyncio
 import logging
 import time
-
-import pymysql
-
+import abc
 import orm
 import utils
 from models import next_id
-from orm import Model, execute, IntegerField, TextField, StringField, FloatField
+from orm import Model, execute, IntegerField, StringField, FloatField
 import importlib
 import os
 
@@ -21,19 +18,24 @@ class MigrationRecord(Model):
     created_at = FloatField(default=time.time)
 
 
-class Migration(object):
+class Migration(object, metaclass=abc.ABCMeta):
     def __init__(self, version, name):
         self.version = version
         self.name = name
         self.lines = []
 
+        self.builder = MigrationBuilder(version, name)
 
+    @abc.abstractclassmethod
     async def do(self):
-        builder = MigrationBuilder()
-        return builder
+        pass
 
+    @abc.abstractclassmethod
     async def undo(self):
         pass
+
+    def __str__(self):
+        return str(self.builder)
 
 
 class MigrationBuilder(object):
@@ -42,7 +44,9 @@ class MigrationBuilder(object):
         self.name = name
         self.lines = []
 
-    def add_tables(self, models):
+    def add_tables(self, models, force=False):
+        if force:
+            self.drop_tables(models, safe=False)
         sqls = [self.build_create_table_sql(x) for x in models]
         self.lines.append({
             'action': 'add_tables',
@@ -61,20 +65,11 @@ class MigrationBuilder(object):
     def alter_tables(self, models):
         pass
 
-    async def do(self, conn):
-        sql = []
-        for line in self.lines:
-            sql.append(line['sqls'])
-        await execute(';\n'.join(sql))
-
     def __str__(self):
         sql = []
         for line in self.lines:
             sql.append(line['sqls'])
         return ';\n'.join(sql)
-
-    async def undo(self):
-        pass
 
     def build_create_table_sql(self, model: Model):
         sqls = []
@@ -86,14 +81,10 @@ class MigrationBuilder(object):
 
     def build_drop_table_sql(self, model: Model, safe=True):
         new_table = '{table}_bk_{version}'.format(table=model.__table__, version=self.version)
-        bk_sql = ''' 
-                CREATE
-                TABLE 
-                {new_table}(SELECT *
-                FROM {old_table});
-            '''.format(new_table=new_table, old_table=model.__table__)
-        drop_sql = 'DROP TABLE IF EXISTS {table};'.format(table=model.__table__)
-        return ';\n'.join([bk_sql, drop_sql])
+        bk_sql = """CREATE TABLE {new_table}(SELECT *FROM {old_table})""".format(new_table=new_table,
+                                                                                 old_table=model.__table__)
+        drop_sql = 'DROP TABLE IF EXISTS {table}'.format(table=model.__table__)
+        return ';\n'.join([bk_sql, drop_sql]) if safe else drop_sql
 
 
 class MigrationError(Exception):
@@ -102,7 +93,8 @@ class MigrationError(Exception):
         self.message = message
 
 
-async def db_localsystem_migrations():
+async def do_local_migrations():
+    logging.info('start do local migrations')
     r = await orm.select('show tables', None)
     tables = map(lambda x: x['Tables_in_ncms'], r)
     if 'migrations' not in tables:
@@ -110,38 +102,48 @@ async def db_localsystem_migrations():
         migration_table_sql = mbuilder.build_create_table_sql(MigrationRecord)
         await orm.execute(migration_table_sql)
     abs_p = utils.get_ncms_path()
-    db_migrations_file_names = os.listdir(os.path.join(abs_p, 'do_migrations'))
+    db_migrations_file_names = os.listdir(os.path.join(abs_p, 'migrations'))
     file_names = list(filter(lambda x: x.startswith('migration'), db_migrations_file_names))
     file_names = list(map(lambda x: x[:-3], file_names))
 
-    builders = []
+    ms = []
     for file_name in file_names:
-        migration = importlib.import_module('do_migrations.{}'.format(file_name))
-        builders.append(migration.create_builder())
+        migration = importlib.import_module('migrations.{}'.format(file_name))
+        classes_names = list(filter(lambda x: x.startswith('Migration') and (not x == 'Migration'), dir(migration)))
+        classes = list(map(lambda key: getattr(migration, key), classes_names))
+
+        ms.extend(classes)
+
+    ms = [x() for x in ms if issubclass(x, Migration)]
+
+    logging.info('collected {} migrations'.format(len(ms)))
 
     # sort
-    sorted(builders, key=lambda x: x.version)
+    sorted(ms, key=lambda x: x.version)
 
-    await do_migrations(builders)
+    await do_migrations(ms)
 
 
-async def do_migrations(builders):
-    for item in builders:
+async def do_migrations(migrations):
+    for item in migrations:
+        logging.info('do migration version: {} name: {}'.format(item.version, item.name))
         try:
             fr = await MigrationRecord.findAll(where='name = ?', args=(item.name,))
             if fr is not None and len(list(fr)) > 0:
                 raise MigrationError(message='migration may be excuted ! name: {}'.format(item.name))
-            await item.do()
+            item.do()
+            await execute(str(item))
         except Exception as e:
             logging.error('migration error : {}'.format((str(e))))
 
 
-async def undo_migrations(builders):
-    for item in builders:
+async def undo_migrations(migrations):
+    for item in migrations:
         try:
             fr = await MigrationRecord.findAll(where='name = ?', args=(item.name,))
             if fr is not None and len(list(fr)) > 0:
                 raise MigrationError(message='migration may be excuted ! name: {}'.format(item.name))
-            await item.undo()
+            item.undo()
+            await execute(str(item))
         except Exception as e:
             logging.error('migration error : {}'.format((str(e))))

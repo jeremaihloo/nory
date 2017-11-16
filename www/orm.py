@@ -75,7 +75,7 @@ def create_args_string(num):
 
 
 class Field(object):
-    def __init__(self, name, column_type, primary_key, default):
+    def __init__(self, name, column_type, primary_key, default, unique):
         self.name = name
         self.column_type = column_type
         self.primary_key = primary_key
@@ -86,8 +86,8 @@ class Field(object):
 
 
 class StringField(Field):
-    def __init__(self, name=None, primary_key=False, default=None, ddl='varchar(100)'):
-        super().__init__(name, ddl, primary_key, default)
+    def __init__(self, name=None, primary_key=False, default=None, ddl='varchar(100)', unique=False):
+        super().__init__(name, ddl, primary_key, default, unique)
 
 
 class BooleanField(Field):
@@ -97,17 +97,17 @@ class BooleanField(Field):
 
 class IntegerField(Field):
     def __init__(self, name=None, primary_key=False, default=0):
-        super().__init__(name, 'bigint', primary_key, default)
+        super().__init__(name, 'bigint', primary_key, default, False)
 
 
 class FloatField(Field):
-    def __init__(self, name=None, primary_key=False, default=0.0):
-        super().__init__(name, 'real', primary_key, default)
+    def __init__(self, name=None, primary_key=False, default=0.0, unique=False):
+        super().__init__(name, 'real', primary_key, default, unique)
 
 
 class TextField(Field):
     def __init__(self, name=None, default=None):
-        super().__init__(name, 'text', False, default)
+        super().__init__(name, 'text', False, default, False)
 
 
 class ModelMetaclass(type):

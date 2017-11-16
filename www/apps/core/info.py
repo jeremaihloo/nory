@@ -7,5 +7,6 @@ __description__ = 'plugin manager'
 __home_page__ = 'https://github.com/jeremaihloo/ncms-plugin-manager'
 
 INDEXS = [
-    'filters'
+    'filters',
+    'handlers'
 ]

@@ -2,14 +2,33 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>{% block title %}{% endblock %}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="shortcut icon" href="/core/static/N.png" type="image/x-png">
+    <link rel="stylesheet" href="/core/static/css/ncms.css">
 </head>
 
 <body>
-  {% block content%} {% endblock %}
+<div class="out">
+    <div class="header">
+        <div class="banner">
+            <a href="/"><img src="/core/static/N.png" alt="ncms"></a>
+        </div>
+        <div class="nav">
+            <li class="nav-item"><a href="/">Index</a></li>
+            <li class="nav-item"><a href="/tags">Tags</a></li>
+            <li class="nav-item"><a href="/profile">Profile</a></li>
+        </div>
+    </div>
+    <div class="main">
+        {% block content %} {% endblock %}
+    </div>
+    <div class="footer">
+
+    </div>
+</div>
 </body>
 
 </html>

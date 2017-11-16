@@ -9,7 +9,7 @@ __author__ = 'Michael Liao'
 
 import time, uuid
 
-from orm import Model, StringField, BooleanField, FloatField, TextField
+from orm import Model, StringField, BooleanField, FloatField, TextField, execute, select
 
 
 def next_id():
@@ -94,3 +94,16 @@ class ContentItem(Model):
     content_id = StringField(ddl='varchar(50)')
     value = TextField()
     created_at = FloatField(default=time.time)
+
+
+class Settings(Model):
+    """Site"""
+    __table__ = 'settings'
+
+    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
+    key = StringField(ddl='varchar(50)')
+    value = TextField()
+    created_at = FloatField(default=time.time)
+
+    def get(self, key):
+        settings = Settings.query().all()

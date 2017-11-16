@@ -101,7 +101,7 @@ class AppManager(utils.DictClass):
                             if fn is not None and inspect.isfunction(fn):
                                 event = getattr(fn, '__app_event__', None)
                                 if event is not None:
-                                    if self.get(event, None) is None:
+                                    if self.__app_fns__.get(event, None) is None:
                                         self.__app_fns__[event] = []
                                     self.__app_fns__[event].append(fn)
             except Exception as e:

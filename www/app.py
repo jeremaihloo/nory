@@ -15,7 +15,7 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-from migrations import MigrationBuilder, MigrationRecord, db_localsystem_migrations
+from migrations_core import MigrationBuilder, MigrationRecord, do_local_migrations
 
 import asyncio, os, json, time
 from datetime import datetime
@@ -61,6 +61,7 @@ async def logger_factory(app, handler):
 
 async def auth_factory(app, handler):
     async def auth(request):
+        request.__user__ = None
         logging.info('auth user: %s %s' % (request.method, request.path))
         flag = False
         for fn in app.plugin_manager.__app_fns__[app_cores.__EVENT_AUTHING__]:
@@ -157,7 +158,7 @@ async def response_factory(app, handler):
 async def init(loop):
     await orm.create_pool(loop=loop, **configs.db)
 
-    await db_localsystem_migrations()
+    await do_local_migrations()
 
     app = web.Application(loop=loop, middlewares=[
         logger_factory, auth_factory, response_factory

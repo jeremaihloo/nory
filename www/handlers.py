@@ -178,31 +178,3 @@ async def api_get_contents(*, model_name, page_index=1, page_size=15):
     return results
 
 
-@get('/index')
-async def page_index():
-    pass
-
-
-@get('/tags/{name}')
-async def page_tags(*, name):
-    pass
-
-
-@get('/categories/{name}')
-async def page_categories(*, name):
-    pass
-
-
-@get('/content/{content_slug}')
-async def page_content():
-    pass
-
-
-@get('/content/id-{id}')
-async def page_id(*, id):
-    pass
-
-
-@get('/page/{name}')
-async def page_name(*, name):
-    pass

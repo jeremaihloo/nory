@@ -1,22 +1,5 @@
 import app_cores
 from app_cores import app_fn
-
-__author__ = 'jeremaihloo'
-
-__version__ = '0.0.1'
-
-__description__ = 'provide jwt auth'
-
-__home_page__ = 'https://github.com/jeremaihloo/ncms-rbacm'
-
-__permissions__ = [
-    'DB'
-]
-
-__user_agreement__ = """
-
-"""
-
 import time
 from models import next_id
 from orm import Model, StringField, FloatField
