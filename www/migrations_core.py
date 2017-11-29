@@ -1,10 +1,10 @@
 import logging
 import time
 import abc
-import orm
+import aiorm
 import utils
-from models import next_id
-from orm import Model, IntegerField, StringField, FloatField
+from apps.core.models import next_id
+from aiorm import Model, IntegerField, StringField, FloatField
 import importlib
 import os
 
@@ -100,7 +100,7 @@ async def do_local_migrations(db):
     if 'migrations' not in tables:
         mbuilder = MigrationBuilder(0, 'migrations')
         migration_table_sql = mbuilder.build_create_table_sql(MigrationRecord)
-        await orm.execute(migration_table_sql)
+        await aiorm.execute(migration_table_sql)
     abs_p = utils.get_ncms_path()
     db_migrations_file_names = os.listdir(os.path.join(abs_p, 'migrations'))
     file_names = list(filter(lambda x: x.startswith('migration'), db_migrations_file_names))
@@ -121,10 +121,10 @@ async def do_local_migrations(db):
     # sort
     sorted(ms, key=lambda x: x.version)
 
-    await do_migrations(ms)
+    await do_migrations(ms, db)
 
 
-async def do_migrations(migrations):
+async def do_migrations(migrations, db):
     for item in migrations:
         logging.info('do migration version: {} name: {}'.format(item.version, item.name))
         try:
@@ -132,18 +132,18 @@ async def do_migrations(migrations):
             if fr is not None and len(list(fr)) > 0:
                 raise MigrationError(message='migration may be excuted ! name: {}'.format(item.name))
             item.do()
-            await execute(str(item))
+            await db.execute(str(item))
         except Exception as e:
             logging.error('migration error : {}'.format((str(e))))
 
 
-async def undo_migrations(migrations):
+async def undo_migrations(migrations, db):
     for item in migrations:
         try:
             fr = await MigrationRecord.findAll(where='name = ?', args=(item.name,))
             if fr is not None and len(list(fr)) > 0:
                 raise MigrationError(message='migration may be excuted ! name: {}'.format(item.name))
             item.undo()
-            await execute(str(item))
+            await db.execute(str(item))
         except Exception as e:
             logging.error('migration error : {}'.format((str(e))))

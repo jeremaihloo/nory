@@ -6,13 +6,12 @@ __author__ = 'Michael Liao'
 
 ' url handlers '
 
-import re, hashlib
+import re
 
 from coroweb import get, post
 from apis import Page, APIValueError, APIError
 
-from models import User, next_id
-from configs import options
+from apps.core.models import User, next_id
 
 
 def get_page_index(page_str):

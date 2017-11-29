@@ -9,7 +9,7 @@ __author__ = 'Michael Liao'
 
 import time, uuid
 from utils import next_id
-from orm import Model, StringField, FloatField, TextField
+from aiorm import Model, StringField, FloatField, TextField
 
 
 class User(Model):

@@ -3,8 +3,8 @@ from app_cores import app_fn
 import time
 
 from migrations_core import Migration, do_migrations, undo_migrations
-from models import next_id
-from orm import Model, StringField, FloatField
+from apps.core.models import next_id
+from aiorm import Model, StringField, FloatField
 from coroweb import post
 
 

@@ -26,7 +26,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from configs import options
 
-import orm
+import aiorm
 from coroweb import add_routes, add_static
 
 
@@ -157,7 +157,7 @@ async def response_factory(app, handler):
 
 
 async def init(loop):
-    database = orm.MySQLDataBase()
+    database = aiorm.MySQLDataBase()
     await database.connect(loop, **options.db.to_dict())
     async with await database.atomic() as db:
         await do_local_migrations(db)

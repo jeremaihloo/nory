@@ -1,16 +1,15 @@
 import pytest
 
 import handlers
-import orm
-from configs import configs
+import aiorm
+from configs import options
 from migrations_core import do_local_migrations
-from models import User
-from www.apps.rbacm import rbacm
+from apps.core.models import User
 
 
 @pytest.mark.asyncio
 async def test_blog(event_loop):
-    await orm.create_pool(event_loop, **configs.db)
+    await aiorm.create_pool(event_loop, **configs.db)
 
     await do_local_migrations()
 
