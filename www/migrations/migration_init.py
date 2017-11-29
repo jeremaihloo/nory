@@ -1,5 +1,4 @@
-import asyncio
-import models
+from apps.core import models
 from migrations_core import Migration
 
 

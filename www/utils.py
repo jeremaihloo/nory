@@ -1,6 +1,9 @@
 import hmac
 import os
 
+import time
+import uuid
+
 
 def get_ncms_path():
     cwd = os.getcwd()
@@ -34,3 +37,7 @@ def hash_pwd(password):
     hash = hmac.new('ncms'.encode('utf-8'))
     hash.update(password.encode('utf-8'))
     return hash.hexdigest()
+
+
+def next_id():
+    return '%015d%s000' % (int(time.time() * 1000), uuid.uuid4().hex)
