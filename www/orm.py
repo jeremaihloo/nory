@@ -31,7 +31,7 @@ class _aio_db_context_manager(_aio_callable_context_manager):
     async def __aenter__(self):
         await self.conn.__aenter__()
         await self.conn._conn.begin()
-        self.cursor = await self.conn._conn.cursor()
+        self.cursor = await self.conn._conn.cursor(aiomysql.DictCursor)
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
@@ -55,8 +55,9 @@ class MySqlDbOperator(_aio_db_context_manager):
         return affected
 
     async def select(self, sql, args=None):
-        await self.curor.execute(sql.replace('?', '%s'), args or ())
-        rs = await self.curor.fetchall()
+        await self.cursor.execute(sql.replace('?', '%s'), args or ())
+        rs = await self.cursor.fetchall()
+        return rs
 
 
 class MySQLDataBase(object):
@@ -291,8 +292,6 @@ class Query(object):
 
     def execute(self):
         pass
-
-
 
         # db.query().select(User).where(User.name == 'jeremaihloo').one()
         # db.query().select(User).where(User.name == 'jeremaihloo').all()

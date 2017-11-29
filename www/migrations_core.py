@@ -93,9 +93,9 @@ class MigrationError(Exception):
         self.message = message
 
 
-async def do_local_migrations():
+async def do_local_migrations(db):
     logging.info('start do local migrations')
-    r = await orm.select('show tables', None)
+    r = await db.select('show tables', None)
     tables = map(lambda x: x['Tables_in_ncms'], r)
     if 'migrations' not in tables:
         mbuilder = MigrationBuilder(0, 'migrations')

@@ -157,9 +157,10 @@ async def response_factory(app, handler):
 
 
 async def init(loop):
-    await orm.create_pool(loop=loop, **configs.db)
-
-    await do_local_migrations()
+    database = orm.MySQLDataBase()
+    await database.connect(loop, **options.db.to_dict())
+    async with await database.atomic() as db:
+        await do_local_migrations(db)
 
     app = web.Application(loop=loop, middlewares=[
         logger_factory, auth_factory, response_factory
@@ -188,8 +189,14 @@ async def init(loop):
 class NCMS(object):
     def __init__(self, options=dict()):
         self.options = options
+        self.running = False
 
     def run(self, debug=False):
+        if self.running:
+            return
+
+        self.running = True
+
         self.options.update({
             'debug': debug
         })
