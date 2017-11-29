@@ -4,6 +4,7 @@ from collections import OrderedDict
 
 import app_cores
 from app_cores import AppManager
+from utils import singleton
 
 __author__ = 'Michael Liao'
 
@@ -23,7 +24,7 @@ from datetime import datetime
 from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
 
-from config import configs
+from configs import options
 
 import orm
 from coroweb import add_routes, add_static
@@ -183,6 +184,21 @@ async def init(loop):
     return srv
 
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(init(loop))
-loop.run_forever()
+@singleton
+class NCMS(object):
+    def __init__(self, options=dict()):
+        self.options = options
+
+    def run(self, debug=False):
+        self.options.update({
+            'debug': debug
+        })
+
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(init(loop))
+        loop.run_forever()
+
+
+if __name__ == '__main__':
+    n = NCMS()
+    n.run(debug=True)

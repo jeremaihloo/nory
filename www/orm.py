@@ -1,70 +1,90 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from functools import wraps
 
 __author__ = 'Michael Liao'
 
-import asyncio, logging
+import logging
 
 import aiomysql
 
 
-def log(sql, args=()):
-    logging.info('SQL: %s' % sql)
+class _aio_callable_context_manager(object):
+    __slots__ = ()
+
+    def __call__(self, fn):
+        @wraps(fn)
+        async def inner(*args, **kwargs):
+            async with self:
+                return fn(*args, **kwargs)
+
+        return inner
 
 
-async def create_pool(loop, **kw):
-    logging.info('create database connection pool...')
-    global __pool
-    __pool = await aiomysql.create_pool(
-        host=kw.get('host', 'localhost'),
-        port=kw.get('port', 3306),
-        user=kw['user'],
-        password=kw['password'],
-        db=kw['db'],
-        charset=kw.get('charset', 'utf8'),
-        autocommit=kw.get('autocommit', True),
-        maxsize=kw.get('maxsize', 10),
-        minsize=kw.get('minsize', 1),
-        loop=loop
-    )
+class _aio_db_context_manager(_aio_callable_context_manager):
+    __slots__ = ('conn')
+
+    def __init__(self, conn):
+        self.conn = conn
+        self.cursor = None
+
+    async def __aenter__(self):
+        await self.conn.__aenter__()
+        await self.conn._conn.begin()
+        self.cursor = await self.conn._conn.cursor()
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.cursor.close()
+        await self.conn._conn.commit()
+        await self.conn.__aexit__(exc_type, exc_val, exc_tb)
 
 
-async def select(sql, args, size=None):
-    log(sql, args)
-    global __pool
-    with (await __pool) as conn:
-        cur = await conn.cursor(aiomysql.DictCursor)
-        await cur.execute(sql.replace('?', '%s'), args or ())
-        if size:
-            rs = await cur.fetchmany(size)
-        else:
-            rs = await cur.fetchall()
-        await cur.close()
-        logging.info('rows returned: %s' % len(rs))
-        return rs
+class DataBase(object):
+    pass
 
 
-async def new_conn():
-    return await __pool
+class MySqlDbOperator(_aio_db_context_manager):
+    def __init__(self, conn):
+        super(MySqlDbOperator, self).__init__(conn)
 
-
-async def execute(sql, args=(), autocommit=True):
-    log(sql)
-    with (await __pool) as conn:
-        if not autocommit:
-            await conn.begin()
-        try:
-            cur = await conn.cursor()
-            await cur.execute(sql.replace('?', '%s'), args)
-            affected = cur.rowcount
-            await cur.close()
-            if not autocommit:
-                await conn.commit()
-        except BaseException as e:
-            if not autocommit:
-                await conn.rollback()
-            raise
+    async def execute(self, sql, args=None):
+        await self.cursor.execute(sql.replace('?', '%s'), args)
+        affected = self.cursor.rowcount
+        await self.cursor.close()
         return affected
+
+    async def select(self, sql, args=None):
+        await self.curor.execute(sql.replace('?', '%s'), args or ())
+        rs = await self.curor.fetchall()
+
+
+class MySQLDataBase(object):
+    def __init__(self, **kw):
+        self.__pool = None
+
+    async def _connect(self, loop, **kw):
+        self.__pool = await aiomysql.create_pool(
+            host=kw.get('host', 'localhost'),
+            port=kw.get('port', 3306),
+            user=kw['user'],
+            password=kw['password'],
+            db=kw['db'],
+            charset=kw.get('charset', 'utf8'),
+            # autocommit=kw.get('autocommit', True),
+            maxsize=kw.get('maxsize', 10),
+            minsize=kw.get('minsize', 1),
+            loop=loop
+        )
+
+    async def connect(self, loop, **kw):
+        await self._connect(loop, **kw)
+
+    async def atomic(self) -> MySqlDbOperator:
+        return MySqlDbOperator(self.__pool.acquire())
+
+
+db = MySQLDataBase()
 
 
 def create_args_string(num):
@@ -80,6 +100,7 @@ class Field(object):
         self.column_type = column_type
         self.primary_key = primary_key
         self.default = default
+        self.unique = unique
 
     def __str__(self):
         return '<%s, %s:%s>' % (self.__class__.__name__, self.column_type, self.name)
@@ -112,7 +133,7 @@ class TextField(Field):
 
 class ModelMetaclass(type):
     def __getattr__(self, item):
-        return Query(field_name=item, model=self)
+        return QueryImpl(left='{}.{}'.format(getattr(self, '__table__'), item))
 
     def __new__(cls, name, bases, attrs):
         if name == 'Model':
@@ -178,133 +199,100 @@ class Model(dict, metaclass=ModelMetaclass):
                 setattr(self, key, value)
         return value
 
-    @classmethod
-    async def findAll(cls, where=None, args=None, **kw):
-        ' find objects by where clause. '
-        sql = [cls.__select__]
-        if where:
-            sql.append('where')
-            sql.append(where)
-        if args is None:
-            args = []
-        orderBy = kw.get('orderBy', None)
-        if orderBy:
-            sql.append('order by')
-            sql.append(orderBy)
-        limit = kw.get('limit', None)
-        if limit is not None:
-            sql.append('limit')
-            if isinstance(limit, int):
-                sql.append('?')
-                args.append(limit)
-            elif isinstance(limit, tuple) and len(limit) == 2:
-                sql.append('?, ?')
-                args.extend(limit)
-            else:
-                raise ValueError('Invalid limit value: %s' % str(limit))
-        rs = await select(' '.join(sql), args)
-        return [cls(**r) for r in rs]
 
-    @classmethod
-    async def findNumber(cls, selectField, where=None, args=None):
-        ' find number by select and where. '
-        sql = ['select %s _num_ from `%s`' % (selectField, cls.__table__)]
-        if where:
-            sql.append('where')
-            sql.append(where)
-        rs = await select(' '.join(sql), args, 1)
-        if len(rs) == 0:
-            return None
-        return rs[0]['_num_']
+class QueryImpl(object):
+    def __init__(self, left=None, op=None, right=None):
+        self.left = left
+        self.op = op
+        self.right = right
 
-    @classmethod
-    async def find(cls, pk):
-        ' find object by primary key. '
-        rs = await select('%s where `%s`=?' % (cls.__select__, cls.__primary_key__), [pk], 1)
-        if len(rs) == 0:
-            return None
-        return cls(**rs[0])
+    def __str__(self):
+        strs = []
+        if isinstance(self.left, QueryImpl):
+            strs.append('(')
 
-    async def save(self):
-        args = list(map(self.getValueOrDefault, self.__fields__))
-        args.append(self.getValueOrDefault(self.__primary_key__))
-        rows = await execute(self.__insert__, args)
-        if rows != 1:
-            logging.warn('failed to insert record: affected rows: %s' % rows)
+        if self.left:
+            strs.append(str(self.left))
+        if self.op:
+            strs.append(self.op)
+        if self.right:
+            strs.append(str(self.right))
 
-    async def update(self):
-        args = list(map(self.getValue, self.__fields__))
-        args.append(self.getValue(self.__primary_key__))
-        rows = await execute(self.__update__, args)
-        if rows != 1:
-            logging.warn('failed to update by primary key: affected rows: %s' % rows)
+        if isinstance(self.left, QueryImpl):
+            strs.append(')')
 
-    async def remove(self):
-        args = [self.getValue(self.__primary_key__)]
-        rows = await execute(self.__delete__, args)
-        if rows != 1:
-            logging.warn('failed to remove by primary key: affected rows: %s' % rows)
+        return ' '.join(strs)
 
-    @classmethod
-    def query(cls):
-        return Query(model=cls)
+    def __eq__(self, other):
+        return QueryImpl(self, '=', other)
+
+    def __le__(self, other):
+        return QueryImpl(self, '<=', other)
+
+    def __ge__(self, other):
+        return QueryImpl(self, '>=', other)
+
+    def __lt__(self, other):
+        return QueryImpl(self, '<', other)
+
+    def __gt__(self, other):
+        return QueryImpl(self, '>', other)
+
+    def __and__(self, other):
+        return QueryImpl(left=self, op='and', right=other)
+
+    def __or__(self, other):
+        return QueryImpl(left=self, op='or', right=other)
+
+
+class SelectQuery(object):
+    def __init__(self, model):
+        self.model = model
+
+    def __str__(self):
+        return "SELECT * FROM {}".format(getattr(self.model, '__table__'))
 
 
 class Query(object):
-    def __init__(self, field_name=None, model=None, op='SELECT',
-                 right=None, fields=[], where=[], orderby=[], limit=None, offset=0):
-        self.field_name = field_name
-        self.model = model
-        self.op = op
-        self.right = None
-        self.fields = fields
-        self._where = where
-        self._orderby = orderby
-        self._limit = limit
-        self._offset = offset
+    def __init__(self, db_op=None, model=None):
+        self.db_op = db_op
+        self.query_method = None
+        self._where = None
+        self._orderby = []
+        self._limit = []
+        self._offset = []
 
-    def __eq__(self, other):
-        return "{}.{} = {}".format(self.model.__table__, self.field_name, other)
-
-    def sql_select(self):
-        return '{op} {fields} FROM {table} {where} {orderby} {limit} {offset}' \
-            .format(op=self.op,
-                    fields=', '.join(self.fields) if len(self.fields) > 0 else '*',
-                    table=self.model.__table__,
-                    where=''.join(('WHERE ', ' AND '.join(self._where))) if len(self._where) > 0 else '',
-                    orderby=''.join(('ORDER BY ', ' AND '.join(self._orderby))) if len(self._orderby) > 0 else '',
-                    limit=''.join(('LIMIT ', str(self._limit))) if self._limit else '',
-                    offset=''.join(('OFFSET ', str(self._offset))) if self._offset else '')
-
-    def where(self, query):
-        self._where.append(query)
+    def select(self, model):
+        self.query_method = SelectQuery(model)
         return self
 
-    async def select(self, model=None):
-        self.op = 'SELECT'
-        if model is not None:
-            self.model = model
-        sql = self.sql_select()
-        return await select(sql, args=())
+    def where(self, query_impl):
+        print(query_impl)
+        self._where = self._where and query_impl if self._where else query_impl
+        return self
 
-    def update(self, dic_args: dict, obj=None):
-        self.op = 'UPDATE'
-        raise NotImplementedError()
+    def _str_select(self):
+        return '{select} WHERE {where} ORDER BY {orderby} LIMIT {limit} OFFSET {offset}'.format(
+            select=self.query_method,
+            where=self._where,
+            orderby=self._orderby,
+            limit=self._limit,
+            offset=self._offset)
 
-    def insert(self):
-        raise NotImplementedError()
+    def __str__(self):
+        if isinstance(self.query_method, SelectQuery):
+            return self._str_select()
 
-    def remove(self):
-        raise NotImplementedError()
+    def one(self):
+        pass
 
-    async def one(self):
-        self._limit = 1
-        self._offset = 0
-        r = await self.select()
-        return r[0] if len(r) > 0 else None
+    def all(self):
+        return self.__str__()
 
-    async def all(self):
-        return await self.select()
+    def execute(self):
+        pass
 
-    async def exist(self):
-        return len(await self.select())
+
+
+        # db.query().select(User).where(User.name == 'jeremaihloo').one()
+        # db.query().select(User).where(User.name == 'jeremaihloo').all()

@@ -10,7 +10,7 @@ __home_page__ = 'https://github.com/jeremaihloo/ncms-auth-jwt'
 
 import time
 from apis import APIValueError
-from config import configs
+from configs import configs
 from coroweb import post
 from models import User
 import logging

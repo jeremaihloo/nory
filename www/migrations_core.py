@@ -4,7 +4,7 @@ import abc
 import orm
 import utils
 from models import next_id
-from orm import Model, execute, IntegerField, StringField, FloatField
+from orm import Model, IntegerField, StringField, FloatField
 import importlib
 import os
 

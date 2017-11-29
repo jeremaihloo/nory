@@ -50,16 +50,14 @@ ul, o, li {
 }
 
 .tags {
-    display: flex;
-    flex-direction:row;
-    justify-items: center;
-    align-items: center;
+
 }
 
 .tag-item {
     margin: 0.5em;
     padding: 0.5em;
     background-color: deepskyblue;
+    border-radius: 5px;
 }
 
 .tag-item a {

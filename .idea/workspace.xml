@@ -2,38 +2,37 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a4c9e403-683e-4b65-9c39-cdb8fed29e70" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/apps/core/handlers.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/apps/core/static/css/ncms.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/apps/core/templates/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/apps/core/templates/profile.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/apps/core/templates/tag-item.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/apps/demo/static/demo.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/migrations/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/migrations/migration_init.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/tests/test_blog.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/www/apps/core/templates/list.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/www/do_migrations/migration_init.py" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/www/do_migrations/__init__.py" afterPath="$PROJECT_DIR$/www/apps/admin/handlers.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/www/migrations.py" afterPath="$PROJECT_DIR$/www/migrations_core.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/apps/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/configs.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/ncms.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/ncms_data/config.dev.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/tests/test_configs.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/tests/test_py.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.vscode/launch.json" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/fabfile.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/get-docker.sh" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/www/app.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/www/config.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/www/config_default.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/www/config_override.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/www/markdown2.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/www/testlog.py" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/app.py" afterPath="$PROJECT_DIR$/www/app.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/app_cores.py" afterPath="$PROJECT_DIR$/www/app_cores.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/apps/admin/info.py" afterPath="$PROJECT_DIR$/www/apps/admin/info.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/apps/core/info.py" afterPath="$PROJECT_DIR$/www/apps/core/info.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/apps/core/templates/layout.html" afterPath="$PROJECT_DIR$/www/apps/core/templates/layout.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/apps/auth_cookie/auth_cookie.py" afterPath="$PROJECT_DIR$/www/apps/auth_cookie/auth_cookie.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/apps/core/handlers.py" afterPath="$PROJECT_DIR$/www/apps/core/handlers.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/apps/core/static/css/ncms.css" afterPath="$PROJECT_DIR$/www/apps/core/static/css/ncms.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/apps/core/templates/tag-item.html" afterPath="$PROJECT_DIR$/www/apps/core/templates/tag-item.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/apps/core/templates/tags.html" afterPath="$PROJECT_DIR$/www/apps/core/templates/tags.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/apps/demo/templates/index.html" afterPath="$PROJECT_DIR$/www/apps/demo/templates/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/apps/page_statistics/info.py" afterPath="$PROJECT_DIR$/www/apps/page_statistics/info.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/apps/rbacm/info.py" afterPath="$PROJECT_DIR$/www/apps/rbacm/info.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/apps/rbacm/rbacm.py" afterPath="$PROJECT_DIR$/www/apps/rbacm/rbacm.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/apps/routes_viewer/info.py" afterPath="$PROJECT_DIR$/www/apps/routes_viewer/info.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/apps/routes_viewer/routes_viewer.py" afterPath="$PROJECT_DIR$/www/apps/routes_viewer/routes_viewer.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/handlers.py" afterPath="$PROJECT_DIR$/www/handlers.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/migrations_core.py" afterPath="$PROJECT_DIR$/www/migrations_core.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/models.py" afterPath="$PROJECT_DIR$/www/models.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/orm.py" afterPath="$PROJECT_DIR$/www/orm.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/tests/.cache/v/cache/lastfailed" afterPath="$PROJECT_DIR$/www/tests/.cache/v/cache/lastfailed" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/tests/test_apis.py" afterPath="$PROJECT_DIR$/www/tests/test_apis.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/tests/test_blog.py" afterPath="$PROJECT_DIR$/www/tests/test_blog.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/tests/test_migration.py" afterPath="$PROJECT_DIR$/www/tests/test_migration.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/tests/test_orm.py" afterPath="$PROJECT_DIR$/www/tests/test_orm.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -45,7 +44,7 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_plugins_test_load_plugins.coverage" NAME="py.test for test_plugins.test_load_plugins Coverage Results" MODIFIED="1510551938037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_in_test_orm_py.coverage" NAME="py.test in test_orm.py Coverage Results" MODIFIED="1510756117686" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
-    <SUITE FILE_PATH="coverage/ncms$pymonitor.coverage" NAME="pymonitor Coverage Results" MODIFIED="1510822167623" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www" />
+    <SUITE FILE_PATH="coverage/ncms$pymonitor.coverage" NAME="pymonitor Coverage Results" MODIFIED="1511968416150" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www" />
     <SUITE FILE_PATH="coverage/ncms$Unittests_in_test_migration_py.coverage" NAME="Unittests in test_migration.py Coverage Results" MODIFIED="1507831459946" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_orm_test_fn.coverage" NAME="py.test for test_orm.test_fn Coverage Results" MODIFIED="1510080897969" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$testlog.coverage" NAME="testlog Coverage Results" MODIFIED="1508136025982" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www" />
@@ -53,15 +52,19 @@
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_apis_MyTestCase_test_create_content_type.coverage" NAME="py.test for test_apis.MyTestCase.test_create_content_type Coverage Results" MODIFIED="1507998815173" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_apis_test_create_field.coverage" NAME="py.test for test_apis.test_create_field Coverage Results" MODIFIED="1508126166108" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_apis_MyTestCase.coverage" NAME="py.test for test_apis.MyTestCase Coverage Results" MODIFIED="1507996958953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
+    <SUITE FILE_PATH="coverage/ncms$py_test_for_test_configs_MyTestCase_test_config_model_attr.coverage" NAME="py.test for test_configs.MyTestCase.test_config_model_attr Coverage Results" MODIFIED="1511937691548" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$Unittests_for_test_migration_MyTestCase_test_run.coverage" NAME="Unittests for test_migration.MyTestCase.test_run Coverage Results" MODIFIED="1507830496128" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_migration_test_do_migrations.coverage" NAME="py.test for test_migration.test_do_migrations Coverage Results" MODIFIED="1510770790965" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$test_migration.coverage" NAME="test_migration Coverage Results" MODIFIED="1510826823936" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$Unittests_for_test_migration_MyTestCase_test_something.coverage" NAME="Unittests for test_migration.MyTestCase.test_something Coverage Results" MODIFIED="1507830425357" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_singleton_test_singleton.coverage" NAME="py.test for test_singleton.test_singleton Coverage Results" MODIFIED="1508206496275" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_orm_test_attr.coverage" NAME="py.test for test_orm.test_attr Coverage Results" MODIFIED="1510038780215" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
+    <SUITE FILE_PATH="coverage/ncms$py_test_for_test_configs_MyTestCase_test_config_model.coverage" NAME="py.test for test_configs.MyTestCase.test_config_model Coverage Results" MODIFIED="1511927588281" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_in_test_migration_py.coverage" NAME="py.test in test_migration.py Coverage Results" MODIFIED="1510827826380" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_in_test_apis_py.coverage" NAME="py.test in test_apis.py Coverage Results" MODIFIED="1510825251374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_migration_MyTestCase_test_build.coverage" NAME="py.test for test_migration.MyTestCase.test_build Coverage Results" MODIFIED="1507861474506" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
+    <SUITE FILE_PATH="coverage/ncms$py_test_for_test_configs_MyTestCase.coverage" NAME="py.test for test_configs.MyTestCase Coverage Results" MODIFIED="1511933688311" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
+    <SUITE FILE_PATH="coverage/ncms$test_configs.coverage" NAME="test_configs Coverage Results" MODIFIED="1511946330639" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_utils_test_ncms_path.coverage" NAME="py.test for test_utils.test_ncms_path Coverage Results" MODIFIED="1508140176816" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_migration_MyTestCase_test_migration_str.coverage" NAME="py.test for test_migration.MyTestCase.test_migration_str Coverage Results" MODIFIED="1510770301064" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$migrations.coverage" NAME="migrations Coverage Results" MODIFIED="1507900531677" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www" />
@@ -70,95 +73,31 @@
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_orm_test_eq.coverage" NAME="py.test for test_orm.test_eq Coverage Results" MODIFIED="1510033643949" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_apis_test_blog.coverage" NAME="py.test for test_apis.test_blog Coverage Results" MODIFIED="1510823186107" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_apps_test_load_plugins.coverage" NAME="py.test for test_apps.test_load_plugins Coverage Results" MODIFIED="1510590392884" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
+    <SUITE FILE_PATH="coverage/ncms$py_test_for_test_configs_MyTestCase_test_something.coverage" NAME="py.test for test_configs.MyTestCase.test_something Coverage Results" MODIFIED="1511890514512" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_apis_test_create_content_type.coverage" NAME="py.test for test_apis.test_create_content_type Coverage Results" MODIFIED="1510301446580" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
+    <SUITE FILE_PATH="coverage/ncms$orm.coverage" NAME="orm Coverage Results" MODIFIED="1511948697802" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www" />
+    <SUITE FILE_PATH="coverage/ncms$test_py.coverage" NAME="test_py Coverage Results" MODIFIED="1511945877273" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_apis_test_create_content.coverage" NAME="py.test for test_apis.test_create_content Coverage Results" MODIFIED="1510301461763" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
+    <SUITE FILE_PATH="coverage/ncms$hot.coverage" NAME="hot Coverage Results" MODIFIED="1511950276039" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_migration_MyTestCase.coverage" NAME="py.test for test_migration.MyTestCase Coverage Results" MODIFIED="1510770380604" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
+    <SUITE FILE_PATH="coverage/ncms$py_test_for_test_orm_test_.coverage" NAME="py.test for test_orm.test_ Coverage Results" MODIFIED="1511946906395" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_apis_test_get_contents.coverage" NAME="py.test for test_apis.test_get_contents Coverage Results" MODIFIED="1510770115123" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_migration_MyTestCase_test_run.coverage" NAME="py.test for test_migration.MyTestCase.test_run Coverage Results" MODIFIED="1507832047699" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
+    <SUITE FILE_PATH="coverage/ncms$py_test_for_test_orm_test_query.coverage" NAME="py.test for test_orm.test_query Coverage Results" MODIFIED="1511948897199" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$Unittests_for_test_migration_MyTestCase.coverage" NAME="Unittests for test_migration.MyTestCase Coverage Results" MODIFIED="1507830538045" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
     <SUITE FILE_PATH="coverage/ncms$plugins.coverage" NAME="plugins Coverage Results" MODIFIED="1508135945882" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www" />
-    <SUITE FILE_PATH="coverage/ncms$py_test_for_test_blog_test_blog.coverage" NAME="py.test for test_blog.test_blog Coverage Results" MODIFIED="1510823276824" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
+    <SUITE FILE_PATH="coverage/ncms$py_test_for_test_blog_test_blog.coverage" NAME="py.test for test_blog.test_blog Coverage Results" MODIFIED="1510853694871" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
+    <SUITE FILE_PATH="coverage/ncms$py_test_for_test_orm_test_new_orm.coverage" NAME="py.test for test_orm.test_new_orm Coverage Results" MODIFIED="1511947623449" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
+    <SUITE FILE_PATH="coverage/ncms$ncms.coverage" NAME="ncms Coverage Results" MODIFIED="1511950882458" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www" />
     <SUITE FILE_PATH="coverage/ncms$py_test_for_test_apis_test_create_model.coverage" NAME="py.test for test_apis.test_create_model Coverage Results" MODIFIED="1508126170490" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/www/tests" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="handlers.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/www/handlers.py">
+      <file leaf-file-name="test_orm.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/www/tests/test_orm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="87" column="0" lean-forward="false" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="orm.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/www/orm.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="412">
-              <caret line="111" column="0" lean-forward="true" selection-start-line="111" selection-start-column="0" selection-end-line="111" selection-end-column="0" />
-              <folding>
-                <marker date="1510827822205" expanded="true" signature="4302:4327" ph="select `miss... missing_value" />
-                <marker date="1510827822205" expanded="true" signature="4413:4452" ph="insert into `missing_value`... " />
-                <marker date="1510827822205" expanded="true" signature="4596:4627" ph="update `miss... " />
-                <marker date="1510827822205" expanded="true" signature="4773:4802" ph="delete from " />
-                <marker date="1510827822205" expanded="true" signature="6807:6832" ph="select missi... " />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="migration_init.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/www/migrations/migration_init.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="212">
-              <caret line="23" column="19" lean-forward="true" selection-start-line="23" selection-start-column="19" selection-end-line="23" selection-end-column="19" />
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_migration.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/www/tests/test_migration.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="13" column="0" lean-forward="true" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_apis.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/www/tests/test_apis.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="12" selection-end-column="31" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/www/models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="444">
-              <caret line="108" column="41" lean-forward="true" selection-start-line="108" selection-start-column="41" selection-end-line="108" selection-end-column="41" />
-              <folding>
-                <element signature="e#118#135#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_blog.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/www/tests/test_blog.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="32" lean-forward="true" selection-start-line="9" selection-start-column="32" selection-end-line="9" selection-end-column="32" />
+            <state relative-caret-position="225">
+              <caret line="15" column="19" lean-forward="false" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -166,17 +105,58 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="migrations_core.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/www/migrations_core.py">
+      <file leaf-file-name="pymonitor.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/www/pymonitor.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="639">
-              <caret line="47" column="17" lean-forward="true" selection-start-line="47" selection-start-column="17" selection-end-line="47" selection-end-column="17" />
+            <state relative-caret-position="405">
+              <caret line="27" column="14" lean-forward="true" selection-start-line="27" selection-start-column="14" selection-end-line="27" selection-end-column="14" />
               <folding>
-                <element signature="e#0#14#0" expanded="true" />
-                <marker date="1510827579188" expanded="true" signature="2329:2379" ph="CREATE TABLE... missing_value" />
-                <marker date="1510827579188" expanded="true" signature="2539:2560" ph="DROP TABLE I... " />
-                <marker date="1510827579188" expanded="true" signature="2539:2567" ph="DROP TABLE I... " />
+                <element signature="e#77#109#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="45">
+              <caret line="3" column="8" lean-forward="true" selection-start-line="3" selection-start-column="8" selection-end-line="3" selection-end-column="8" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/www/models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="645">
+              <caret line="43" column="0" lean-forward="false" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+              <folding>
+                <element signature="e#118#135#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ncms.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/www/ncms.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="375">
+              <caret line="29" column="23" lean-forward="false" selection-start-line="29" selection-start-column="23" selection-end-line="29" selection-end-column="23" />
+              <folding>
+                <element signature="e#47#82#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="orm.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/www/orm.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1170">
+              <caret line="78" column="0" lean-forward="false" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -186,9 +166,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Unit Test" />
         <option value="CSS File" />
         <option value="HTML File" />
+        <option value="Python Unit Test" />
         <option value="Python Script" />
       </list>
     </option>
@@ -216,9 +196,16 @@
       <find>print</find>
       <find>r</find>
       <find>drop</find>
+      <find>__aendter</find>
+      <find>begin</find>
+      <find>__eq</find>
+      <find>'</find>
+      <find>sfafafasf</find>
+      <find>start_process</find>
     </findStrings>
     <replaceStrings>
       <replace>await</replace>
+      <replace>&quot;</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -227,16 +214,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/www/tests/test_plugins.py" />
-        <option value="$PROJECT_DIR$/www/coroweb.py" />
-        <option value="$PROJECT_DIR$/www/apps/auth_cookie/auth_cookie.py" />
-        <option value="$PROJECT_DIR$/www/apps/auth_jwt/auth_jwt.py" />
-        <option value="$PROJECT_DIR$/www/apps/app_manager/info.py" />
-        <option value="$PROJECT_DIR$/www/apps/app_manager/app_manager.py" />
-        <option value="$PROJECT_DIR$/www/apps/app_store_client/info.py" />
-        <option value="$PROJECT_DIR$/www/apps/app_store_server/info.py" />
-        <option value="$PROJECT_DIR$/www/apps/auth_cookie/info.py" />
-        <option value="$PROJECT_DIR$/www/apps/auth_jwt/info.py" />
         <option value="$PROJECT_DIR$/www/apps/cache_redis/info.py" />
         <option value="$PROJECT_DIR$/www/apps/demo/info.py" />
         <option value="$PROJECT_DIR$/www/apps/displays/info.py" />
@@ -246,9 +223,7 @@
         <option value="$PROJECT_DIR$/www/apps/demo/handlers.py" />
         <option value="$PROJECT_DIR$/www/tests/test_apps.py" />
         <option value="$PROJECT_DIR$/www/apps/core/filters.py" />
-        <option value="$PROJECT_DIR$/www/apps/rbacm/rbacm.py" />
         <option value="$PROJECT_DIR$/www/apps/rbacm/info.py" />
-        <option value="$PROJECT_DIR$/www/app.py" />
         <option value="$PROJECT_DIR$/www/utils.py" />
         <option value="$PROJECT_DIR$/www/apps/demo/static/demo.css" />
         <option value="$PROJECT_DIR$/www/apps/demo/templates/index.html" />
@@ -260,24 +235,36 @@
         <option value="$PROJECT_DIR$/www/app_cores.py" />
         <option value="$PROJECT_DIR$/www/handlers.py" />
         <option value="$PROJECT_DIR$/www/apps/core/info.py" />
-        <option value="$PROJECT_DIR$/www/models.py" />
         <option value="$PROJECT_DIR$/www/apps/core/templates/index.html" />
         <option value="$PROJECT_DIR$/www/tests/test_ncms.py" />
         <option value="$PROJECT_DIR$/www/apps/core/static/css/common.css" />
         <option value="$PROJECT_DIR$/www/apps/core/templates/layout.html" />
         <option value="$PROJECT_DIR$/www/apps/core/templates/profile.html" />
-        <option value="$PROJECT_DIR$/www/apps/core/templates/tag-item.html" />
-        <option value="$PROJECT_DIR$/www/apps/core/handlers.py" />
-        <option value="$PROJECT_DIR$/www/apps/core/templates/tags.html" />
-        <option value="$PROJECT_DIR$/www/apps/core/static/css/ncms.css" />
         <option value="$PROJECT_DIR$/www/migrations.py" />
         <option value="$PROJECT_DIR$/www/tests/test_apis.py" />
-        <option value="$PROJECT_DIR$/www/tests/test_blog.py" />
         <option value="$PROJECT_DIR$/www/do_migrations/migration_init.py" />
         <option value="$PROJECT_DIR$/www/migrations/migration_init.py" />
         <option value="$PROJECT_DIR$/www/tests/test_migration.py" />
+        <option value="$PROJECT_DIR$/www/apps/__init__.py" />
+        <option value="$PROJECT_DIR$/www/apps/rbacm/rbacm.py" />
+        <option value="$PROJECT_DIR$/www/apps/core/static/css/ncms.css" />
+        <option value="$PROJECT_DIR$/www/apps/core/templates/tags.html" />
+        <option value="$PROJECT_DIR$/www/apps/core/handlers.py" />
+        <option value="$PROJECT_DIR$/www/apps/core/templates/tag-item.html" />
+        <option value="$PROJECT_DIR$/www/tests/test_blog.py" />
         <option value="$PROJECT_DIR$/www/migrations_core.py" />
+        <option value="$PROJECT_DIR$/www/app.py" />
+        <option value="$PROJECT_DIR$/www/config.dev.json" />
+        <option value="$PROJECT_DIR$/www/tests/test_py.py" />
+        <option value="$PROJECT_DIR$/www/ncms_data/config.dev.json" />
+        <option value="$PROJECT_DIR$/www/tests/test_configs.py" />
+        <option value="$PROJECT_DIR$/www/configs.py" />
+        <option value="$PROJECT_DIR$/www/tests/test_orm.py" />
         <option value="$PROJECT_DIR$/www/orm.py" />
+        <option value="$PROJECT_DIR$/www/models.py" />
+        <option value="$PROJECT_DIR$/www/hot.py" />
+        <option value="$PROJECT_DIR$/www/ncms.py" />
+        <option value="$PROJECT_DIR$/www/pymonitor.py" />
       </list>
     </option>
   </component>
@@ -313,7 +300,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -328,25 +314,23 @@
             </path>
             <path>
               <item name="ncms" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ncms" type="462c0819:PsiDirectoryNode" />
-              <item name="www" type="462c0819:PsiDirectoryNode" />
-              <item name="migrations" type="462c0819:PsiDirectoryNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
             <path>
               <item name="ncms" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ncms" type="462c0819:PsiDirectoryNode" />
-              <item name="www" type="462c0819:PsiDirectoryNode" />
-              <item name="tests" type="462c0819:PsiDirectoryNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; Python 3.5.1 virtualenv at ~/ncms &gt;" type="70bed36:NamedLibraryElementNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
       <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Confirmation" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
@@ -354,11 +338,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/www/ncms_data" />
       <recent name="$PROJECT_DIR$/www/apps/displays" />
       <recent name="$PROJECT_DIR$/www/installed_plugins/core" />
       <recent name="$PROJECT_DIR$/www/installed_plugins/sms" />
       <recent name="$PROJECT_DIR$/www/installed_plugins/routes_viewer" />
-      <recent name="$PROJECT_DIR$/www/installed_plugins/rbacm" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -373,103 +357,51 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.py.test in test_migration.py">
-    <configuration name="py.test for test_apis.test_blog" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/www/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="ncms" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_apis.test_blog&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-    </configuration>
-    <configuration name="py.test for test_blog.test_blog" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/www/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="ncms" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_blog.test_blog&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-    </configuration>
-    <configuration name="py.test in test_apis.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/www/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="ncms" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/www/tests/test_apis.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
-    </configuration>
-    <configuration name="py.test in test_migration.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/www/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="ncms" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/www/tests/test_migration.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
-    </configuration>
-    <configuration name="test_migration" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python.pymonitor">
+    <configuration name="ncms" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/www/tests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/www" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="ncms" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/www/tests/test_migration.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/www/ncms.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python tests.py.test for test_apis.test_blog" />
-      <item index="1" class="java.lang.String" itemvalue="Python tests.py.test for test_blog.test_blog" />
-      <item index="2" class="java.lang.String" itemvalue="Python tests.py.test in test_apis.py" />
-      <item index="3" class="java.lang.String" itemvalue="Python tests.py.test in test_migration.py" />
-      <item index="4" class="java.lang.String" itemvalue="Python.test_migration" />
+    <configuration name="pymonitor" type="PythonConfigurationType" factoryName="Python" singleton="true" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/ncms/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/www" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="ncms" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/www/pymonitor.py" />
+      <option name="PARAMETERS" value="app.py" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <list size="2">
+      <item index="0" class="java.lang.String" itemvalue="Python.pymonitor" />
+      <item index="1" class="java.lang.String" itemvalue="Python.ncms" />
     </list>
     <recent_temporary>
-      <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python tests.py.test in test_migration.py" />
-        <item index="1" class="java.lang.String" itemvalue="Python.test_migration" />
-        <item index="2" class="java.lang.String" itemvalue="Python tests.py.test in test_apis.py" />
-        <item index="3" class="java.lang.String" itemvalue="Python tests.py.test for test_blog.test_blog" />
-        <item index="4" class="java.lang.String" itemvalue="Python tests.py.test for test_apis.test_blog" />
+      <list size="2">
+        <item index="0" class="java.lang.String" itemvalue="Python.pymonitor" />
+        <item index="1" class="java.lang.String" itemvalue="Python.ncms" />
       </list>
     </recent_temporary>
   </component>
@@ -585,39 +517,46 @@
       <option name="project" value="LOCAL" />
       <updated>1510561354281</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Update and Fix migration, Add core blog template files and other empty files">
+      <created>1510827960523</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1510827960523</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="py_test_in_test_migration_py - 2017.11.16 at 18h 08m 59s.xml">
-      <configuration name="py.test in test_migration.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_orm_test_ - 2017.11.29 at 17h 15m 07s.xml">
+      <configuration name="py.test for test_orm.test_" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_migration_py - 2017.11.16 at 18h 11m 00s.xml">
-      <configuration name="py.test in test_migration.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_orm_test_new_orm - 2017.11.29 at 17h 15m 28s.xml">
+      <configuration name="py.test for test_orm.test_new_orm" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_migration_py - 2017.11.16 at 18h 15m 04s.xml">
-      <configuration name="py.test in test_migration.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_orm_test_new_orm - 2017.11.29 at 17h 27m 04s.xml">
+      <configuration name="py.test for test_orm.test_new_orm" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_migration_py - 2017.11.16 at 18h 16m 35s.xml">
-      <configuration name="py.test in test_migration.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_orm_test_query - 2017.11.29 at 17h 16m 23s.xml">
+      <configuration name="py.test for test_orm.test_query" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_migration_py - 2017.11.16 at 18h 17m 10s.xml">
-      <configuration name="py.test in test_migration.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_orm_test_query - 2017.11.29 at 17h 16m 41s.xml">
+      <configuration name="py.test for test_orm.test_query" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_migration_py - 2017.11.16 at 18h 18m 12s.xml">
-      <configuration name="py.test in test_migration.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_orm_test_query - 2017.11.29 at 17h 25m 37s.xml">
+      <configuration name="py.test for test_orm.test_query" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_migration_py - 2017.11.16 at 18h 19m 42s.xml">
-      <configuration name="py.test in test_migration.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_orm_test_query - 2017.11.29 at 17h 26m 10s.xml">
+      <configuration name="py.test for test_orm.test_query" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_migration_py - 2017.11.16 at 18h 20m 33s.xml">
-      <configuration name="py.test in test_migration.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_orm_test_query - 2017.11.29 at 17h 46m 33s.xml">
+      <configuration name="py.test for test_orm.test_query" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_migration_py - 2017.11.16 at 18h 22m 51s.xml">
-      <configuration name="py.test in test_migration.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_orm_test_query - 2017.11.29 at 17h 47m 20s.xml">
+      <configuration name="py.test for test_orm.test_query" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_migration_py - 2017.11.16 at 18h 23m 47s.xml">
-      <configuration name="py.test in test_migration.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_orm_test_query - 2017.11.29 at 17h 48m 18s.xml">
+      <configuration name="py.test for test_orm.test_query" configurationId="tests" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
@@ -625,23 +564,24 @@
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3261745" sideWeight="0.51666665" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22299169" sideWeight="0.5028612" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21458334" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23175965" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3261745" sideWeight="0.48333332" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39950064" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39889196" sideWeight="0.49713877" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32548475" sideWeight="0.4806867" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -666,190 +606,16 @@
     <MESSAGE value="Add info.py to apps" />
     <MESSAGE value="Add filters events" />
     <MESSAGE value="Update template search path" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update template search path" />
+    <MESSAGE value="Update and Fix migration, Add core blog template files and other empty files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update and Fix migration, Add core blog template files and other empty files" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="66" />
+      <option name="time" value="73" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/www/apps/index.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="11" lean-forward="true" selection-start-line="5" selection-start-column="11" selection-end-line="5" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/get-docker.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/config_default.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/config_override.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/favicon.ico">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/markdown2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/sms/info.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="29" lean-forward="false" selection-start-line="7" selection-start-column="29" selection-end-line="7" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/sms/sms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/rbacm/rbacm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="28" lean-forward="false" selection-start-line="1" selection-start-column="28" selection-end-line="1" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/rbacm/info.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="3" lean-forward="true" selection-start-line="15" selection-start-column="3" selection-end-line="15" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="25" column="26" lean-forward="true" selection-start-line="25" selection-start-column="26" selection-end-line="25" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/demo/static/demo.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="27" lean-forward="false" selection-start-line="1" selection-start-column="27" selection-end-line="1" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/demo/templates/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="7" lean-forward="true" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/core/filters.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="53" lean-forward="true" selection-start-line="19" selection-start-column="53" selection-end-line="19" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/demo/info.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="1" lean-forward="true" selection-start-line="11" selection-start-column="1" selection-end-line="11" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/page_statistics/info.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="20" lean-forward="false" selection-start-line="10" selection-start-column="20" selection-end-line="10" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/page_statistics/page_statistics.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="11" column="28" lean-forward="false" selection-start-line="11" selection-start-column="28" selection-end-line="11" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/app.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2460">
-          <caret line="167" column="25" lean-forward="false" selection-start-line="167" selection-start-column="25" selection-end-line="167" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/app_cores.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1440">
-          <caret line="103" column="60" lean-forward="false" selection-start-line="103" selection-start-column="60" selection-end-line="103" selection-end-column="60" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/admin/handlers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/routes_viewer/info.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="18" lean-forward="false" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/coroweb.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/routes_viewer/routes_viewer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="18" column="19" lean-forward="false" selection-start-line="18" selection-start-column="19" selection-end-line="18" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/www/apps/admin/info.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -872,13 +638,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/www/tests/test_ncms.py" />
-    <entry file="file://$PROJECT_DIR$/www/tests/test_orm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="12" lean-forward="true" selection-start-line="21" selection-start-column="12" selection-end-line="21" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/www/apps/core/static/css/common.css" />
     <entry file="file://$USER_HOME$/ncms/lib/python3.5/site-packages/aiomysql/connection.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -895,59 +654,10 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/www/apps/core/templates/list.html" />
-    <entry file="file://$PROJECT_DIR$/www/apps/core/templates/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/core/templates/layout.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="13" column="17" lean-forward="true" selection-start-line="13" selection-start-column="17" selection-end-line="13" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/core/static/css/ncms.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="795">
-          <caret line="53" column="23" lean-forward="false" selection-start-line="53" selection-start-column="23" selection-end-line="53" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/core/templates/tags.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="11" lean-forward="true" selection-start-line="9" selection-start-column="11" selection-end-line="9" selection-end-column="11" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/core/templates/tag-item.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="16" lean-forward="false" selection-start-line="4" selection-start-column="11" selection-end-line="4" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/www/apps/core/templates/profile.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
           <caret line="4" column="16" lean-forward="false" selection-start-line="4" selection-start-column="11" selection-end-line="4" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/apps/core/handlers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="16" column="50" lean-forward="true" selection-start-line="16" selection-start-column="50" selection-end-line="16" selection-end-column="50" />
-          <folding>
-            <element signature="e#0#47#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -955,23 +665,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
           <caret line="10" column="30" lean-forward="false" selection-start-line="10" selection-start-column="30" selection-end-line="10" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/pymonitor.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="327">
-          <caret line="55" column="42" lean-forward="true" selection-start-line="55" selection-start-column="42" selection-end-line="55" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/handlers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="87" column="0" lean-forward="false" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -979,74 +672,253 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
           <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="12" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fabfile.py" />
+    <entry file="file://$PROJECT_DIR$/get-docker.sh" />
+    <entry file="file://$PROJECT_DIR$/www/apps/core/templates/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/tests/test_migration.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="4" lean-forward="true" selection-start-line="12" selection-start-column="4" selection-end-line="12" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/migrations/migration_init.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="12" column="17" lean-forward="true" selection-start-line="12" selection-start-column="17" selection-end-line="12" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/apps/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/apps/rbacm/rbacm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="347">
+          <caret line="136" column="46" lean-forward="true" selection-start-line="136" selection-start-column="46" selection-end-line="136" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/apps/core/static/css/ncms.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="122">
+          <caret line="52" column="0" lean-forward="false" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/apps/core/templates/tag-item.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="86" lean-forward="false" selection-start-line="5" selection-start-column="86" selection-end-line="5" selection-end-column="86" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/apps/core/templates/tags.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="36" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/www/tests/test_blog.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="17" column="35" lean-forward="false" selection-start-line="17" selection-start-column="35" selection-end-line="17" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/ncms/lib/python3.5/site-packages/aiomysql/pool.py">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
-          <caret line="9" column="32" lean-forward="true" selection-start-line="9" selection-start-column="32" selection-end-line="9" selection-end-column="32" />
+          <caret line="15" column="26" lean-forward="false" selection-start-line="15" selection-start-column="26" selection-end-line="15" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/ncms/lib/python3.5/site-packages/aiomysql/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-191">
+          <caret line="115" column="8" lean-forward="false" selection-start-line="115" selection-start-column="8" selection-end-line="115" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/apps/core/handlers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="28" column="18" lean-forward="false" selection-start-line="28" selection-start-column="18" selection-end-line="28" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/site-packages/django/db/backends/sqlite3/base.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="318" column="8" lean-forward="false" selection-start-line="318" selection-start-column="8" selection-end-line="318" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/handlers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2655">
+          <caret line="177" column="4" lean-forward="false" selection-start-line="177" selection-start-column="4" selection-end-line="177" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/apps/core/templates/layout.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="33" column="7" lean-forward="false" selection-start-line="33" selection-start-column="7" selection-end-line="33" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/config_override.py" />
+    <entry file="file://$PROJECT_DIR$/www/config_default.py" />
+    <entry file="file://$PROJECT_DIR$/www/app_cores.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="19" column="37" lean-forward="false" selection-start-line="19" selection-start-column="37" selection-end-line="19" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/apis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="23" column="10" lean-forward="false" selection-start-line="23" selection-start-column="10" selection-end-line="23" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/testlog.py" />
+    <entry file="file://$PROJECT_DIR$/www/configs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-313">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2017.2/python_stubs/-1176594625/builtins.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="5442" column="8" lean-forward="false" selection-start-line="5442" selection-start-column="8" selection-end-line="5442" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/markdown2.py" />
+    <entry file="file://$PROJECT_DIR$/www/migrations_core.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="316">
+          <caret line="135" column="30" lean-forward="true" selection-start-line="135" selection-start-column="30" selection-end-line="135" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/tests/test_configs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="28" lean-forward="true" selection-start-line="10" selection-start-column="28" selection-end-line="10" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/ncms_data/config.dev.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="3" lean-forward="false" selection-start-line="11" selection-start-column="3" selection-end-line="11" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/configs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="0" lean-forward="true" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/tests/test_py.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="24" column="11" lean-forward="true" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/orm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1170">
+          <caret line="78" column="0" lean-forward="false" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/ncms/lib/python3.5/site-packages/click/core.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="177">
+          <caret line="721" column="0" lean-forward="false" selection-start-line="721" selection-start-column="0" selection-end-line="721" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/hot.py" />
+    <entry file="file://$PROJECT_DIR$/www/hot.py" />
+    <entry file="file://$PROJECT_DIR$/www/tests/test_orm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="19" lean-forward="false" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/www/migrations/migration_init.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
-          <caret line="23" column="19" lean-forward="true" selection-start-line="23" selection-start-column="19" selection-end-line="23" selection-end-column="19" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/tests/test_migration.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" column="0" lean-forward="true" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/www/migrations_core.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="639">
-          <caret line="47" column="17" lean-forward="true" selection-start-line="47" selection-start-column="17" selection-end-line="47" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-            <marker date="1510827579188" expanded="true" signature="2329:2379" ph="CREATE TABLE... missing_value" />
-            <marker date="1510827579188" expanded="true" signature="2539:2560" ph="DROP TABLE I... " />
-            <marker date="1510827579188" expanded="true" signature="2539:2567" ph="DROP TABLE I... " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/www/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="444">
-          <caret line="108" column="41" lean-forward="true" selection-start-line="108" selection-start-column="41" selection-end-line="108" selection-end-column="41" />
+        <state relative-caret-position="645">
+          <caret line="43" column="0" lean-forward="false" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
           <folding>
             <element signature="e#118#135#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/www/orm.py">
+    <entry file="file://$PROJECT_DIR$/www/ncms.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="412">
-          <caret line="111" column="0" lean-forward="true" selection-start-line="111" selection-start-column="0" selection-end-line="111" selection-end-column="0" />
+        <state relative-caret-position="375">
+          <caret line="29" column="23" lean-forward="false" selection-start-line="29" selection-start-column="23" selection-end-line="29" selection-end-column="23" />
           <folding>
-            <marker date="1510827822205" expanded="true" signature="4302:4327" ph="select `miss... missing_value" />
-            <marker date="1510827822205" expanded="true" signature="4413:4452" ph="insert into `missing_value`... " />
-            <marker date="1510827822205" expanded="true" signature="4596:4627" ph="update `miss... " />
-            <marker date="1510827822205" expanded="true" signature="4773:4802" ph="delete from " />
-            <marker date="1510827822205" expanded="true" signature="6807:6832" ph="select missi... " />
+            <element signature="e#47#82#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/subprocess.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="222">
+          <caret line="839" column="31" lean-forward="false" selection-start-line="839" selection-start-column="31" selection-end-line="839" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/www/pymonitor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="27" column="14" lean-forward="true" selection-start-line="27" selection-start-column="14" selection-end-line="27" selection-end-column="14" />
+          <folding>
+            <element signature="e#77#109#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="8" lean-forward="true" selection-start-line="3" selection-start-column="8" selection-end-line="3" selection-end-column="8" />
+          <folding />
         </state>
       </provider>
     </entry>

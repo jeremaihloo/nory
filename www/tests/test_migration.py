@@ -2,7 +2,7 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG)
 import orm
-from config import configs
+from configs import configs
 from migrations_core import do_local_migrations
 import pytest
 

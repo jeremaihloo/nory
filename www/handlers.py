@@ -12,7 +12,7 @@ from coroweb import get, post
 from apis import Page, APIValueError, APIError
 
 from models import User, next_id, ContentField, ContentModel, ContentType, ContentItem, ContentModelField, Content
-from config import configs
+from configs import configs
 
 
 def get_page_index(page_str):

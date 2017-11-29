@@ -1,6 +1,8 @@
 import app_cores
 from app_cores import app_fn
 import time
+
+from migrations_core import Migration, do_migrations, undo_migrations
 from models import next_id
 from orm import Model, StringField, FloatField
 from coroweb import post
@@ -112,9 +114,24 @@ async def api_create_user_role_mapping(user_id, menu):
     }
 
 
+class MigrationsRbacm(Migration):
+    def __init__(self):
+        self.version = 2
+        self.name = 'rbacm'
+        self.models = [Role, Permission, RolePemissionMappings, UserRoleMappings, Menu, UserMenuMappings]
+
+        super(MigrationsRbacm, self).__init__(version=self.version, name=self.name)
+
+    def do(self):
+        self.builder.add_tables(self.models)
+
+    def undo(self):
+        self.builder.drop_tables(self.models)
+
+
 async def on_install():
-    pass
+    await do_migrations([MigrationsRbacm()])
 
 
 async def on_uninstall():
-    pass
+    await undo_migrations([MigrationsRbacm()])
