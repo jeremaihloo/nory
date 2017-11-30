@@ -21,6 +21,7 @@ class User(Model):
     name = StringField(ddl='varchar(50)', unique=True)
     created_at = FloatField(default=time.time)
 
+    profile = OneField('user_profiles')
 
 class UserProfile(Model):
     __table__ = 'user_profiles'
@@ -47,8 +48,8 @@ class Settings(Model):
         settings = Settings.query().all()
 
 
-class Blog(Model):
-    __table__ = 'blog'
+class Article(Model):
+    __table__ = 'articles'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
     user = StringField(ddl='varchar(50)')
@@ -56,7 +57,7 @@ class Blog(Model):
 
 
 class PostRecord(Model):
-    __table__ = 'post_record'
+    __table__ = 'post_records'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
     content = TextField()

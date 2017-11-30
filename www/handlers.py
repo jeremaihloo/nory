@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from norm import database, Query
 from utils import hash_pwd
 
 __author__ = 'Michael Liao'
@@ -73,10 +74,16 @@ async def api_register_user(*, email, name, passwd):
                 name=name.strip(),
                 email=email,
                 passwd=hash_pwd(passwd))
-    await user.save()
+    async with await database.atomic() as db:
+        db.create(user)
 
     user.passwd = '******'
 
     return user
 
 
+async def api_login(*, name, passwd):
+    q = Query().select(User).where(User.name == name & User.passwd == passwd).one()
+    async with await database.atomic() as db:
+        user = db.select(q)
+    return 200 if user else 404

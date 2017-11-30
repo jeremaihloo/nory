@@ -13,7 +13,7 @@ class MigrationInit(Migration):
         self.builder.add_tables([
             models.UserProfile,
             models.User,
-            models.Blog,
+            models.Article,
             models.BlogTagMapping,
             models.PostRecord,
             models.Tag
@@ -23,7 +23,7 @@ class MigrationInit(Migration):
         self.builder.drop_tables([
             models.UserProfile,
             models.User,
-            models.Blog,
+            models.Article,
             models.BlogTagMapping,
             models.PostRecord,
             models.Tag

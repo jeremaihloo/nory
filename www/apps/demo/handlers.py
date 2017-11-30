@@ -6,5 +6,5 @@ from coroweb import get
 @get('/demo')
 async def get_demo():
     return {
-        '__template__': 'demo/templates/index.html'
+        '__template__': 'demo/templates/layout.html'
     }

@@ -14,7 +14,6 @@ class NormError(Exception):
 
 
 class _aio_callable_context_manager(object):
-    __slots__ = ()
 
     def __call__(self, fn):
         @wraps(fn)
@@ -42,6 +41,21 @@ class _aio_db_context_manager(_aio_callable_context_manager):
         await self.conn._conn.commit()
         await self.conn.__aexit__(exc_type, exc_val, exc_tb)
 
+    async def execute(self, sql, args=None):
+        pass
+
+    async def select(self, sql, args=None):
+        pass
+
+    async def create(self, data):
+        pass
+
+    async def update(self, data):
+        pass
+
+    async def remove(self, data):
+        pass
+
 
 class DataBase(object):
     pass
@@ -52,15 +66,39 @@ class MySqlDbOperator(_aio_db_context_manager):
         super(MySqlDbOperator, self).__init__(conn)
 
     async def execute(self, sql, args=None):
+        logging.debug('[execute sql] {} {}'.format(sql, args))
         await self.cursor.execute(sql.replace('?', '%s'), args)
         affected = self.cursor.rowcount
-        await self.cursor.close()
+        # await self.cursor.close()
         return affected
 
     async def select(self, sql, args=None):
+        logging.debug('[select sql] {} {}'.format(sql, args))
         await self.cursor.execute(sql.replace('?', '%s'), args or ())
         rs = await self.cursor.fetchall()
         return rs
+
+    async def create(self, data):
+        args = list(map(data.getValueOrDefault, data.__fields__))
+        args.append(data.getValueOrDefault(data.__primary_key__))
+
+        rows = await self.execute(data.__insert__, args)
+        if rows != 1:
+            logging.warning('failed to insert record: affected rows: %s' % rows)
+
+    async def update(self, data):
+        args = list(map(data.getValue, data.__fields__))
+        args.append(data.getValue(data.__primary_key__))
+
+        rows = await self.execute(data.__update__, args)
+        if rows != 1:
+            logging.warning('failed to update by primary key: affected rows: %s' % rows)
+
+    async def remove(self, data):
+        args = [data.getValue(data.__primary_key__)]
+        rows = await self.execute(data.__delete__, args)
+        if rows != 1:
+            logging.warning('failed to remove by primary key: affected rows: %s' % rows)
 
 
 class MySQLDataBase(object):
@@ -99,7 +137,7 @@ def create_args_string(num):
 
 
 class Field(object):
-    def __init__(self, name, column_type, primary_key, default, unique):
+    def __init__(self, name, column_type, primary_key, default=None, unique=False):
         self.name = name
         self.column_type = column_type
         self.primary_key = primary_key
@@ -136,18 +174,19 @@ class TextField(Field):
 
 
 class RelationField(Field):
-    def __init__(self, model):
-        self.model = model
+    def __init__(self, item_table_name, name=None, culumn_type=None):
+        self.item_table_name = item_table_name
+        super(RelationField, self).__init__(name, culumn_type, primary_key=False)
 
 
 class OneField(RelationField):
-    def __init__(self, model):
-        super(OneField, self).__init__(model)
+    def __init__(self, item_table_name):
+        super(OneField, self).__init__(item_table_name)
 
 
 class ManyField(RelationField):
-    def __init__(self, model):
-        super(ManyField, self).__init__(model)
+    def __init__(self, item_table_name):
+        super(ManyField, self).__init__(item_table_name)
 
 
 class ForeignField(RelationField):
@@ -276,7 +315,7 @@ class QueryImpl(object):
         return QueryImpl(left=self, op='or', right=pre_other(other))
 
 
-class SelectQuery(object):
+class SelectQueryHeader(object):
     def __init__(self, model):
         self.model = model
 
@@ -297,10 +336,15 @@ class Query(object):
         self._limit = 0
         self._offset = 0
         self.model = model
+        self._include = []
 
     def select(self, model):
         self.model = model
-        self.query_method = SelectQuery(model)
+        self.query_method = SelectQueryHeader(model)
+        return self
+
+    def include(self, model):
+        self._include.append(model)
         return self
 
     def where(self, query_impl):
@@ -309,25 +353,28 @@ class Query(object):
 
     def order_by_asc(self, model_field):
         self._orderby.append('{} asc'.format(pre_other(model_field)))
+        return self
 
     def order_by_desc(self, model_field):
         self._orderby.append('{} desc'.format(pre_other(model_field)))
+        return self
 
     def _str_select(self):
         return '{select} WHERE {where} ORDER BY {orderby} LIMIT {limit} OFFSET {offset}'.format(
             select=self.query_method,
-            where= '1 = 1' if self._where is None else self._where,
+            where='1 = 1' if self._where is None else self._where,
             orderby='{}.created_at desc'.format(getattr(self.model, '__table__')) if len(
                 self._orderby) == 0 else ' and '.join(self._orderby),
             limit=self._limit,
             offset=self._offset)
 
     def __str__(self):
-        if isinstance(self.query_method, SelectQuery):
+        if isinstance(self.query_method, SelectQueryHeader):
             return self._str_select()
 
     def one(self):
-        pass
+        self._limit = 1
+        return self.__str__()
 
     def all(self):
         return self.__str__()
