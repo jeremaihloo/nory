@@ -3,7 +3,7 @@ import unittest
 import pytest
 
 import handlers
-import aiorm
+import norm
 from configs import options
 from migrations_core import do_local_migrations
 

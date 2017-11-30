@@ -1,6 +1,6 @@
 import pytest
 
-import aiorm
+import norm
 from configs import options
 from apps.core.models import User
 
@@ -9,16 +9,16 @@ pytestmark = pytest.mark.asyncio
 
 @pytestmark
 async def test_new_orm(event_loop):
-    database = aiorm.MySQLDataBase()
+    database = norm.MySQLDataBase()
     await database.connect(event_loop, **options.db.to_dict())
 
     async with await database.atomic() as db:
-        await db.execute('select * from tests')
+        await db.execute('select * from ncms')
 
 
 @pytestmark
 async def test_query(event_loop):
-    database = aiorm.MySQLDataBase()
+    database = norm.MySQLDataBase()
     await database.connect(event_loop, **options.db.to_dict())
 
     async with await database.atomic() as db:
@@ -26,6 +26,6 @@ async def test_query(event_loop):
         print((User.created_at > '2017-03-19'))
         a = (User.name == 'jeremaihloo') & (User.created_at > '2017-03-19')
         print(a)
-        r = aiorm.Query().select(User).where((User.name == 'jeremaihloo') & (User.created_at > '2017-03-19')).all()
+        r = norm.Query().select(User).where((User.name == 'jeremaihloo') & (User.created_at > '2017-03-19')).all()
         print(r)
         await db.execute(r)

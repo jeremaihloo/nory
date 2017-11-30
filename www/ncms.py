@@ -16,17 +16,16 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-from migrations_core import MigrationBuilder, MigrationRecord, do_local_migrations
+from migrations_core import do_local_migrations
 
-import asyncio, os, json, time
-from datetime import datetime
+import asyncio, os, json
 
 from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
 
-from configs import options
+from configs import options, load_configs
 
-import aiorm
+import norm
 from coroweb import add_routes, add_static
 
 
@@ -157,9 +156,9 @@ async def response_factory(app, handler):
 
 
 async def init(loop):
-    database = aiorm.MySQLDataBase()
-    await database.connect(loop, **options.db.to_dict())
-    async with await database.atomic() as db:
+    await norm.database.connect(loop, **options.db.to_dict())
+    async with await norm.database.atomic() as db:
+        print(db.cursor)
         await do_local_migrations(db)
 
     app = web.Application(loop=loop, middlewares=[
@@ -187,8 +186,7 @@ async def init(loop):
 
 @singleton
 class NCMS(object):
-    def __init__(self, options=dict()):
-        self.options = options
+    def __init__(self):
         self.running = False
 
     def run(self, debug=False):
@@ -197,10 +195,8 @@ class NCMS(object):
 
         self.running = True
 
-        self.options.update({
-            'debug': debug
-        })
-
+        if debug:
+            load_configs('./ncms_data/config.dev.json')
         loop = asyncio.get_event_loop()
         loop.run_until_complete(init(loop))
         loop.run_forever()

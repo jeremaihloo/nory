@@ -13,9 +13,10 @@ import utils
 __EVENT_ROUTING__ = '__routing__'
 __EVENT_AUTHING__ = '__authing__'
 __EVENT_AUTH_FLASE__ = '__auth_false__'
-__EVENT_REQUEST__ = '__request__'
+__EVENT_BEFORE_REQUEST__ = '__before_request__'
 __EVENT_ADD_ROUTE__ = '__add_route__'
 __EVENT_TEMPLATE_FILTER__ = '__template_filter__'
+
 
 def app_fn(event, name, description):
     def decorator(func):
@@ -58,8 +59,8 @@ class AppManager(utils.DictClass):
             self.__app_fns__[__EVENT_AUTH_FLASE__] = []
         if not self.__app_fns__.get(__EVENT_ROUTING__, None):
             self.__app_fns__[__EVENT_ROUTING__] = []
-        if not self.__app_fns__.get(__EVENT_REQUEST__, None):
-            self.__app_fns__[__EVENT_REQUEST__] = []
+        if not self.__app_fns__.get(__EVENT_BEFORE_REQUEST__, None):
+            self.__app_fns__[__EVENT_BEFORE_REQUEST__] = []
         if not self.__app_fns__.get(__EVENT_TEMPLATE_FILTER__, None):
             self.__app_fns__[__EVENT_TEMPLATE_FILTER__] = []
 

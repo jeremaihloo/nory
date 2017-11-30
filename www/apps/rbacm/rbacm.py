@@ -4,7 +4,7 @@ import time
 
 from migrations_core import Migration, do_migrations, undo_migrations
 from apps.core.models import next_id
-from aiorm import Model, StringField, FloatField
+from norm import Model, StringField, FloatField
 from coroweb import post
 
 

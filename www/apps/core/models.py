@@ -9,7 +9,7 @@ __author__ = 'Michael Liao'
 
 import time, uuid
 from utils import next_id
-from aiorm import Model, StringField, FloatField, TextField
+from norm import Model, StringField, FloatField, TextField, OneField, ForeignField
 
 
 class User(Model):
@@ -45,3 +45,37 @@ class Settings(Model):
 
     def get(self, key):
         settings = Settings.query().all()
+
+
+class Blog(Model):
+    __table__ = 'blog'
+
+    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
+    user = StringField(ddl='varchar(50)')
+    created_at = FloatField(default=time.time)
+
+
+class PostRecord(Model):
+    __table__ = 'post_record'
+
+    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
+    content = TextField()
+    created_at = FloatField(default=time.time)
+
+
+class Tag(Model):
+    __table__ = 'tags'
+
+    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
+    user = StringField(ddl='varchar(50)')
+    content = TextField()
+    created_at = FloatField(default=time.time)
+
+
+class BlogTagMapping(Model):
+    __table__ = 'blog_tag_mappings'
+
+    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
+    blog_id = StringField(ddl='varchar(50)')
+    tag_id = StringField(ddl='varchar(50)')
+    created_at = FloatField(default=time.time)

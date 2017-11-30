@@ -1,10 +1,10 @@
 import logging
 import time
 import abc
-import aiorm
+import norm
 import utils
 from apps.core.models import next_id
-from aiorm import Model, IntegerField, StringField, FloatField
+from norm import Model, IntegerField, StringField, FloatField
 import importlib
 import os
 
@@ -94,13 +94,14 @@ class MigrationError(Exception):
 
 
 async def do_local_migrations(db):
+    print(db.cursor)
     logging.info('start do local migrations')
     r = await db.select('show tables', None)
     tables = map(lambda x: x['Tables_in_ncms'], r)
     if 'migrations' not in tables:
         mbuilder = MigrationBuilder(0, 'migrations')
         migration_table_sql = mbuilder.build_create_table_sql(MigrationRecord)
-        await aiorm.execute(migration_table_sql)
+        await norm.execute(migration_table_sql)
     abs_p = utils.get_ncms_path()
     db_migrations_file_names = os.listdir(os.path.join(abs_p, 'migrations'))
     file_names = list(filter(lambda x: x.startswith('migration'), db_migrations_file_names))

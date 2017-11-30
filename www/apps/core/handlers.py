@@ -1,5 +1,7 @@
 from app_cores import app_fn, __EVENT_ROUTING__
+from apps.core.models import Tag
 from coroweb import get
+from norm import database, Query
 from www.handlers import *
 
 
@@ -14,7 +16,8 @@ async def page_index():
 @app_fn(__EVENT_ROUTING__, 'tags', 'tags')
 @get('/tags')
 async def page_tags():
-    tags = await api_get_contents(model_name='tag')
+    async with await database.atomic() as db:
+        tags = await db.select(Query().select(Tag).all())
     print(tags)
     return {
         '__template__': 'core/templates/tags.html',

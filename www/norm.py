@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from datetime import datetime, date, time
 from functools import wraps
 
 __author__ = 'Michael Liao'
@@ -22,7 +23,6 @@ class _aio_callable_context_manager(object):
 
 
 class _aio_db_context_manager(_aio_callable_context_manager):
-    __slots__ = ('conn')
 
     def __init__(self, conn):
         self.conn = conn
@@ -85,7 +85,7 @@ class MySQLDataBase(object):
         return MySqlDbOperator(self.__pool.acquire())
 
 
-db = MySQLDataBase()
+database = MySQLDataBase()
 
 
 def create_args_string(num):
@@ -130,6 +130,26 @@ class FloatField(Field):
 class TextField(Field):
     def __init__(self, name=None, default=None):
         super().__init__(name, 'text', False, default, False)
+
+
+class RelationField(Field):
+    def __init__(self, model):
+        self.model = model
+
+
+class OneField(RelationField):
+    def __init__(self, model):
+        super(OneField, self).__init__(model)
+
+
+class ManyField(RelationField):
+    def __init__(self, model):
+        super(ManyField, self).__init__(model)
+
+
+class ForeignField(RelationField):
+    def __init__(self, model):
+        super(ForeignField, self).__init__(model)
 
 
 class ModelMetaclass(type):
@@ -201,6 +221,13 @@ class Model(dict, metaclass=ModelMetaclass):
         return value
 
 
+def pre_other(o):
+    if isinstance(o, QueryImpl):
+        return o
+    elif isinstance(o, str) or isinstance(o, datetime) or isinstance(o, date) or isinstance(o, time):
+        return "'{}'".format(o)
+
+
 class QueryImpl(object):
     def __init__(self, left=None, op=None, right=None):
         self.left = left
@@ -225,25 +252,25 @@ class QueryImpl(object):
         return ' '.join(strs)
 
     def __eq__(self, other):
-        return QueryImpl(self, '=', other)
+        return QueryImpl(self, '=', pre_other(other))
 
     def __le__(self, other):
-        return QueryImpl(self, '<=', other)
+        return QueryImpl(self, '<=', pre_other(other))
 
     def __ge__(self, other):
-        return QueryImpl(self, '>=', other)
+        return QueryImpl(self, '>=', pre_other(other))
 
     def __lt__(self, other):
-        return QueryImpl(self, '<', other)
+        return QueryImpl(self, '<', pre_other(other))
 
     def __gt__(self, other):
-        return QueryImpl(self, '>', other)
+        return QueryImpl(self, '>', pre_other(other))
 
     def __and__(self, other):
-        return QueryImpl(left=self, op='and', right=other)
+        return QueryImpl(left=self, op='and', right=pre_other(other))
 
     def __or__(self, other):
-        return QueryImpl(left=self, op='or', right=other)
+        return QueryImpl(left=self, op='or', right=pre_other(other))
 
 
 class SelectQuery(object):
@@ -254,16 +281,22 @@ class SelectQuery(object):
         return "SELECT * FROM {}".format(getattr(self.model, '__table__'))
 
 
+class OrderByImpl(object):
+    pass
+
+
 class Query(object):
     def __init__(self, db_op=None, model=None):
         self.db_op = db_op
         self.query_method = None
         self._where = None
         self._orderby = []
-        self._limit = []
-        self._offset = []
+        self._limit = 0
+        self._offset = 0
+        self.model = model
 
     def select(self, model):
+        self.model = model
         self.query_method = SelectQuery(model)
         return self
 
@@ -272,11 +305,17 @@ class Query(object):
         self._where = self._where and query_impl if self._where else query_impl
         return self
 
+    def order_by_asc(self, model_field):
+        self._orderby.append('{} asc'.format(pre_other(model_field)))
+
+    def order_by_desc(self, model_field):
+        self._orderby.append('{} desc'.format(pre_other(model_field)))
+
     def _str_select(self):
         return '{select} WHERE {where} ORDER BY {orderby} LIMIT {limit} OFFSET {offset}'.format(
             select=self.query_method,
             where=self._where,
-            orderby=self._orderby,
+            orderby='{}.created_at desc'.format(getattr(self.model, '__table__')) if len(self._orderby) == 0 else ' and '.join(self._orderby),
             limit=self._limit,
             offset=self._offset)
 
