@@ -67,7 +67,6 @@ class Tag(Model):
     __table__ = 'tags'
 
     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-    user = StringField(ddl='varchar(50)')
     content = TextField()
     created_at = FloatField(default=time.time)
 

@@ -2,12 +2,15 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, date, time
 from functools import wraps
+import logging
+import aiomysql
 
 __author__ = 'Michael Liao'
 
-import logging
 
-import aiomysql
+class NormError(Exception):
+    def __init__(self, message):
+        super(NormError, self).__init__(message)
 
 
 class _aio_callable_context_manager(object):
@@ -171,13 +174,13 @@ class ModelMetaclass(type):
                 if v.primary_key:
                     # 找到主键:
                     if primaryKey:
-                        raise StandardError('Duplicate primary key for field: %s' % k)
+                        raise NormError('Duplicate primary key for field: %s' % k)
                     primaryKey = k
                 else:
                     fields.append(k)
 
         if not primaryKey:
-            raise StandardError('Primary key not found.')
+            raise NormError('Primary key not found.')
         for k in mappings.keys():
             attrs.pop(k)
         escaped_fields = list(map(lambda f: '`%s`' % f, fields))
@@ -301,7 +304,6 @@ class Query(object):
         return self
 
     def where(self, query_impl):
-        print(query_impl)
         self._where = self._where and query_impl if self._where else query_impl
         return self
 
@@ -314,8 +316,9 @@ class Query(object):
     def _str_select(self):
         return '{select} WHERE {where} ORDER BY {orderby} LIMIT {limit} OFFSET {offset}'.format(
             select=self.query_method,
-            where=self._where,
-            orderby='{}.created_at desc'.format(getattr(self.model, '__table__')) if len(self._orderby) == 0 else ' and '.join(self._orderby),
+            where= '1 = 1' if self._where is None else self._where,
+            orderby='{}.created_at desc'.format(getattr(self.model, '__table__')) if len(
+                self._orderby) == 0 else ' and '.join(self._orderby),
             limit=self._limit,
             offset=self._offset)
 

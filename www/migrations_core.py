@@ -94,14 +94,13 @@ class MigrationError(Exception):
 
 
 async def do_local_migrations(db):
-    print(db.cursor)
     logging.info('start do local migrations')
     r = await db.select('show tables', None)
     tables = map(lambda x: x['Tables_in_ncms'], r)
     if 'migrations' not in tables:
         mbuilder = MigrationBuilder(0, 'migrations')
         migration_table_sql = mbuilder.build_create_table_sql(MigrationRecord)
-        await norm.execute(migration_table_sql)
+        await db.execute(migration_table_sql)
     abs_p = utils.get_ncms_path()
     db_migrations_file_names = os.listdir(os.path.join(abs_p, 'migrations'))
     file_names = list(filter(lambda x: x.startswith('migration'), db_migrations_file_names))
@@ -129,7 +128,7 @@ async def do_migrations(migrations, db):
     for item in migrations:
         logging.info('do migration version: {} name: {}'.format(item.version, item.name))
         try:
-            fr = await MigrationRecord.findAll(where='name = ?', args=(item.name,))
+            fr = await db.select(norm.Query().select(MigrationRecord).where(MigrationRecord.name == item.name).all())
             if fr is not None and len(list(fr)) > 0:
                 raise MigrationError(message='migration may be excuted ! name: {}'.format(item.name))
             item.do()
@@ -141,7 +140,7 @@ async def do_migrations(migrations, db):
 async def undo_migrations(migrations, db):
     for item in migrations:
         try:
-            fr = await MigrationRecord.findAll(where='name = ?', args=(item.name,))
+            fr = await db.select(norm.Query().select(MigrationRecord).where(MigrationRecord.name == item.name).all())
             if fr is not None and len(list(fr)) > 0:
                 raise MigrationError(message='migration may be excuted ! name: {}'.format(item.name))
             item.undo()

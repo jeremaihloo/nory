@@ -1,8 +1,8 @@
 {% extends 'core/templates/layout.html' %}
 {% block content %}
 <div class="tags">
-{% for key, value in tags.items() %}
-    <li class="tag-item"><a href="/tags/{{ value.name }}">{{ value.name }}</a> </li>
+{% for item in tags %}
+    <li class="tag-item"><a href="/tags/{{ item.content }}">{{ item.content }}</a> </li>
 {% endfor %}
 </div>
 {% endblock %}

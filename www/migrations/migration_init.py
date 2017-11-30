@@ -11,22 +11,20 @@ class MigrationInit(Migration):
 
     def do(self):
         self.builder.add_tables([
-            models.ContentType,
-            models.ContentField,
-            models.ContentModel,
-            models.ContentModelField,
-            models.Content,
-            models.ContentItem,
-            models.User
+            models.UserProfile,
+            models.User,
+            models.Blog,
+            models.BlogTagMapping,
+            models.PostRecord,
+            models.Tag
         ], force=True)
 
     def undo(self):
         self.builder.drop_tables([
-            models.ContentType,
-            models.ContentField,
-            models.ContentModel,
-            models.ContentModelField,
-            models.Content,
-            models.ContentItem,
-            models.User
+            models.UserProfile,
+            models.User,
+            models.Blog,
+            models.BlogTagMapping,
+            models.PostRecord,
+            models.Tag
         ])
