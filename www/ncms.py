@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 from collections import OrderedDict
 
+import click as click
+
 import app_cores
+import dbs
 from app_cores import AppManager
 from utils import singleton
 
@@ -16,17 +19,12 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-from migrations_core import do_local_migrations
-
 import asyncio, os, json
-
 from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
-
 from configs import options, load_configs
-
-import norm
 from coroweb import add_routes, add_static
+from peewee_async import MySQLDatabase, Manager
 
 
 def init_jinja2(app, **kw):
@@ -156,10 +154,6 @@ async def response_factory(app, handler):
 
 
 async def init(loop):
-    await norm.database.connect(loop, **options.db.to_dict())
-    async with await norm.database.atomic() as db:
-        print(db.cursor)
-        await do_local_migrations(db)
 
     app = web.Application(loop=loop, middlewares=[
         logger_factory, auth_factory, response_factory
@@ -196,12 +190,16 @@ class NCMS(object):
         self.running = True
 
         if debug:
-            load_configs('./ncms_data/config.dev.json')
+            load_configs('./runnings/config.dev.json')
         loop = asyncio.get_event_loop()
         loop.run_until_complete(init(loop))
         loop.run_forever()
 
 
-if __name__ == '__main__':
+@click.command()
+def run():
     n = NCMS()
     n.run(debug=True)
+
+if __name__ == '__main__':
+    run()

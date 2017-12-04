@@ -1,23 +1,19 @@
 from app_cores import app_fn, __EVENT_ROUTING__
 from apps.core.models import Tag, Article
-from coroweb import get
-from norm import database, Query
-from www.handlers import *
+from coroweb import get, post
+from dbs import objects
 
 
 @app_fn(__EVENT_ROUTING__, 'tags', ')')
 @get('/api/tags')
 async def api_get_tags():
-    async with await database.atomic() as db:
-        tags = await db.select(Query().select(Tag).all())
+    tags = await objects.execute(Tag.select())
     return tags
+
 
 @app_fn(__EVENT_ROUTING__, 'tags', ')')
 @post('/api/tags')
-async def api_get_tags(*, content):
-    async with await database.atomic() as db:
-        tag = Tag(content=content)
-        db.create(tag)
+async def api_post_tags(*, content):
     return 200
 
 
@@ -28,13 +24,12 @@ async def api_get_blogs():
         tags = await db.select(Query().select(Tag).all())
     return tags
 
+
 @app_fn(__EVENT_ROUTING__, 'blog', ')')
 @post('/api/articles')
-async def api_get_blogs(*, content):
-    async with await database.atomic() as db:
-        article = Article(content=content)
-        db.create(article)
+async def api_get_articles(*, content):
     return 200
+
 
 @app_fn(__EVENT_ROUTING__, 'page_index', 'page_index')
 @get('/')
@@ -47,7 +42,7 @@ async def page_index():
 @app_fn(__EVENT_ROUTING__, 'tags', 'tags')
 @get('/tags')
 async def page_tags():
-    tags = api_get_tags()
+    tags = await api_get_tags()
     return {
         '__template__': 'core/templates/tags.html',
         'tags': tags

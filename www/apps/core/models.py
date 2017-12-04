@@ -4,78 +4,62 @@
 """
 Models for user, blog, comment.
 """
+from datetime import datetime
+
+from dbs import BaseModel
 
 __author__ = 'Michael Liao'
 
-import time, uuid
-from utils import next_id
-from norm import Model, StringField, FloatField, TextField, OneField, ForeignField
+from peewee import CharField, TextField, ForeignKeyField, FloatField, UUIDField, DateTimeField
 
 
-class User(Model):
+class User(BaseModel):
     """Users"""
-    __table__ = 'users'
-
-    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-    passwd = StringField(ddl='varchar(50)')
-    name = StringField(ddl='varchar(50)', unique=True)
-    created_at = FloatField(default=time.time)
-
-    profile = OneField('user_profiles')
-
-class UserProfile(Model):
-    __table__ = 'user_profiles'
-
-    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-    user_id = StringField(ddl='varchar(50)')
-    email = StringField(ddl='varchar(50)', unique=True)
-    nick_name = StringField(ddl='varchar(50)')
-    image = StringField(ddl='varchar(500)')
-    phone = StringField(ddl='varchar(500)', unique=True)
-    created_at = FloatField(default=time.time)
+    id = UUIDField(primary_key=True)
+    password = CharField()
+    name = CharField()
+    created_at = DateTimeField(default=datetime.now)
 
 
-class Settings(Model):
+class UserProfile(BaseModel):
+    id = UUIDField(primary_key=True)
+    user = ForeignKeyField(User, related_name='user')
+    email = CharField()
+    nick_name = CharField()
+    image = CharField()
+    phone = CharField()
+    created_at = DateTimeField(default=datetime.now)
+
+
+class Settings(BaseModel):
     """Site"""
-    __table__ = 'settings'
-
-    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-    key = StringField(ddl='varchar(50)', unique=True)
+    id = UUIDField(primary_key=True)
+    key = CharField()
     value = TextField()
-    created_at = FloatField(default=time.time)
-
-    def get(self, key):
-        settings = Settings.query().all()
+    created_at = DateTimeField(default=datetime.now)
 
 
-class Article(Model):
-    __table__ = 'articles'
-
-    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-    user = StringField(ddl='varchar(50)')
-    created_at = FloatField(default=time.time)
+class Article(BaseModel):
+    id = UUIDField(primary_key=True)
+    user = ForeignKeyField(User, related_name='articles')
+    created_at = DateTimeField(default=datetime.now)
 
 
-class PostRecord(Model):
-    __table__ = 'post_records'
-
-    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
+class PostRecord(BaseModel):
+    id = UUIDField(primary_key=True)
+    article = ForeignKeyField(Article, related_name='posts')
     content = TextField()
-    created_at = FloatField(default=time.time)
+    created_at = DateTimeField(default=datetime.now)
 
 
-class Tag(Model):
-    __table__ = 'tags'
-
-    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
+class Tag(BaseModel):
+    id = UUIDField(primary_key=True)
     content = TextField()
-    created_at = FloatField(default=time.time)
+    created_at = DateTimeField(default=datetime.now)
 
 
-class BlogTagMapping(Model):
-    __table__ = 'blog_tag_mappings'
-
-    id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-    blog_id = StringField(ddl='varchar(50)')
-    tag_id = StringField(ddl='varchar(50)')
-    created_at = FloatField(default=time.time)
+class ArticleTagMapping(BaseModel):
+    id = UUIDField(primary_key=True)
+    blog = ForeignKeyField(Article)
+    tag = ForeignKeyField(Tag)
+    created_at = DateTimeField(default=datetime.now)

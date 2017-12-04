@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from norm import database, Query
 from utils import hash_pwd
 
 __author__ = 'Michael Liao'
@@ -12,33 +11,15 @@ import re
 from coroweb import get, post
 from apis import Page, APIValueError, APIError
 
-from apps.core.models import User, next_id
-
-
-def get_page_index(page_str):
-    p = 1
-    try:
-        p = int(page_str)
-    except ValueError as e:
-        pass
-    if p < 1:
-        p = 1
-    return p
-
-
-def text2html(text):
-    lines = map(lambda s: '<p>%s</p>' % s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'),
-                filter(lambda s: s.strip() != '', text.split('\n')))
-    return ''.join(lines)
+from apps.core.models import User
 
 
 @post('/login')
 async def api_post_login(*, name, password):
-    rs = await User.findAll(where='name=? and passwd = ?', args=(name, hash_pwd(password)))
-    if rs is not None and len(rs) == 1:
-        return 200
-    else:
-        return 404
+    user = User.select().where(User.name == name, User.password == password)
+    if user.exists():
+        user = user.get()
+    return user
 
 
 @get('/api/users')

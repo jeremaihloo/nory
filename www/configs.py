@@ -1,54 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-'''
-Configuration
-'''
+import inspect
 import json
+import logging
 
-__author__ = 'jeremaihloo'
+__configs__ = None
 
-
-class Config(object):
-    def to_dict(self):
-        return dict((name, getattr(self, name)) for name in dir(self) if not name.startswith('__'))
-
-
-class MySqlConfig(Config):
-    host = '127.0.0.1'
-    port = 3306
-    user = 'root'
-    password = 'root'
-    db = 'ncms'
-
-
-class NcmsConfig(Config):
-    version = 1
-    home_page = 'http://github.com/jeremaihloo/ncms'
-    debug = False
-    session = {'secret': 'Awesome'}
-    db = MySqlConfig()
-
-
-options = NcmsConfig()
-
-
-def option_the_model(model: Config, configs: dict):
-    attrs = list(filter(lambda x: not x.startswith('_'), dir(model)))
-    for key in attrs:
-        val = getattr(model, key, None)
-        if isinstance(val, Config):
-            setattr(model, key, option_the_model(val, configs[key]))
-        else:
-            setattr(model, key, val if configs.get(key, None) is None else configs[key])
-    return model
-
-
-def load_configs(config_path=None):
-    with open(config_path) as f:
-        obj = json.load(f)
-        option_the_model(options, obj)
-    return obj
+__config_names = ['development', 'production']
 
 
 def merge(defaults, override):
@@ -62,3 +18,41 @@ def merge(defaults, override):
         else:
             r[k] = v
     return r
+
+
+def load_options():
+    global __configs__
+    for item in __config_names:
+        try:
+            m = json.load(open('runnings/config.{}.json'.format(item)))
+            if __configs__ is not None:
+                __configs__ = merge(__configs__, m)
+            else:
+                __configs__ = m
+            logging.info('runnings/config.{}.json loaded'.format(item))
+        except FileNotFoundError as e:
+            logging.warning('runnings/config.{}.json not found'.format(item))
+
+
+load_options()
+
+class ConfigMeta(type):
+
+    def __getattribute__(self, item):
+        val = super(ConfigMeta, self).__getattribute__(item)
+        if isinstance(val, ConfigBase):
+            raise Exception('just suport simple struct')
+        val = __configs__[item] if __configs__.get(item, None) else val
+        return val
+
+
+class ConfigBase(object, metaclass=ConfigMeta):
+    pass
+
+
+class ConfigDemo(ConfigBase):
+    name = "hahaha"
+
+
+if __name__ == '__main__':
+    print(ConfigDemo.name)
