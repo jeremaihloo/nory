@@ -1,23 +1,24 @@
-from app_cores import app_fn, __EVENT_ROUTING__
+import events
+from app_cores import app_fn
 from apps.core.models import Tag, Article
 from coroweb import get, post
 from dbs import objects
 
 
-@app_fn(__EVENT_ROUTING__, 'tags', ')')
+@app_fn(events.__EVENT_ROUTING__, 'tags', ')')
 @get('/api/tags')
 async def api_get_tags():
     tags = await objects.execute(Tag.select())
     return tags
 
 
-@app_fn(__EVENT_ROUTING__, 'tags', ')')
+@app_fn(events.__EVENT_ROUTING__, 'tags', ')')
 @post('/api/tags')
 async def api_post_tags(*, content):
     return 200
 
 
-@app_fn(__EVENT_ROUTING__, 'blog', ')')
+@app_fn(events.__EVENT_ROUTING__, 'blog', ')')
 @get('/api/articles')
 async def api_get_blogs():
     async with await database.atomic() as db:
@@ -25,13 +26,13 @@ async def api_get_blogs():
     return tags
 
 
-@app_fn(__EVENT_ROUTING__, 'blog', ')')
+@app_fn(events.__EVENT_ROUTING__, 'blog', ')')
 @post('/api/articles')
 async def api_get_articles(*, content):
     return 200
 
 
-@app_fn(__EVENT_ROUTING__, 'page_index', 'page_index')
+@app_fn(events.__EVENT_ROUTING__, 'page_index', 'page_index')
 @get('/')
 async def page_index():
     return {
@@ -39,7 +40,7 @@ async def page_index():
     }
 
 
-@app_fn(__EVENT_ROUTING__, 'tags', 'tags')
+@app_fn(events.__EVENT_ROUTING__, 'tags', 'tags')
 @get('/tags')
 async def page_tags():
     tags = await api_get_tags()
@@ -49,7 +50,7 @@ async def page_tags():
     }
 
 
-@app_fn(__EVENT_ROUTING__, 'page_tags', 'page_tags')
+@app_fn(events.__EVENT_ROUTING__, 'page_tags', 'page_tags')
 @get('/tags/{name}')
 async def page_tag_item(*, name):
     articles = await api_get_contents(model_name='article')
@@ -60,19 +61,19 @@ async def page_tag_item(*, name):
     }
 
 
-@app_fn(__EVENT_ROUTING__, 'page_content', 'page_content')
+@app_fn(events.__EVENT_ROUTING__, 'page_content', 'page_content')
 @get('/content/{content_slug}')
 async def page_content():
     pass
 
 
-@app_fn(__EVENT_ROUTING__, 'page_id', 'page_id')
+@app_fn(events.__EVENT_ROUTING__, 'page_id', 'page_id')
 @get('/content/id-{id}')
 async def page_id(*, id):
     pass
 
 
-@app_fn(__EVENT_ROUTING__, 'page_name', 'page_name')
+@app_fn(events.__EVENT_ROUTING__, 'page_name', 'page_name')
 @get('/page/{name}')
 async def page_name(*, name):
     pass

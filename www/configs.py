@@ -36,6 +36,7 @@ def load_options():
 
 load_options()
 
+
 class ConfigMeta(type):
 
     def __getattribute__(self, item):
@@ -50,9 +51,12 @@ class ConfigBase(object, metaclass=ConfigMeta):
     pass
 
 
-class ConfigDemo(ConfigBase):
-    name = "hahaha"
+class NcmsConfig(ConfigBase):
+    version = 1
+    db_user = 'root'
+    db_password = 'root'
+    db_database = 'ncms'
 
 
 if __name__ == '__main__':
-    print(ConfigDemo.name)
+    print(NcmsConfig.version)

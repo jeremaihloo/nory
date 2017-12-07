@@ -2,10 +2,11 @@ import time
 
 import datetime
 
-from app_cores import app_fn, __EVENT_TEMPLATE_FILTER__
+import events
+from app_cores import app_fn
 
 
-@app_fn(__EVENT_TEMPLATE_FILTER__, 'datetime', 'datetime friendly filter')
+@app_fn(events.__EVENT_TEMPLATE_FILTER__, 'datetime', 'datetime friendly filter')
 def datetime_filter(t):
     delta = int(time.time() - t)
     if delta < 60:

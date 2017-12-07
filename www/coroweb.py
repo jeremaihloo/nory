@@ -12,6 +12,7 @@ from aiohttp import web
 
 from apis import APIError
 
+import events
 
 def get(path):
     '''
@@ -170,7 +171,7 @@ def add_route(app, fn):
         'add route %s %s => %s(%s)' % (method, path, fn.__name__, ', '.join(inspect.signature(fn).parameters.keys())))
     app.router.add_route(method, path, RequestHandler(app, fn))
 
-    for item in app.plugin_manager.__app_fns__[app_cores.__EVENT_ADD_ROUTE__]:
+    for item in app.plugin_manager.__app_fns__[events.__EVENT_ADD_ROUTE__]:
         params = [x for x in inspect.signature(fn).parameters.keys()]
         item(method, path, params)
 
@@ -192,7 +193,7 @@ def add_routes(app, module_name):
             if method and path:
                 add_route(app, fn)
 
-    for item in app.plugin_manager.__app_fns__[app_cores.__EVENT_ROUTING__]:
+    for item in app.plugin_manager.__app_fns__[events.__EVENT_ROUTING__]:
         add_route(app, item)
 
 

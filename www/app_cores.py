@@ -5,17 +5,10 @@ import inspect
 import logging
 import os
 import importlib
-
 import functools
 
 import utils
-
-__EVENT_ROUTING__ = '__routing__'
-__EVENT_AUTHING__ = '__authing__'
-__EVENT_AUTH_FLASE__ = '__auth_false__'
-__EVENT_BEFORE_REQUEST__ = '__before_request__'
-__EVENT_ADD_ROUTE__ = '__add_route__'
-__EVENT_TEMPLATE_FILTER__ = '__template_filter__'
+import events
 
 
 def app_fn(event, name, description):
@@ -51,18 +44,10 @@ class AppManager(utils.DictClass):
         self.init_fns()
 
     def init_fns(self):
-        if not self.__app_fns__.get(__EVENT_ADD_ROUTE__, None):
-            self.__app_fns__[__EVENT_ADD_ROUTE__] = []
-        if not self.__app_fns__.get(__EVENT_AUTHING__, None):
-            self.__app_fns__[__EVENT_AUTHING__] = []
-        if not self.__app_fns__.get(__EVENT_AUTH_FLASE__, None):
-            self.__app_fns__[__EVENT_AUTH_FLASE__] = []
-        if not self.__app_fns__.get(__EVENT_ROUTING__, None):
-            self.__app_fns__[__EVENT_ROUTING__] = []
-        if not self.__app_fns__.get(__EVENT_BEFORE_REQUEST__, None):
-            self.__app_fns__[__EVENT_BEFORE_REQUEST__] = []
-        if not self.__app_fns__.get(__EVENT_TEMPLATE_FILTER__, None):
-            self.__app_fns__[__EVENT_TEMPLATE_FILTER__] = []
+        es = list(filter(lambda x: x.startswith('__EVENT'), dir(events)))
+        print(es)
+        for item in es:
+            self.__app_fns__[getattr(events, item)] = []
 
     def reload_apps(self):
         self.__apps__ = []
@@ -105,5 +90,7 @@ class AppManager(utils.DictClass):
                                     if self.__app_fns__.get(event, None) is None:
                                         self.__app_fns__[event] = []
                                     self.__app_fns__[event].append(fn)
+                logging.info('app {} loaded'.format(item))
             except Exception as e:
+                logging.warning('app {} load error'.format(item))
                 logging.warning(str(e))

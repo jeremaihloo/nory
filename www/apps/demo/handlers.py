@@ -1,8 +1,9 @@
-from app_cores import app_fn, __EVENT_ROUTING__
+import events
+from app_cores import app_fn
 from coroweb import get
 
 
-@app_fn(__EVENT_ROUTING__, 'demo', 'demo')
+@app_fn(events.__EVENT_ROUTING__, 'demo', 'demo')
 @get('/demo')
 async def get_demo():
     return {
