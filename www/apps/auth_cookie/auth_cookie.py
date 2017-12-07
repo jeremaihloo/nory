@@ -9,7 +9,7 @@ __description__ = 'provide jwt auth'
 __home_page__ = 'https://github.com/jeremaihloo/ncms-auth-jwt'
 
 import time
-from apis import APIValueError
+from apps.core.apis import APIValueError
 from configs import options
 from coroweb import post
 from apps.core.models import User

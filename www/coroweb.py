@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import app_cores
 
 __author__ = 'Michael Liao'
 
@@ -10,7 +9,7 @@ from urllib import parse
 
 from aiohttp import web
 
-from apis import APIError
+from apps.core.apis import APIError
 
 import events
 
@@ -176,23 +175,7 @@ def add_route(app, fn):
         item(method, path, params)
 
 
-def add_routes(app, module_name):
-    n = module_name.rfind('.')
-    if n == (-1):
-        mod = __import__(module_name, globals(), locals())
-    else:
-        name = module_name[n + 1:]
-        mod = getattr(__import__(module_name[:n], globals(), locals(), [name]), name)
-    for attr in dir(mod):
-        if attr.startswith('_'):
-            continue
-        fn = getattr(mod, attr)
-        if callable(fn) and inspect.isfunction(fn):
-            method = getattr(fn, '__method__', None)
-            path = getattr(fn, '__route__', None)
-            if method and path:
-                add_route(app, fn)
-
+def add_routes(app):
     for item in app.plugin_manager.__app_fns__[events.__EVENT_ROUTING__]:
         add_route(app, item)
 

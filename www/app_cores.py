@@ -45,7 +45,6 @@ class AppManager(utils.DictClass):
 
     def init_fns(self):
         es = list(filter(lambda x: x.startswith('__EVENT'), dir(events)))
-        print(es)
         for item in es:
             self.__app_fns__[getattr(events, item)] = []
 

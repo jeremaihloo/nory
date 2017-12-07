@@ -161,7 +161,7 @@ async def init(loop):
     app.plugin_manager = plugin_manager
 
     init_jinja2(app)
-    add_routes(app, 'handlers')
+    add_routes(app)
 
     for item in app.plugin_manager.__apps__:
         try:
