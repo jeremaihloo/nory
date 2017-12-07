@@ -4,7 +4,6 @@ from collections import OrderedDict
 
 import click as click
 
-import app_cores
 from app_cores import AppManager
 from utils import singleton
 

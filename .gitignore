@@ -54,3 +54,4 @@ MANIFEST
 .pydevproject
 .idea
 venv
+.cache

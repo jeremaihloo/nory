@@ -13,6 +13,7 @@ from apps.core.apis import APIError
 
 import events
 
+
 def get(path):
     '''
     Define decorator @get('/path')
@@ -88,8 +89,8 @@ def has_request_arg(fn):
             found = True
             continue
         if found and (
-                            param.kind != inspect.Parameter.VAR_POSITIONAL
-                    and param.kind != inspect.Parameter.KEYWORD_ONLY
+                param.kind != inspect.Parameter.VAR_POSITIONAL
+                and param.kind != inspect.Parameter.KEYWORD_ONLY
                 and param.kind != inspect.Parameter.VAR_KEYWORD):
             raise ValueError(
                 'request parameter must be the last named parameter in function: %s%s' % (fn.__name__, str(sig)))

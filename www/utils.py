@@ -1,6 +1,5 @@
 import hmac
 import os
-
 import time
 import uuid
 
