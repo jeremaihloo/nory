@@ -10,16 +10,15 @@ __home_page__ = 'https://github.com/jeremaihloo/ncms-auth-jwt'
 
 import time
 from apps.core.apis import APIValueError
-from configs import options
 from coroweb import post
 from apps.core.models import User
 import logging
 import hashlib, json
 from aiohttp import web
 from app_cores import app_fn
-
+from configs import NcmsConfig
 COOKIE_NAME = 'awesession'
-_COOKIE_KEY = options.session.secret
+_COOKIE_KEY = NcmsConfig.secret
 
 
 async def cookie2user(cookie_str):

@@ -1,5 +1,4 @@
 import re
-
 import events
 from app_cores import app_fn
 from apps.core.apis import APIValueError, APIError, Page
@@ -10,12 +9,14 @@ from utils import next_id, hash_pwd
 
 
 @app_fn(events.__EVENT_ROUTING__, 'api_post_login', 'api_post_login')
-@post('/login')
+@post('/api/login')
 async def api_post_login(*, name, password):
     user = User.select().where(User.name == name, User.password == password)
     if user.exists():
         user = user.get()
-    return user
+        return user
+    else:
+        return 404
 
 
 @app_fn(events.__EVENT_ROUTING__, 'api_get_users', 'api_get_users')

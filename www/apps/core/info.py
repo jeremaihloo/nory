@@ -8,5 +8,6 @@ __home_page__ = 'https://github.com/jeremaihloo/ncms-plugin-manager'
 
 INDEXS = [
     'filters',
-    'handlers'
+    'handlers',
+    'install'
 ]

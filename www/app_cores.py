@@ -56,6 +56,25 @@ class AppManager(utils.DictClass):
 
         self.load_apps()
 
+        self.loading_apps()
+
+    def install_apps(self):
+        pass
+
+    def install_app(self, item):
+        pass
+
+    def loading_app(self, item):
+        item()
+
+    def loading_apps(self):
+        for item in self.__app_fns__[events.__EVENT_ON_APP_LOADING__]:
+            try:
+                self.loading_app(item)
+                logging.info('on loading app item {} ok'.format(item))
+            except Exception as e:
+                logging.warning('on loading_apps error {}'.format(e))
+
     def load_apps(self):
         logging.info('loading plugins')
         abs_p = utils.get_ncms_path()
@@ -64,32 +83,38 @@ class AppManager(utils.DictClass):
         apps = list(filter(lambda x: not x.startswith('_') and not x.endswith('.py'), apps))
         for item in apps:
             try:
-                app = importlib.import_module('apps.{}'.format(item))
-                if not os.path.exists(os.path.join(abs_p, 'apps/{}/info.py'.format(item))):
-                    raise Exception('load app error , {}/info.py not found'.format(item))
-
-                info = importlib.import_module('apps.{}.info'.format(item))
-                info_desc = AppInfo(
-                    name=item,
-                    author=getattr(info, '__author__', 'None'),
-                    version=getattr(info, '__version__', 'None'),
-                    description=getattr(info, '__description__', 'None'),
-                    home_page=getattr(info, '__home_page__', 'None')
-                )
-                self.__apps__.append(info_desc)
-                indexs = getattr(info, 'INDEXS', None)
-                if indexs:
-                    for id in indexs:
-                        m = importlib.import_module('apps.{}.{}'.format(item, id))
-                        for attr in dir(m):
-                            fn = getattr(m, attr, None)
-                            if fn is not None and inspect.isfunction(fn):
-                                event = getattr(fn, '__app_event__', None)
-                                if event is not None:
-                                    if self.__app_fns__.get(event, None) is None:
-                                        self.__app_fns__[event] = []
-                                    self.__app_fns__[event].append(fn)
+                self.load_app(item)
                 logging.info('app {} loaded'.format(item))
             except Exception as e:
                 logging.warning('app {} load error'.format(item))
                 logging.warning(str(e))
+
+        self.loading_apps()
+
+    def load_app(self, item):
+        abs_p = utils.get_ncms_path()
+        app = importlib.import_module('apps.{}'.format(item))
+        if not os.path.exists(os.path.join(abs_p, 'apps/{}/info.py'.format(item))):
+            raise Exception('load app error , {}/info.py not found'.format(item))
+
+        info = importlib.import_module('apps.{}.info'.format(item))
+        info_desc = AppInfo(
+            name=item,
+            author=getattr(info, '__author__', 'None'),
+            version=getattr(info, '__version__', 'None'),
+            description=getattr(info, '__description__', 'None'),
+            home_page=getattr(info, '__home_page__', 'None')
+        )
+        self.__apps__.append(info_desc)
+        indexs = getattr(info, 'INDEXS', None)
+        if indexs:
+            for id in indexs:
+                m = importlib.import_module('apps.{}.{}'.format(item, id))
+                for attr in dir(m):
+                    fn = getattr(m, attr, None)
+                    if fn is not None and inspect.isfunction(fn):
+                        event = getattr(fn, '__app_event__', None)
+                        if event is not None:
+                            if self.__app_fns__.get(event, None) is None:
+                                self.__app_fns__[event] = []
+                            self.__app_fns__[event].append(fn)
