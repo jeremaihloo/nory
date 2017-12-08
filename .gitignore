@@ -55,3 +55,4 @@ MANIFEST
 .idea
 venv
 .cache
+www/tests/.cache

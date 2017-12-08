@@ -1,14 +1,6 @@
 import app_cores
-
-__author__ = 'jeremaihloo'
-
-__version__ = '0.0.1'
-
-__description__ = 'provide jwt auth'
-
-__home_page__ = 'https://github.com/jeremaihloo/ncms-auth-jwt'
-
-import time
+import events
+from apps.auth_cookie.auth_cookie_utils import COOKIE_NAME, cookie2user, user2cookie
 from apps.core.apis import APIValueError
 from coroweb import post
 from apps.core.models import User
@@ -16,51 +8,11 @@ import logging
 import hashlib, json
 from aiohttp import web
 from app_cores import app_fn
-from configs import NcmsConfig
-COOKIE_NAME = 'awesession'
-_COOKIE_KEY = NcmsConfig.secret
 
 
-async def cookie2user(cookie_str):
-    '''
-    Parse cookie and load user if cookie is valid.
-    '''
-    if not cookie_str:
-        return None
-    try:
-        L = cookie_str.split('-')
-        if len(L) != 3:
-            return None
-        uid, expires, sha1 = L
-        if int(expires) < time.time():
-            return None
-        user = await User.find(uid)
-        if user is None:
-            return None
-        s = '%s-%s-%s-%s' % (uid, user.passwd, expires, _COOKIE_KEY)
-        if sha1 != hashlib.sha1(s.encode('utf-8')).hexdigest():
-            logging.info('invalid sha1')
-            return None
-        user.passwd = '******'
-        return user
-    except Exception as e:
-        logging.exception(e)
-        return None
-
-
-def user2cookie(user, max_age):
-    '''
-    Generate cookie str by user.
-    '''
-    # build cookie string by: id-expires-sha1
-    expires = str(int(time.time() + max_age))
-    s = '%s-%s-%s-%s' % (user.id, user.passwd, expires, _COOKIE_KEY)
-    L = [user.id, expires, hashlib.sha1(s.encode('utf-8')).hexdigest()]
-    return '-'.join(L)
-
-
-@app_fn(app_cores.__EVENT_AUTHING__, 'auth-cookie', 'auth by cookie')
-async def auth(app, request):
+@app_fn(events.__EVENT_AUTHING__, 'auth_cookie_provider', 'auth_cookie_provider')
+async def auth_cookie_provider(app, request):
+    """provider cookie into ncms auth"""
     request.__user__ = None
     cookie_str = request.cookies.get(COOKIE_NAME)
     if cookie_str:
@@ -73,9 +25,9 @@ async def auth(app, request):
     return (False, 'cookie str empty')
 
 
-@app_fn(app_cores.__EVENT_ROUTING__, 'auth-cookie', 'auth by cookie')
-@post('/api/auth-cookie')
-async def authenticate(*, email, passwd):
+@app_fn(events.__EVENT_ROUTING__, 'auth-cookie', 'auth by cookie')
+@post('/api/login/auth-cookie')
+async def api_auth_cookie_by_email_and_password(*, email, passwd):
     if not email:
         raise APIValueError('email', 'Invalid email.')
     if not passwd:

@@ -48,7 +48,7 @@ class AppManager(utils.DictClass):
         for item in es:
             self.__app_fns__[getattr(events, item)] = []
 
-    def reload_apps(self):
+    async def reload_apps(self):
         self.__apps__ = []
         self.__app_fns__ = {}
 
@@ -58,24 +58,24 @@ class AppManager(utils.DictClass):
 
         self.loading_apps()
 
-    def install_apps(self):
+    async def install_apps(self):
         pass
 
-    def install_app(self, item):
+    async def install_app(self, item):
         pass
 
-    def loading_app(self, item):
-        item()
+    async def loading_app(self, item):
+        await item()
 
-    def loading_apps(self):
+    async def loading_apps(self):
         for item in self.__app_fns__[events.__EVENT_ON_APP_LOADING__]:
             try:
-                self.loading_app(item)
+                await self.loading_app(item)
                 logging.info('on loading app item {} ok'.format(item))
             except Exception as e:
                 logging.warning('on loading_apps error {}'.format(e))
 
-    def load_apps(self):
+    async def load_apps(self):
         logging.info('loading plugins')
         abs_p = utils.get_ncms_path()
         apps = os.listdir(os.path.join(abs_p, 'apps'))
@@ -83,15 +83,15 @@ class AppManager(utils.DictClass):
         apps = list(filter(lambda x: not x.startswith('_') and not x.endswith('.py'), apps))
         for item in apps:
             try:
-                self.load_app(item)
+                await self.load_app(item)
                 logging.info('app {} loaded'.format(item))
             except Exception as e:
                 logging.warning('app {} load error'.format(item))
                 logging.warning(str(e))
 
-        self.loading_apps()
+        await self.loading_apps()
 
-    def load_app(self, item):
+    async def load_app(self, item):
         abs_p = utils.get_ncms_path()
         app = importlib.import_module('apps.{}'.format(item))
         if not os.path.exists(os.path.join(abs_p, 'apps/{}/info.py'.format(item))):

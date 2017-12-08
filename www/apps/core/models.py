@@ -5,25 +5,22 @@
 Models for user, blog, comment.
 """
 from datetime import datetime
-
+from uuid import uuid4
 from dbs import BaseModel
-
-__author__ = 'Michael Liao'
-
-from peewee import CharField, TextField, ForeignKeyField, FloatField, UUIDField, DateTimeField
+from peewee import CharField, TextField, ForeignKeyField, UUIDField, DateTimeField
 
 
 class User(BaseModel):
     """Users"""
-    id = UUIDField(primary_key=True)
+    id = UUIDField(primary_key=True, default=uuid4)
     password = CharField()
     name = CharField()
     created_at = DateTimeField(default=datetime.now)
 
 
 class UserProfile(BaseModel):
-    id = UUIDField(primary_key=True)
-    user = ForeignKeyField(User, related_name='user')
+    id = UUIDField(primary_key=True, default=uuid4)
+    user = ForeignKeyField(User, related_name='profile')
     email = CharField()
     nick_name = CharField()
     image = CharField()
@@ -33,33 +30,28 @@ class UserProfile(BaseModel):
 
 class Settings(BaseModel):
     """Site"""
-    id = UUIDField(primary_key=True)
+    id = UUIDField(primary_key=True, default=uuid4)
     key = CharField()
     value = TextField()
     created_at = DateTimeField(default=datetime.now)
 
 
 class Article(BaseModel):
-    id = UUIDField(primary_key=True)
+    id = UUIDField(primary_key=True, default=uuid4)
     user = ForeignKeyField(User, related_name='articles')
-    created_at = DateTimeField(default=datetime.now)
-
-
-class PostRecord(BaseModel):
-    id = UUIDField(primary_key=True)
-    article = ForeignKeyField(Article, related_name='posts')
+    title = TextField()
     content = TextField()
     created_at = DateTimeField(default=datetime.now)
 
 
 class Tag(BaseModel):
-    id = UUIDField(primary_key=True)
-    content = TextField()
+    id = UUIDField(primary_key=True, default=uuid4)
+    content = CharField()
     created_at = DateTimeField(default=datetime.now)
 
 
 class ArticleTagMapping(BaseModel):
-    id = UUIDField(primary_key=True)
-    blog = ForeignKeyField(Article)
-    tag = ForeignKeyField(Tag)
+    id = UUIDField(primary_key=True, default=uuid4)
+    article = ForeignKeyField(Article, related_name='tags')
+    tag = ForeignKeyField(Tag, related_name='tag')
     created_at = DateTimeField(default=datetime.now)

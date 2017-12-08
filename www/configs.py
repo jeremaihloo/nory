@@ -53,7 +53,7 @@ class ConfigBase(object, metaclass=ConfigMeta):
 
 class NcmsConfig(ConfigBase):
     version = 1
-    debug = False
+    debug = True
     db_user = 'root'
     db_password = 'root'
     db_database = 'ncms'

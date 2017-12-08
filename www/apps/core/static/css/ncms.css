@@ -3,6 +3,16 @@ html, body {
     margin: 0;
 }
 
+html {
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+    font-size: 100%;
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+}
+
 ul, o, li {
     list-style: none;
 }
@@ -44,9 +54,38 @@ ul, o, li {
 
 .main {
     background-color: aliceblue;
-    width: 90vw;
     padding-top: 0.2em;
     padding-bottom: 0.2em;
+}
+
+@media screen and (min-width: 1200px) {
+    .main {
+        width: 70vw;
+    }
+}
+
+@media only screen and (min-width: 960px) and (max-width: 1199px) {
+    .main {
+        width: 80vw;
+    }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 959px) {
+    .main {
+        width: 85vw;
+    }
+}
+
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+    .main {
+        width: 90vw;
+    }
+}
+
+@media only screen and (max-width: 479px) {
+    .main {
+        width: 100vw;
+    }
 }
 
 .tags {
@@ -54,10 +93,12 @@ ul, o, li {
 }
 
 .tag-item {
+    display: block;
     margin: 0.5em;
-    padding: 0.5em;
-    background-color: deepskyblue;
-    border-radius: 5px;
+    /*padding: 0.5em;*/
+    /*background-color: deepskyblue;*/
+    /*border-radius: 5px;*/
+    float: left;
 }
 
 .tag-item a {
@@ -65,4 +106,43 @@ ul, o, li {
     display: block;
     width: 100%;
     text-decoration: none;
+    background-color: #cccccc;
+    padding: 0.3em;
+    border-radius: 5px;
+}
+
+.tag-item a:hover {
+    background-color: deepskyblue;
+}
+
+.article-list {
+    padding: 2em;
+}
+
+.article-item {
+    line-height: 2.4em;
+}
+
+.article-item a {
+    color: rgba(0, 0, 0, 0.9);
+    font-size: 1.6em;
+    text-decoration-color: #cccccc;
+}
+
+.article-item a:hover {
+    color: green;
+    text-decoration-color: green;
+    /*text-shadow: 0.1em 0.1em 0.1em darkgreen;*/
+}
+
+.article-item span {
+    right: 0;
+    margin-right: 0;
+    color: #ccc;
+    font-size: 0.8em;
+    float: right;
+}
+
+.clear {
+    clear: both;
 }

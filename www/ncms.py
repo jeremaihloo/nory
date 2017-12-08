@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from collections import OrderedDict
+from datetime import datetime, date
+from uuid import UUID
 
 import click as click
+from decimal import Decimal
 
 from app_cores import AppManager
 from utils import singleton
@@ -22,6 +25,7 @@ from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
 from coroweb import add_routes, add_static
 import events
+
 
 def init_jinja2(app, **kw):
     logging.info('init jinja2...')
@@ -88,7 +92,7 @@ async def data_factory(app, handler):
 
 
 def api_response(r, status_code=200):
-    resp = web.Response(status=status_code, body=json_response_body(api_response_body(r)))
+    resp = web.Response(status=status_code, body=json_dumps(api_response_body(r)))
     resp.content_type = 'application/json;charset=utf-8'
     return resp
 
@@ -100,8 +104,27 @@ def api_response_body(r, status_code=200):
     return o
 
 
-def json_response_body(r):
-    return json.dumps(r, ensure_ascii=False, default=lambda o: o.__dict__).encode('utf-8')
+def json_default(dt_fmt='%Y-%m-%d %H:%M:%S', date_fmt='%Y-%m-%d',
+                 decimal_fmt=str):
+    def _default(obj):
+        if isinstance(obj, datetime):
+            return obj.strftime(dt_fmt)
+        elif isinstance(obj, date):
+            return obj.strftime(date_fmt)
+        elif isinstance(obj, Decimal):
+            return decimal_fmt(obj)
+        elif isinstance(obj, UUID):
+            return str(obj)
+        else:
+            raise TypeError('%r is not JSON serializable' % obj)
+
+    return _default
+
+
+def json_dumps(obj, dt_fmt='%Y-%m-%d %H:%M:%S', date_fmt='%Y-%m-%d',
+               decimal_fmt=str, ensure_ascii=True):
+    return json.dumps(obj, ensure_ascii=ensure_ascii,
+                      default=json_default(dt_fmt, date_fmt, decimal_fmt))
 
 
 async def response_factory(app, handler):
@@ -137,6 +160,9 @@ async def response_factory(app, handler):
         if isinstance(r, int) and r >= 100 and r < 600:
             return api_response(None, status_code=r)
 
+        if isinstance(r, list):
+            return api_response(r)
+
         if isinstance(r, tuple) and len(r) == 2:
             t, m = r
             if isinstance(t, int) and t >= 100 and t < 600:
@@ -150,13 +176,12 @@ async def response_factory(app, handler):
 
 
 async def init(loop):
-
     app = web.Application(loop=loop, middlewares=[
         logger_factory, auth_factory, response_factory
     ])
 
     plugin_manager = AppManager()
-    plugin_manager.load_apps()
+    await plugin_manager.load_apps()
     app.plugin_manager = plugin_manager
 
     init_jinja2(app)
@@ -194,6 +219,7 @@ class NCMS(object):
 def run():
     n = NCMS()
     n.run(debug=True)
+
 
 if __name__ == '__main__':
     run()
