@@ -16,7 +16,7 @@ from app_cores import app_fn
 async def auth(app, request):
     au_header_value = request.headers.get('Authorization', None)
     if au_header_value is None:
-        return False
+        return False, 'header Authorization not found'
     decoded = jwt.decode(au_header_value, algorithm='HS256')
     request.__user__ = decoded['user']
-    return True
+    return True, 'success set user to request context'

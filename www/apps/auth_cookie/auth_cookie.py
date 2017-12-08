@@ -20,9 +20,9 @@ async def auth_cookie_provider(app, request):
         if user:
             logging.info('set current user: %s' % user.email)
             request.__user__ = user
-            return (True, 'success set user to request context')
-        return (False, 'user can not be created from cookie')
-    return (False, 'cookie str empty')
+            return True, 'success set user to request context'
+        return False, 'user can not be created from cookie'
+    return False, 'cookie str empty'
 
 
 @app_fn(events.__EVENT_ROUTING__, 'auth-cookie', 'auth by cookie')
