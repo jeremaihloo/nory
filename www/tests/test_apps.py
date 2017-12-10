@@ -1,10 +1,11 @@
+import pytest
 
 from app_cores import AppManager
 
-
-def test_load_plugins():
+@pytest.mark.asyncio
+async def test_load_plugins():
     manager = AppManager()
-    manager.load_apps()
+    await manager.load_apps()
     assert manager.__apps__ is not None and len(manager.__apps__) > 0
     assert manager.__app_fns__ is not None
     print(list(manager.__apps__))

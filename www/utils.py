@@ -4,7 +4,7 @@ import time
 import uuid
 
 
-def get_ncms_path():
+def ncms_www_path():
     cwd = os.getcwd()
     cwd = os.path.abspath(cwd)
     cwd = cwd[:cwd.find('ncms/www') + 8]

@@ -6,9 +6,10 @@ import logging
 import os
 import importlib
 import functools
-
+import yaml
 import utils
 import events
+from dependency import sort_dependency
 
 
 def app_fn(event, name, description):
@@ -27,12 +28,96 @@ def app_fn(event, name, description):
 
 
 class AppInfo(object):
-    def __init__(self, name, version, description, author, home_page):
+    def __init__(self, name, version, description, author, home_page, indexs, dependency):
         self.name = name
         self.version = version
         self.description = description
         self.author = author
         self.home_page = home_page
+        self.indexs = indexs
+        self.dependency = dependency
+
+
+class AppLoader(object):
+    def load(self, name):
+        pass
+
+
+class AppInfoLoader(object):
+    def load(self, name):
+        pass
+
+
+class PyInfoLoader(AppInfoLoader):
+    """info.py"""
+
+    def load(self, name):
+        info_m = importlib.import_module('apps.{}.info'.format(name))
+        app_info = AppInfo(
+            name=name,
+            author=getattr(info_m, '__author__', 'None'),
+            version=getattr(info_m, '__version__', 'None'),
+            description=getattr(info_m, '__description__', 'None'),
+            home_page=getattr(info_m, '__home_page__', 'None'),
+            indexs=getattr(info_m, 'INDEXS', []),
+            dependency=getattr(info_m, 'dependency', [])
+        )
+        return app_info
+
+
+class AppYamlInfoLoader(AppInfoLoader):
+    """app.yaml"""
+
+    def load(self, name):
+        abs_p = utils.ncms_www_path()
+        path = os.path.join(abs_p, 'apps/{}/{}'.format(name, 'app.yaml'))
+        app_info = yaml.load(path)
+        app_info = AppInfo(**app_info)
+        return app_info
+
+
+def load_app_info(name):
+    m = {
+        'info.py': PyInfoLoader(),
+        'app.yaml': AppYamlInfoLoader()
+    }
+    abs_p = utils.ncms_www_path()
+    filter_path = lambda key: os.path.exists(os.path.join(abs_p, 'apps/{}/{}'.format(name, key)))
+    keys = list(filter(filter_path, m.keys()))
+    if keys is None or len(keys) == 0:
+        raise FileNotFoundError('app info file not found {}'.format(name))
+    elif len(keys) > 1:
+        raise Exception('more than one app info file exists')
+
+    loader = m.get(keys[0], None)
+    if loader is not None:
+        logging.info('found loader for [{}]'.format(name))
+        return loader.load(name)
+    logging.warning('loader not found for [{}]'.format(name))
+    raise Exception('loader not found for [{}]'.format(name))
+
+
+def sort_app_info_by_dependency(app_infos):
+    maps = []
+    for item in app_infos:
+        for dep in item.dependency:
+            maps.append((item, dep))
+    logging.info('dependency mappings:{}'.format(maps))
+    sorted_deps = sort_dependency(maps)
+
+    def get_info_by_name(name):
+        for item in app_infos:
+            if name == item.name:
+                return item
+        return None
+
+    not_need_to_sorted = list(filter(lambda x: x.name not in sorted_deps, app_infos))
+    logging.info('not need to sorted {}'.format(not_need_to_sorted))
+    sorted_app_info = [get_info_by_name(x) for x in sorted_deps]
+    logging.info('sorted app infos {}'.format(sorted_app_info))
+    not_need_to_sorted.extend(sorted_app_info)
+    logging.info('merged:{}'.format(not_need_to_sorted))
+    return not_need_to_sorted
 
 
 @utils.singleton
@@ -77,39 +162,37 @@ class AppManager(utils.DictClass):
 
     async def load_apps(self):
         logging.info('loading plugins')
-        abs_p = utils.get_ncms_path()
+        abs_p = utils.ncms_www_path()
         apps = os.listdir(os.path.join(abs_p, 'apps'))
 
         apps = list(filter(lambda x: not x.startswith('_') and not x.endswith('.py'), apps))
+        app_infos = []
+
         for item in apps:
             try:
-                await self.load_app(item)
-                logging.info('app {} loaded'.format(item))
+                info = load_app_info(item)
+                if info:
+                    app_infos.append(info)
             except Exception as e:
-                logging.warning('app {} load error'.format(item))
+                logging.warning('load app info error :{}'.format(e))
+        app_infos = sort_app_info_by_dependency(app_infos)
+        logging.info('sorted app info dependency {}'.format([x.name for x in app_infos]))
+        for item in app_infos:
+            try:
+                await self.load_app(item)
+                logging.info('app {} loaded'.format(item.name))
+            except Exception as e:
+                logging.warning('app {} load error'.format(item.name))
                 logging.warning(str(e))
 
         await self.loading_apps()
 
-    async def load_app(self, item):
-        abs_p = utils.get_ncms_path()
-        app = importlib.import_module('apps.{}'.format(item))
-        if not os.path.exists(os.path.join(abs_p, 'apps/{}/info.py'.format(item))):
-            raise Exception('load app error , {}/info.py not found'.format(item))
-
-        info = importlib.import_module('apps.{}.info'.format(item))
-        info_desc = AppInfo(
-            name=item,
-            author=getattr(info, '__author__', 'None'),
-            version=getattr(info, '__version__', 'None'),
-            description=getattr(info, '__description__', 'None'),
-            home_page=getattr(info, '__home_page__', 'None')
-        )
-        self.__apps__.append(info_desc)
-        indexs = getattr(info, 'INDEXS', None)
+    async def load_app(self, app_info):
+        self.__apps__.append(app_info)
+        indexs = app_info.indexs
         if indexs:
             for id in indexs:
-                m = importlib.import_module('apps.{}.{}'.format(item, id))
+                m = importlib.import_module('apps.{}.{}'.format(app_info.name, id))
                 for attr in dir(m):
                     fn = getattr(m, attr, None)
                     if fn is not None and inspect.isfunction(fn):
