@@ -71,8 +71,17 @@ class AppYamlInfoLoader(AppInfoLoader):
     def load(self, name):
         abs_p = utils.ncms_www_path()
         path = os.path.join(abs_p, 'apps/{}/{}'.format(name, 'app.yaml'))
-        app_info = yaml.load(path)
-        app_info = AppInfo(**app_info)
+        app_info = yaml.load(open(path))
+        logging.debug('app_info from yaml:{}'.format(app_info))
+        app_info = AppInfo(
+            name=name,
+            author=app_info.get('author', ''),
+            version=app_info.get('version', ''),
+            description=app_info.get('description', ''),
+            home_page=app_info.get('home_page'),
+            indexs=app_info.get('indexs', []),
+            dependency=app_info.get('dependency', [])
+        )
         return app_info
 
 
@@ -174,7 +183,7 @@ class AppManager(utils.DictClass):
                 if info:
                     app_infos.append(info)
             except Exception as e:
-                logging.warning('load app info error :{}'.format(e))
+                logging.warning('load app info [{}] error :{}'.format(item, e))
         app_infos = sort_app_info_by_dependency(app_infos)
         logging.info('sorted app info dependency {}'.format([x.name for x in app_infos]))
         for item in app_infos:
