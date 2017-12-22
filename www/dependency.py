@@ -1,7 +1,7 @@
 __all_keys = []
 
 
-def sort_dependency(maps: list, rs=[], min_set=set()):
+def sort_app_dependency(maps: list, rs=[], min_set=set()):
 
     if len(maps) == 0:
         return rs
