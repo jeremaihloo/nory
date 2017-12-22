@@ -1,4 +1,4 @@
-FROM python:3.5
+FROM python:3.6
 LABEL Description="ncms project" Version="0.1"
 
 WORKDIR /workspace

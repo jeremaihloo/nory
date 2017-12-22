@@ -12,7 +12,7 @@ import events
 from dependency import sort_dependency
 
 
-def app_fn(event, name, description):
+def app_fn(event, name='', description=''):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kw):
