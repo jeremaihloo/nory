@@ -42,7 +42,6 @@ nosetests.xml
 Icon?
 ehthumbs.db
 Thumbs.db
-dist
 MANIFEST
 
 # Translations
@@ -56,3 +55,4 @@ MANIFEST
 venv
 .cache
 www/tests/.cache
+.vscode/.ropeproject/
