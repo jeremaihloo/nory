@@ -1,5 +1,4 @@
-ncms
-======================
+# ncms
 
 A simple python content management system.
 
@@ -9,26 +8,26 @@ This project is developing !
 
 ## TODO：
 
-- Theme
-- admin
-- app_manager
-- app_store_client
-- app_store_server
-- auth_cookie
-- auth_jwt
-- cache_redis
-- core
-- demo
-- displays
-- health_check
-- mail
-- message
-- page_statistics
-- profile
-- rbac
-- routes_viewer
-- security (page rate limits)
-- sms
+* Theme
+* admin
+* app_manager
+* app_store_client
+* app_store_server
+* auth_cookie
+* auth_jwt
+* cache_redis
+* core
+* demo
+* displays
+* health_check
+* mail
+* message
+* page_statistics
+* profile
+* rbac
+* routes_viewer
+* security (page rate limits)
+* sms
 
 ## License
 

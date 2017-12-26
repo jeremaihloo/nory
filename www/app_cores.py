@@ -9,7 +9,7 @@ import functools
 import yaml
 import utils
 import events
-from dependency import sort_dependency
+from dependency import sort_app_dependency
 
 
 def app_fn(event, name='', description=''):
@@ -112,7 +112,7 @@ def sort_app_info_by_dependency(app_infos):
         for dep in item.dependency:
             maps.append((item, dep))
     logging.info('dependency mappings:{}'.format(maps))
-    sorted_deps = sort_dependency(maps)
+    sorted_deps = sort_app_dependency(maps)
 
     def get_info_by_name(name):
         for item in app_infos:

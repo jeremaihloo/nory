@@ -1,20 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 from collections import OrderedDict
 from datetime import datetime, date
 from uuid import UUID
-
-import click as click
 from decimal import Decimal
-
 from app_cores import AppManager
 from utils import singleton
-
-__author__ = 'Michael Liao'
-
-'''
-async web application.
-'''
 
 import logging
 
@@ -215,11 +207,13 @@ class NCMS(object):
         loop.run_forever()
 
 
-@click.command()
 def run():
     n = NCMS()
     n.run(debug=True)
 
 
 if __name__ == '__main__':
-    run()
+    try:
+        run()
+    except KeyboardInterrupt:
+        logging.info('ncms close by keyboard inerrupt')
