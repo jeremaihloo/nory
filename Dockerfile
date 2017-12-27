@@ -15,5 +15,5 @@ EXPOSE 9000
 
 COPY ./www /workspace/
 ENV PYTHONPATH=/workspace/
-CMD ["python", "ncms.py"]
+ENTRYPOINT [ "python", "ncms.py" ]
 
