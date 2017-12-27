@@ -1,24 +1,9 @@
 import json
-import logging
-import os
 import sys
 
 __configs__ = None
 
 __config_names = ['development', 'production']
-
-
-def merge(defaults, override):
-    r = {}
-    for k, v in defaults.items():
-        if k in override:
-            if isinstance(v, dict):
-                r[k] = merge(v, override[k])
-            else:
-                r[k] = override[k]
-        else:
-            r[k] = v
-    return r
 
 
 def load_options_from_config_file():
@@ -27,12 +12,13 @@ def load_options_from_config_file():
         try:
             m = json.load(open('runnings/config.{}.json'.format(item)))
             if __configs__ is not None:
-                __configs__ = merge(__configs__, m)
+                __configs__ = {**__configs__, **m}
             else:
                 __configs__ = m
-            logging.info('runnings/config.{}.json loaded'.format(item))
+            print('[configs] runnings/config.{}.json loaded'.format(item))
         except FileNotFoundError as e:
-            logging.warning('runnings/config.{}.json not found'.format(item))
+            pass
+            # logging.warning('runnings/config.{}.json not found'.format(item))
 
 
 def load_config_from_command_line():
@@ -51,10 +37,10 @@ def load_config_from_command_line():
                 pairs[key] = val
         else:
             pass
-    logging.info('options from command line : {}'.format(pairs))
+    print('[configs] options from command line : {}'.format(pairs))
     global __configs__
     if __configs__ is not None:
-        __configs__ = merge(__configs__, pairs)
+        __configs__ = {**__configs__, **pairs}
     else:
         __configs__ = pairs
 
@@ -62,6 +48,8 @@ def load_config_from_command_line():
 load_options_from_config_file()
 
 load_config_from_command_line()
+
+print('[configs]', __configs__)
 
 
 class ConfigMeta(type):
@@ -89,6 +77,9 @@ class NcmsConfig(ConfigBase):
     secret = 'ncms'
 
     pre_installed_apps = ['core', 'admin', 'app_manager', 'app_store_client', 'auth_cookie', 'rbacm']
+
+    log_level = 'INFO'
+    colored_log = True
 
 
 if __name__ == '__main__':

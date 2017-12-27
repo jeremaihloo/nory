@@ -14,3 +14,9 @@ __permissions__ = [
 __user_agreement__ = """
 
 """
+
+INDEXS = [
+    'models',
+    'handlers',
+    'auth_rbacm'
+]

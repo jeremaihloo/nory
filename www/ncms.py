@@ -1,22 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import coloredlogs, logging
+from configs import NcmsConfig
+
+if NcmsConfig.colored_log:
+    coloredlogs.install(level=NcmsConfig.log_level)
+else:
+    logging.basicConfig(level=NcmsConfig.log_level)
+
 from collections import OrderedDict
 from datetime import datetime, date
 from uuid import UUID
 from decimal import Decimal
 from app_cores import AppManager
 from utils import singleton
-
-import logging
-
-logging.basicConfig(level=logging.DEBUG)
-
-import asyncio, os, json
 from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
 from coroweb import add_routes, add_static
 import events
+import asyncio, os, json
 
 
 def init_jinja2(app, **kw):
@@ -180,11 +183,12 @@ async def init(loop):
     add_routes(app)
 
     for item in app.plugin_manager.__apps__:
-        try:
-            add_static(app, item.name,
-                       os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps', item.name, 'static'))
-        except Exception as e:
-            logging.warning(str(e))
+        for path in item.static:
+            path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps', item.name, path)
+            try:
+                add_static(app, item.name, path)
+            except Exception as e:
+                logging.warning(str(e))
 
     srv = await loop.create_server(app.make_handler(), '127.0.0.1', 9000)
     logging.info('server started at http://127.0.0.1:9000...')
@@ -196,7 +200,7 @@ class NCMS(object):
     def __init__(self):
         self.running = False
 
-    def run(self, debug=False):
+    def run(self):
         if self.running:
             return
 
@@ -209,7 +213,7 @@ class NCMS(object):
 
 def run():
     n = NCMS()
-    n.run(debug=True)
+    n.run()
 
 
 if __name__ == '__main__':

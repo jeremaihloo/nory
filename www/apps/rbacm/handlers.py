@@ -1,6 +1,6 @@
 import events
 from app_cores import app_fn
-from apps.rbacm.models import Role, Menu, UserMenuMappings, UserRoleMappings
+from apps.rbacm.models import Role, Menu, RoleMenuMappings, UserRoleMappings
 from coroweb import post
 
 
@@ -44,7 +44,7 @@ async def api_create_user_role_mapping(user_id, role):
 @app_fn(events.__EVENT_ROUTING__, 'api_create_user_role_mapping', 'api_create_user_role_mapping')
 @post('/api/user-menu-mappings')
 async def api_create_user_role_mapping(user_id, menu):
-    mapping = UserMenuMappings()
+    mapping = RoleMenuMappings()
     mapping.user_id = user_id
     mapping.menu = menu
     await mapping.save()

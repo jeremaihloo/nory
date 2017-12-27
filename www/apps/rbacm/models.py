@@ -1,12 +1,11 @@
 from datetime import datetime
 from uuid import uuid4
-
-import events
 from app_cores import app_fn
 from peewee import CharField, UUIDField, DateTimeField, ForeignKeyField
 from apps.core.models import User
-from coroweb import post
-from dbs import BaseModel
+from configs import NcmsConfig
+from dbs import BaseModel, database
+import events
 
 
 class Role(BaseModel):
@@ -47,8 +46,20 @@ class Menu(BaseModel):
     created_at = DateTimeField(default=datetime.now)
 
 
-class UserMenuMappings(BaseModel):
+class RoleMenuMappings(BaseModel):
     id = UUIDField(primary_key=True, default=uuid4)
-    user = ForeignKeyField(User)
+    role = ForeignKeyField(Role)
     menu = ForeignKeyField(Menu)
     created_at = DateTimeField(default=datetime.now)
+
+
+@app_fn(events.__EVENT_ON_APP_INSTALLING__)
+async def on_app_installing_init_db():
+    database.create_tables([
+        Role,
+        Permission,
+        RolePermissionMappings,
+        UserRoleMappings,
+        Menu,
+        RoleMenuMappings
+    ])

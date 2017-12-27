@@ -168,12 +168,17 @@ def add_route(app, fn):
     if not asyncio.iscoroutinefunction(fn) and not inspect.isgeneratorfunction(fn):
         fn = asyncio.coroutine(fn)
     logging.info(
-        'add route %s %s => %s(%s)' % (method, path, fn.__name__, ', '.join(inspect.signature(fn).parameters.keys())))
+        'add route %s %s => %s(%s)' % (
+        beautify_http_method(method), path, fn.__name__, ', '.join(inspect.signature(fn).parameters.keys())))
     app.router.add_route(method, path, RequestHandler(app, fn))
 
     for item in app.plugin_manager.__app_fns__[events.__EVENT_ADD_ROUTE__]:
         params = [x for x in inspect.signature(fn).parameters.keys()]
         item(method, path, params)
+
+
+def beautify_http_method(method: str):
+    return method.ljust(6, ' ')
 
 
 def add_routes(app):

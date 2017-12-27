@@ -28,7 +28,7 @@ def app_fn(event, name='', description=''):
 
 
 class AppInfo(object):
-    def __init__(self, name, version, description, author, home_page, indexs, dependency):
+    def __init__(self, name, version, description, author, home_page, indexs, dependency, static):
         self.name = name
         self.version = version
         self.description = description
@@ -36,6 +36,7 @@ class AppInfo(object):
         self.home_page = home_page
         self.indexs = indexs
         self.dependency = dependency
+        self.static = static
 
 
 class AppLoader(object):
@@ -60,7 +61,8 @@ class PyInfoLoader(AppInfoLoader):
             description=getattr(info_m, '__description__', 'None'),
             home_page=getattr(info_m, '__home_page__', 'None'),
             indexs=getattr(info_m, 'INDEXS', []),
-            dependency=getattr(info_m, 'dependency', [])
+            dependency=getattr(info_m, 'dependency', []),
+            static=getattr(info_m, 'static', [])
         )
         return app_info
 
@@ -80,7 +82,8 @@ class AppYamlInfoLoader(AppInfoLoader):
             description=app_info.get('description', ''),
             home_page=app_info.get('home_page'),
             indexs=app_info.get('indexs', []),
-            dependency=app_info.get('dependency', [])
+            dependency=app_info.get('dependency', []),
+            static=app_info.get('static', [])
         )
         return app_info
 
@@ -100,10 +103,8 @@ def load_app_info(name):
 
     loader = m.get(keys[0], None)
     if loader is not None:
-        logging.info('found loader for [{}]'.format(name))
         return loader.load(name)
-    logging.warning('loader not found for [{}]'.format(name))
-    raise Exception('loader not found for [{}]'.format(name))
+    raise Exception('[load_app_info] loader not found for [{}]'.format(name))
 
 
 def sort_app_info_by_dependency(app_infos):
@@ -121,11 +122,8 @@ def sort_app_info_by_dependency(app_infos):
         return None
 
     not_need_to_sorted = list(filter(lambda x: x.name not in sorted_deps, app_infos))
-    logging.info('not need to sorted {}'.format(not_need_to_sorted))
     sorted_app_info = [get_info_by_name(x) for x in sorted_deps]
-    logging.info('sorted app infos {}'.format(sorted_app_info))
     not_need_to_sorted.extend(sorted_app_info)
-    logging.info('merged:{}'.format(not_need_to_sorted))
     return not_need_to_sorted
 
 
@@ -165,12 +163,12 @@ class AppManager(utils.DictClass):
         for item in self.__app_fns__[events.__EVENT_ON_APP_LOADING__]:
             try:
                 await self.loading_app(item)
-                logging.info('on loading app item {} ok'.format(item))
+                logging.info('[loading_apps] app item {} ok'.format(item))
             except Exception as e:
-                logging.warning('on loading_apps error {}'.format(e))
+                logging.warning('[loading_apps] error [{}]  {}'.format(item, e))
 
     async def load_apps(self):
-        logging.info('loading plugins')
+        logging.info('start loading apps')
         abs_p = os.path.abspath('.')
         apps = os.listdir(os.path.join(abs_p, 'apps'))
 
@@ -182,16 +180,20 @@ class AppManager(utils.DictClass):
                 info = load_app_info(item)
                 if info:
                     app_infos.append(info)
+                    logging.info('[load_app_info] found loader for [{}]'.format(item))
             except Exception as e:
                 logging.warning('load app info [{}] error :{}'.format(item, e))
+
         app_infos = sort_app_info_by_dependency(app_infos)
-        logging.info('sorted app info dependency {}'.format([x.name for x in app_infos]))
+
+        logging.info('sorted app info dependency [{}]'.format([x.name for x in app_infos]))
+
         for item in app_infos:
             try:
                 await self.load_app(item)
-                logging.info('app {} loaded'.format(item.name))
+                logging.info('[load_apps] app [{}] loaded'.format(item.name))
             except Exception as e:
-                logging.warning('app {} load error'.format(item.name))
+                logging.warning('[load_apps] app [{}] load error'.format(item.name))
                 logging.warning(str(e))
 
         await self.loading_apps()
