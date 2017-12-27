@@ -1,12 +1,11 @@
-version: "3"
+version: '2'
 services:
   db:
     image: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=123456
   web:
-    build:
-      context: ./
+    image: jeremaihloo/ncms
     command:
       - "python"
       - "ncms.py"
