@@ -69,7 +69,7 @@ class AppYamlInfoLoader(AppInfoLoader):
     """app.yaml"""
 
     def load(self, name):
-        abs_p = utils.ncms_www_path()
+        abs_p = os.path.abspath('.')
         path = os.path.join(abs_p, 'apps/{}/{}'.format(name, 'app.yaml'))
         app_info = yaml.load(open(path))
         logging.debug('app_info from yaml:{}'.format(app_info))
@@ -90,7 +90,7 @@ def load_app_info(name):
         'info.py': PyInfoLoader(),
         'app.yaml': AppYamlInfoLoader()
     }
-    abs_p = utils.ncms_www_path()
+    abs_p = os.path.abspath('.')
     filter_path = lambda key: os.path.exists(os.path.join(abs_p, 'apps/{}/{}'.format(name, key)))
     keys = list(filter(filter_path, m.keys()))
     if keys is None or len(keys) == 0:
@@ -171,7 +171,7 @@ class AppManager(utils.DictClass):
 
     async def load_apps(self):
         logging.info('loading plugins')
-        abs_p = utils.ncms_www_path()
+        abs_p = os.path.abspath('.')
         apps = os.listdir(os.path.join(abs_p, 'apps'))
 
         apps = list(filter(lambda x: not x.startswith('_') and not x.endswith('.py'), apps))

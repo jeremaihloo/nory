@@ -3,6 +3,6 @@ HARDS = [
     'app_store_client',
     'auth_cookie',
     'core',
-    'demo',
+    'demo-app-for-tests',
     'app_manager'
 ]

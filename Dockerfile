@@ -13,7 +13,7 @@ RUN pip install -r requirements.txt
 
 EXPOSE 9000
 
-COPY . /workspace/
-
-CMD ["python", "www/ncms.py"]
+COPY ./www /workspace/
+ENV PYTHONPATH=/workspace/
+CMD ["python", "ncms.py"]
 

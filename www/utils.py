@@ -1,14 +1,6 @@
 import hmac
-import os
 import time
 import uuid
-
-
-def ncms_www_path():
-    cwd = os.getcwd()
-    cwd = os.path.abspath(cwd)
-    cwd = cwd[:cwd.find('ncms/www') + 8]
-    return cwd
 
 
 class DictClass(dict):
