@@ -70,6 +70,7 @@ class NcmsConfig(ConfigBase):
     version = 1
     debug = True
 
+    db_host = 'localhost'
     db_user = 'root'
     db_password = 'root'
     db_database = 'ncms'
