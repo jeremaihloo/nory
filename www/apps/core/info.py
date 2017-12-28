@@ -11,3 +11,7 @@ INDEXS = [
     'handlers',
     'install'
 ]
+
+static = [
+    'static'
+]

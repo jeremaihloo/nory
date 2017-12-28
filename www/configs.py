@@ -74,6 +74,7 @@ class NcmsConfig(ConfigBase):
     db_user = 'root'
     db_password = 'root'
     db_database = 'ncms'
+    db_port = '3306'
 
     secret = 'ncms'
 

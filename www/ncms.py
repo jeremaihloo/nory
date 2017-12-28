@@ -2,12 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import coloredlogs, logging
-from configs import NcmsConfig
+from configs import NcmsConfig, __configs__
 
 if NcmsConfig.colored_log:
     coloredlogs.install(level=NcmsConfig.log_level)
 else:
     logging.basicConfig(level=NcmsConfig.log_level)
+
+logging.info('[configs] {}'.format(__configs__))
 
 from collections import OrderedDict
 from datetime import datetime, date
