@@ -1,6 +1,7 @@
 from playhouse.shortcuts import model_to_dict
 
 import app_cores
+import events
 from apps.core.apis import APIValueError
 from apps.core.models import User, UserProfile
 from coroweb import post
@@ -19,7 +20,7 @@ import jwt
 from app_cores import app_fn
 
 
-@app_fn(app_cores.__EVENT_ROUTING__, 'auth_jwt_provider', 'auth_jwt_provider')
+@app_fn(events.__EVENT_ROUTING__, 'auth_jwt_provider', 'auth_jwt_provider')
 async def auth_jwt_provider(app, request):
     au_header_value = request.headers.get('Authorization', None)
     if au_header_value is None:
@@ -29,7 +30,7 @@ async def auth_jwt_provider(app, request):
     return True, 'success set user to request context'
 
 
-@app_fn(app_cores.__EVENT_ROUTING__, 'api_login_jwt_by_password_and_email', 'api_login_jwt_by_password_and_email')
+@app_fn(events.__EVENT_ROUTING__, 'api_login_jwt_by_password_and_email', 'api_login_jwt_by_password_and_email')
 @post('/api/login/jwt')
 async def api_login_jwt_by_password_and_email(*, email, password):
     if not email:
