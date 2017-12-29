@@ -12,8 +12,8 @@
   
     <v-card >
       <v-data-table v-bind:headers="columns" v-model="data.data" hide-actions>
-      <template slot="items" scope="props">
-        <td :class="column.left? '': 'text-xs-right'" v-for="column in columns">
+      <template slot="items" slot-scope="props">
+        <td :class="column.left? '': 'text-xs-right'" v-for="(index, column) in columns" :key="index">
           {{getColumnData(props.item, column.value)}}
         </td>
         <td v-if="actions" width="180">

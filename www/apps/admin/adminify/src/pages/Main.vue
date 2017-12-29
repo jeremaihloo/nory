@@ -39,7 +39,7 @@ v-app(:dark="dark",standalone)
           v-list-tile-action(v-if='item.subAction')
             v-icon.success--text {{ item.subAction }}
   v-toolbar.darken-1(fixed,dark,:class="theme") 
-    v-toolbar-side-icon(dark, @click.native.stop='drawer = !drawer')
+    v-toolbar-side-icon(dark, @click='drawer = !drawer')
     v-toolbar-title {{$t(pageTitle)}}
     v-spacer
     v-menu(offset-y)
