@@ -5,8 +5,11 @@ services:
     environment:
       - MYSQL_DATABASE=ncms
       - MYSQL_ROOT_PASSWORD=123456
+    ports:
+      - "3307:3306"
   web:
-    image: jeremaihloo/ncms
+    build:
+      context: ./
     command:
       - ./wait-for-it.sh
       - db:3306
@@ -20,3 +23,5 @@ services:
       - db
     links:
       - db:db
+    ports:
+      - "9000:9000"
