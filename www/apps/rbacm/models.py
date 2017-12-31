@@ -1,6 +1,6 @@
 from datetime import datetime
 from uuid import uuid4
-from app_cores import app_fn
+from app_cores import feature
 from peewee import CharField, UUIDField, DateTimeField, ForeignKeyField, TextField
 from apps.core.models import User
 from configs import NcmsConfig
@@ -11,6 +11,7 @@ import events
 class Role(BaseModel):
     id = UUIDField(primary_key=True, default=uuid4)
     name = CharField()
+    title = CharField()
     description = CharField()
     created_at = DateTimeField(default=datetime.now)
 
@@ -26,6 +27,7 @@ class UserGroup(BaseModel):
     id = UUIDField(primary_key=True, default=uuid4)
     name = CharField(unique=True)
     title = CharField()
+    description = CharField()
     created_at = DateTimeField(default=datetime.now)
 
 
@@ -46,12 +48,13 @@ class UserGroupRoleMappings(BaseModel):
 class Permission(BaseModel):
     id = UUIDField(primary_key=True, default=uuid4)
     name = CharField(unique=True)
+    title = CharField()
     type = CharField()
     description = CharField()
     created_at = DateTimeField(default=datetime.now)
 
 
-class RolePermissionMappings(BaseModel):
+class PermissionRoleMappings(BaseModel):
     id = UUIDField(primary_key=True, default=uuid4)
     permission = ForeignKeyField(Permission)
     role = ForeignKeyField(Role)
@@ -120,13 +123,26 @@ class PermissionOperationMappings(BaseModel):
     created_at = DateTimeField(default=datetime.now)
 
 
-@app_fn(events.__EVENT_ON_APP_INSTALLING__)
+rbacm_models = [
+    Role,
+    UserRoleMappings,
+    UserGroup,
+    UserGroupMappings,
+    UserGroupRoleMappings,
+    Permission,
+    PermissionRoleMappings,
+    Menu,
+    PermissionMenuMappings,
+    PageDisplay,
+    PermissionPageDisplayMappings,
+    FileEntry,
+    PermissionFileMappings,
+    Operation,
+    PermissionOperationMappings
+]
+
+
+@feature(events.__FEATURE_ON_APP_INSTALLING__)
 async def on_app_installing_init_db():
-    database.create_tables([
-        Role,
-        Permission,
-        RolePermissionMappings,
-        UserRoleMappings,
-        Menu,
-        RoleMenuMappings
-    ])
+    global rbacm_models
+    database.create_tables(rbacm_models)

@@ -12,14 +12,14 @@ import events
 from dependency import sort_app_dependency
 
 
-def app_fn(event, name='', description=''):
+def feature(event, name='', title='', description=''):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kw):
             return func(*args, **kw)
-
         wrapper.__app_event__ = event
         wrapper.__app_fn_name__ = name
+        wrapper.__app_fn_title__ = title
         wrapper.__app_fn_description__ = description
 
         return wrapper
@@ -160,7 +160,7 @@ class AppManager(utils.DictClass):
         await item()
 
     async def loading_apps(self):
-        for item in self.__app_fns__[events.__EVENT_ON_APP_LOADING__]:
+        for item in self.__app_fns__[events.__FEATURE_ON_APP_LOADING__]:
             try:
                 await self.loading_app(item)
                 logging.info('[loading_apps] app item {} ok'.format(item))

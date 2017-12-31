@@ -38,7 +38,7 @@ def init_jinja2(app, **kw):
     logging.info('set jinja2 template path: %s' % path)
 
     env = Environment(loader=FileSystemLoader(path), **options)
-    filters = app.plugin_manager.__app_fns__[events.__EVENT_TEMPLATE_FILTER__]
+    filters = app.plugin_manager.__app_fns__[events.__FEATURE_TEMPLATE_FILTER__]
     if filters is not None:
         for f in filters:
             env.filters[getattr(f, '__app_fn_name__')] = f
@@ -59,7 +59,7 @@ async def auth_factory(app, handler):
         request.__user__ = None
         logging.info('auth user: %s %s' % (request.method, request.path))
         flag = False
-        for fn in app.plugin_manager.__app_fns__[events.__EVENT_AUTHING__]:
+        for fn in app.plugin_manager.__app_fns__[events.__FEATURE_AUTHING__]:
             if await fn(app, request) is True:
                 logging.info('auth fn : {} passed'.format(getattr(fn, '__app_fn_name__')))
                 flag = True
@@ -67,7 +67,7 @@ async def auth_factory(app, handler):
                 logging.info('auth fn : {} unpass'.format(getattr(fn, '__app_fn_name__')))
 
         if not flag:
-            for fn in app.plugin_manager.__app_fns__[events.__EVENT_AUTH_FLASE__]:
+            for fn in app.plugin_manager.__app_fns__[events.__FEATURE_AUTH_FLASE__]:
                 await fn(app, request)
         return (await handler(request))
 

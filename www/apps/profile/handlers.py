@@ -1,13 +1,13 @@
 from playhouse.shortcuts import model_to_dict
 
-from app_cores import app_fn
+from app_cores import feature
 import events
 from apps.core.models import Article
 from coroweb import get
 from dbs import objects
 
 
-@app_fn(events.__EVENT_ROUTING__, 'profile', 'profile')
+@feature(events.__FEATURE_ROUTING__, 'profile', 'profile')
 @get('/profile')
 async def page_profile():
     try:

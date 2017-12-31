@@ -1,9 +1,9 @@
 import events
-from app_cores import app_fn
+from app_cores import feature
 from coroweb import get
 
 
-@app_fn(events.__EVENT_ROUTING__, 'admin', 'admin manage index')
+@feature(events.__FEATURE_ROUTING__, 'admin', 'admin manage index')
 @get('/admin')
 def page_admin():
     return {

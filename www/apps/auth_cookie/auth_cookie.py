@@ -7,11 +7,11 @@ from apps.core.models import User, UserProfile
 import logging
 import hashlib, json
 from aiohttp import web
-from app_cores import app_fn
+from app_cores import feature
 from dbs import objects
 
 
-@app_fn(events.__EVENT_AUTHING__, 'auth_cookie_provider', 'auth_cookie_provider')
+@feature(events.__FEATURE_AUTHING__, 'auth_cookie_provider', 'auth_cookie_provider')
 async def auth_cookie_provider(app, request):
     """provider cookie into ncms auth"""
     request.__user__ = None
@@ -26,7 +26,7 @@ async def auth_cookie_provider(app, request):
     return False, 'cookie str empty'
 
 
-@app_fn(events.__EVENT_ROUTING__, 'api_login_using_cookie_by_email_and_password', 'api_login_using_cookie_by_email_and_password')
+@feature(events.__FEATURE_ROUTING__, 'api_login_using_cookie_by_email_and_password', 'api_login_using_cookie_by_email_and_password')
 @post('/api/login/cookie')
 async def api_login_using_cookie_by_email_and_password(*, email, passwd):
     if not email:

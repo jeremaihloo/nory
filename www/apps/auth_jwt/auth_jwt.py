@@ -17,10 +17,10 @@ __description__ = 'provide jwt auth'
 __home_page__ = 'https://github.com/jeremaihloo/ncms-auth-cookie'
 
 import jwt
-from app_cores import app_fn
+from app_cores import feature
 
 
-@app_fn(events.__EVENT_ROUTING__, 'auth_jwt_provider', 'auth_jwt_provider')
+@feature(events.__FEATURE_ROUTING__, 'auth_jwt_provider', 'auth_jwt_provider')
 async def auth_jwt_provider(app, request):
     au_header_value = request.headers.get('Authorization', None)
     if au_header_value is None:
@@ -30,7 +30,7 @@ async def auth_jwt_provider(app, request):
     return True, 'success set user to request context'
 
 
-@app_fn(events.__EVENT_ROUTING__, 'api_login_jwt_by_password_and_email', 'api_login_jwt_by_password_and_email')
+@feature(events.__FEATURE_ROUTING__, 'api_login_jwt_by_password_and_email', 'api_login_jwt_by_password_and_email')
 @post('/api/login/jwt')
 async def api_login_jwt_by_password_and_email(*, email, password):
     if not email:

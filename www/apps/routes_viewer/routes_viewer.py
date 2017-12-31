@@ -1,12 +1,12 @@
 import app_cores
 import events
 from coroweb import get
-from app_cores import app_fn
+from app_cores import feature
 
 routes = []
 
 
-@app_fn(events.__EVENT_ADD_ROUTE__, 'add_route_to_table', 'on add route do this ')
+@feature(events.__FEATURE_ADD_ROUTE__, 'add_route_to_table', 'on add route do this ')
 def add_route_to_table(method, url, params):
     routes.append({
         'method': method,
@@ -15,7 +15,7 @@ def add_route_to_table(method, url, params):
     })
 
 
-@app_fn(events.__EVENT_ROUTING__, 'get_routes', 'on add route do this ')
+@feature(events.__FEATURE_ROUTING__, 'get_routes', 'on add route do this ')
 @get('/api/routes')
 def api_get_routes():
     return  {
@@ -23,7 +23,7 @@ def api_get_routes():
     }
 
 
-@app_fn(events.__EVENT_ROUTING__, 'get_api_table', 'get api table')
+@feature(events.__FEATURE_ROUTING__, 'get_api_table', 'get api table')
 @get('/apis')
 def api_get_api_tables():
     return {

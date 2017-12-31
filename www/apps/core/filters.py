@@ -3,10 +3,10 @@ import datetime
 import events
 import markdown2
 
-from app_cores import app_fn
+from app_cores import feature
 
 
-@app_fn(events.__EVENT_TEMPLATE_FILTER__, 'datetime', 'datetime friendly filter')
+@feature(events.__FEATURE_TEMPLATE_FILTER__, 'datetime', 'datetime friendly filter')
 def filter_datetime(t: datetime.datetime):
     delta = (datetime.datetime.now() - t).seconds
     if delta < 60:
@@ -21,6 +21,6 @@ def filter_datetime(t: datetime.datetime):
     return u'%s年%s月%s日' % (dt.year, dt.month, dt.day)
 
 
-@app_fn(events.__EVENT_TEMPLATE_FILTER__, 'md', 'markdown it')
+@feature(events.__FEATURE_TEMPLATE_FILTER__, 'md', 'markdown it')
 def filter_md(t):
     return markdown2.markdown(t)

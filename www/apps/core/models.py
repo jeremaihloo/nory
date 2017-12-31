@@ -55,3 +55,14 @@ class ArticleTagMapping(BaseModel):
     article = ForeignKeyField(Article, related_name='tags')
     tag = ForeignKeyField(Tag, related_name='tag')
     created_at = DateTimeField(default=datetime.now)
+
+
+core_models = [
+    User,
+    UserProfile,
+    Settings,
+    Article,
+    ArticleTagMapping,
+    Tag,
+    ArticleTagMapping
+]

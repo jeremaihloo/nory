@@ -1,43 +1,20 @@
 import events
-from app_cores import app_fn
+from app_cores import feature
 from apps.core import models
-from apps.rbacm.models import Role, Permission, RolePermissionMappings, UserRoleMappings, Menu, RoleMenuMappings
+from apps.core.models import core_models
+from apps.rbacm.models import rbacm_models
 from configs import NcmsConfig
 from dbs import database, objects
 from utils import hash_pwd
 
+models_all = core_models + rbacm_models
 
-@app_fn(events.__EVENT_ON_APP_LOADING__, 'core_debug_init_db', 'core_debug_init_db')
+
+@feature(events.__FEATURE_ON_APP_LOADING__, 'core_debug_init_db', 'core_debug_init_db')
 async def app_core_debug_init_db():
     if NcmsConfig.debug:
-        database.drop_tables([
-            models.User,
-            models.Article,
-            models.Tag,
-            models.UserProfile,
-            models.ArticleTagMapping,
-            models.Settings,
-            Role,
-            Permission,
-            RolePermissionMappings,
-            UserRoleMappings,
-            Menu,
-            RoleMenuMappings
-        ], safe=True)
-    database.create_tables([
-        models.User,
-        models.Article,
-        models.Tag,
-        models.UserProfile,
-        models.ArticleTagMapping,
-        models.Settings,
-        Role,
-        Permission,
-        RolePermissionMappings,
-        UserRoleMappings,
-        Menu,
-        RoleMenuMappings
-    ], safe=True)
+        database.drop_tables(models_all, safe=True)
+    database.create_tables(models_all, safe=True)
 
     await create_debug_data()
 

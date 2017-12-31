@@ -1,9 +1,9 @@
 import events
-from app_cores import app_fn
+from app_cores import feature
 from coroweb import get
 
 
-@app_fn(events.__EVENT_ROUTING__, 'demo-app-for-tests', 'demo-app-for-tests')
+@feature(events.__FEATURE_ROUTING__, 'demo-app-for-tests', 'demo-app-for-tests')
 @get('/demo-app-for-tests')
 async def get_demo():
     return {
