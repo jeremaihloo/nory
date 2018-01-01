@@ -53,7 +53,6 @@ ul, o, li {
 }
 
 .main {
-    background-color: aliceblue;
     padding-top: 0.2em;
     padding-bottom: 0.2em;
 }
@@ -142,6 +141,10 @@ ul, o, li {
     color: #ccc;
     font-size: 0.8em;
     float: right;
+}
+
+.article {
+    padding: 2em;
 }
 
 .clear {

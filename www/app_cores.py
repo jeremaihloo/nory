@@ -131,18 +131,18 @@ def sort_app_info_by_dependency(app_infos):
 class AppManager(utils.DictClass):
     def __init__(self):
         self.__apps__ = []
-        self.__app_fns__ = {}
+        self.__features__ = {}
 
         self.init_fns()
 
     def init_fns(self):
         es = list(filter(lambda x: x.startswith('__EVENT'), dir(events)))
         for item in es:
-            self.__app_fns__[getattr(events, item)] = []
+            self.__features__[getattr(events, item)] = []
 
     async def reload_apps(self):
         self.__apps__ = []
-        self.__app_fns__ = {}
+        self.__features__ = {}
 
         self.init_fns()
 
@@ -160,7 +160,7 @@ class AppManager(utils.DictClass):
         await item()
 
     async def loading_apps(self):
-        for item in self.__app_fns__[events.__FEATURE_ON_APP_LOADING__]:
+        for item in self.__features__[events.__FEATURE_ON_APP_LOADING__]:
             try:
                 await self.loading_app(item)
                 logging.info('[loading_apps] app item {} ok'.format(item))
@@ -209,6 +209,6 @@ class AppManager(utils.DictClass):
                     if fn is not None and inspect.isfunction(fn):
                         event = getattr(fn, '__app_event__', None)
                         if event is not None:
-                            if self.__app_fns__.get(event, None) is None:
-                                self.__app_fns__[event] = []
-                            self.__app_fns__[event].append(fn)
+                            if self.__features__.get(event, None) is None:
+                                self.__features__[event] = []
+                            self.__features__[event].append(fn)

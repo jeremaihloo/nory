@@ -172,7 +172,7 @@ def add_route(app, fn):
         beautify_http_method(method), path, fn.__name__, ', '.join(inspect.signature(fn).parameters.keys())))
     app.router.add_route(method, path, RequestHandler(app, fn))
 
-    for item in app.plugin_manager.__app_fns__[events.__FEATURE_ADD_ROUTE__]:
+    for item in app.plugin_manager.__features__[events.__FEATURE_ADD_ROUTE__]:
         params = [x for x in inspect.signature(fn).parameters.keys()]
         item(method, path, params)
 
@@ -182,7 +182,7 @@ def beautify_http_method(method: str):
 
 
 def add_routes(app):
-    for item in app.plugin_manager.__app_fns__[events.__FEATURE_ROUTING__]:
+    for item in app.plugin_manager.__features__[events.__FEATURE_ROUTING__]:
         add_route(app, item)
 
 
