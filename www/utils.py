@@ -1,6 +1,10 @@
 import hmac
+import json
 import time
 import uuid
+from datetime import datetime, date
+
+from decimal import Decimal
 
 
 class DictClass(dict):
@@ -43,7 +47,7 @@ def json_default(dt_fmt='%Y-%m-%d %H:%M:%S', date_fmt='%Y-%m-%d',
             return obj.strftime(date_fmt)
         elif isinstance(obj, Decimal):
             return decimal_fmt(obj)
-        elif isinstance(obj, UUID):
+        elif isinstance(obj, uuid.UUID):
             return str(obj)
         else:
             raise TypeError('%r is not JSON serializable' % obj)
@@ -55,3 +59,8 @@ def json_dumps(obj, dt_fmt='%Y-%m-%d %H:%M:%S', date_fmt='%Y-%m-%d',
                decimal_fmt=str, ensure_ascii=True):
     return json.dumps(obj, ensure_ascii=ensure_ascii,
                       default=json_default(dt_fmt, date_fmt, decimal_fmt))
+
+
+class JsonEncoder(json.JSONEncoder):
+    def iterencode(self, o, _one_shot=False):
+        return json_dumps(o)

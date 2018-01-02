@@ -1,7 +1,10 @@
+from pprint import pprint
+
 from playhouse.shortcuts import model_to_dict
 
 import app_cores
 import events
+import utils
 from apps.core.apis import APIValueError
 from apps.core.models import User, UserProfile
 from coroweb import post
@@ -20,7 +23,7 @@ import jwt
 from app_cores import feature
 
 
-@feature(events.__FEATURE_ROUTING__, 'auth_jwt_provider', 'auth_jwt_provider')
+@feature(events.__FEATURE_AUTHING__, 'auth_jwt_provider', 'auth_jwt_provider')
 async def auth_jwt_provider(app, request):
     au_header_value = request.headers.get('Authorization', None)
     if au_header_value is None:
@@ -39,10 +42,9 @@ async def api_login_jwt_by_password_and_email(*, email, password):
         raise APIValueError('passwd', 'Invalid password.')
 
     user = await objects.get(
-        User.select(UserProfile).where(UserProfile.email == email, User.password == hash_pwd(password)))
-    if len(user) == 0:
-        raise APIValueError('email', 'Email not exist.')
+        User.select().join(UserProfile).where(UserProfile.email == email, User.password == hash_pwd(password)))
 
-    user = model_to_dict(user, exclude=[User.password])
-    encoded = jwt.encode(user)
-    return 200, encoded
+    user = model_to_dict(user, exclude=[User.password, User.profile], recurse=True)
+    encoded = jwt.encode(user, key='ncms', json_encoder=utils.JsonEncoder)
+
+    return 200, dict(jwt=bytes.decode(encoded))
