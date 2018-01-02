@@ -19,7 +19,7 @@ async def app_core_debug_init_db():
         database.drop_tables(models_all, safe=True)
     database.create_tables(models_all, safe=True)
 
-    await create_debug_data()
+    # await create_debug_data()
 
     await create_rbacm_init_data()
 
@@ -85,6 +85,9 @@ async def create_rbacm_init_data():
                                                                name='create_article',
                                                                title='create_article',
                                                                type='U')
+    create_article_permission_role_mapping, _ = await objects.get_or_create(rbacmm.PermissionRoleMappings,
+                                                                            role=admin_role,
+                                                                            permission=create_article_permission)
 
     create_article_menu_permission_mapping, _ = await objects.get_or_create(rbacmm.PermissionMenuMappings,
                                                                             permission=create_article_permission,

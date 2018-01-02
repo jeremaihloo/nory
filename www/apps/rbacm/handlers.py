@@ -1,3 +1,5 @@
+import logging
+
 from playhouse.shortcuts import model_to_dict
 
 import events
@@ -131,18 +133,27 @@ async def api_create_menu(*, name, title, icon, parent, target):
 @feature(events.__FEATURE_ROUTING__, 'api_get_menus', 'api_get_menus')
 @get('/api/menus')
 async def api_get_menus(request):
-    query_permissions = (Permission.select()
-        .join(PermissionRoleMappings)
-        .join(Role)
+    query_role = (Role.select()
         .join(UserRoleMappings)
         .join(User)
         .where(User.id == request.__user__.id))
+    roles = await objects.execute(query_role)
+    roles = [str(x.id) for x in roles]
+    logging.info('[api_get_menus] roles : {}'.format(roles))
+
+    query_permissions = (Permission.select(Permission)
+        .join(PermissionRoleMappings)
+        .join(Role)
+        .where(Role.id in roles))
+
     permissions = await objects.execute(query_permissions)
+    permissions = [str(x.id) for x in permissions]
+    logging.info('[api_get_menus] user permissions : {}'.format(permissions))
 
     query_menu = (Menu.select()
         .join(PermissionMenuMappings)
         .join(Permission)
-        .where(Permission.id in [x.id for x in permissions]))
+        .where(Permission.id in [x for x in permissions]))
     menus = await objects.execute(query_menu)
 
     return 200, [model_to_dict(x) for x in menus]
