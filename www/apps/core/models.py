@@ -23,8 +23,8 @@ class UserProfile(BaseModel):
     user = ForeignKeyField(User, related_name='profile')
     email = CharField()
     nick_name = CharField()
-    image = CharField()
-    phone = CharField()
+    image = CharField(null=True)
+    phone = CharField(null=True)
     created_at = DateTimeField(default=datetime.now)
 
 

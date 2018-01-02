@@ -3,7 +3,6 @@ from uuid import uuid4
 from app_cores import feature
 from peewee import CharField, UUIDField, DateTimeField, ForeignKeyField, TextField
 from apps.core.models import User
-from configs import NcmsConfig
 from dbs import BaseModel, database
 import events
 
@@ -12,7 +11,7 @@ class Role(BaseModel):
     id = UUIDField(primary_key=True, default=uuid4)
     name = CharField()
     title = CharField()
-    description = CharField()
+    description = CharField(null=True)
     created_at = DateTimeField(default=datetime.now)
 
 
@@ -27,7 +26,7 @@ class UserGroup(BaseModel):
     id = UUIDField(primary_key=True, default=uuid4)
     name = CharField(unique=True)
     title = CharField()
-    description = CharField()
+    description = CharField(null=True)
     created_at = DateTimeField(default=datetime.now)
 
 
@@ -50,7 +49,7 @@ class Permission(BaseModel):
     name = CharField(unique=True)
     title = CharField()
     type = CharField()
-    description = CharField()
+    description = CharField(null=True)
     created_at = DateTimeField(default=datetime.now)
 
 
@@ -65,8 +64,10 @@ class Menu(BaseModel):
     id = UUIDField(primary_key=True, default=uuid4)
     name = CharField(unique=True)
     title = CharField()
-    icon = CharField()
-    parent = ForeignKeyField('self', related_name='children')
+    description = CharField(null=True)
+    icon = CharField(null=True)
+    parent = ForeignKeyField('self', related_name='children', null=True)
+    href = CharField()
     target = CharField()
     created_at = DateTimeField(default=datetime.now)
 
@@ -82,7 +83,7 @@ class PageDisplay(BaseModel):
     id = UUIDField(primary_key=True, default=uuid4)
     name = CharField(unique=True)
     title = CharField()
-    description = TextField()
+    description = TextField(null=True)
     created_at = DateTimeField(default=datetime.now)
 
 
@@ -97,7 +98,7 @@ class FileEntry(BaseModel):
     id = UUIDField(primary_key=True, default=uuid4)
     name = CharField(unique=True)
     title = CharField()
-    description = TextField()
+    description = TextField(null=True)
     created_at = DateTimeField(default=datetime.now)
 
 
@@ -112,7 +113,8 @@ class Operation(BaseModel):
     id = UUIDField(primary_key=True, default=uuid4)
     name = CharField(unique=True)
     title = CharField()
-    description = TextField()
+    description = TextField(null=True)
+    url_pattern = CharField()
     created_at = DateTimeField(default=datetime.now)
 
 

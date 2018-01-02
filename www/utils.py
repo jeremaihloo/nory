@@ -32,3 +32,26 @@ def hash_pwd(password):
 
 def next_id():
     return '%015d%s000' % (int(time.time() * 1000), uuid.uuid4().hex)
+
+
+def json_default(dt_fmt='%Y-%m-%d %H:%M:%S', date_fmt='%Y-%m-%d',
+                 decimal_fmt=str):
+    def _default(obj):
+        if isinstance(obj, datetime):
+            return obj.strftime(dt_fmt)
+        elif isinstance(obj, date):
+            return obj.strftime(date_fmt)
+        elif isinstance(obj, Decimal):
+            return decimal_fmt(obj)
+        elif isinstance(obj, UUID):
+            return str(obj)
+        else:
+            raise TypeError('%r is not JSON serializable' % obj)
+
+    return _default
+
+
+def json_dumps(obj, dt_fmt='%Y-%m-%d %H:%M:%S', date_fmt='%Y-%m-%d',
+               decimal_fmt=str, ensure_ascii=True):
+    return json.dumps(obj, ensure_ascii=ensure_ascii,
+                      default=json_default(dt_fmt, date_fmt, decimal_fmt))

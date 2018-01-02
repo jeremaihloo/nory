@@ -41,6 +41,6 @@ def user2cookie(user, max_age):
     """
     # build cookie string by: id-expires-sha1
     expires = str(int(time.time() + max_age))
-    s = '%s-%s-%s-%s' % (user.id, user.passwd, expires, _COOKIE_KEY)
-    L = [user.id, expires, hashlib.sha1(s.encode('utf-8')).hexdigest()]
+    s = '%s-%s-%s-%s' % (str(user.id), user.password, expires, _COOKIE_KEY)
+    L = [str(user.id), expires, hashlib.sha1(s.encode('utf-8')).hexdigest()]
     return '-'.join(L)

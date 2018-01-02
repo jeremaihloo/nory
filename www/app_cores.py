@@ -17,6 +17,7 @@ def feature(event, name='', title='', description=''):
         @functools.wraps(func)
         def wrapper(*args, **kw):
             return func(*args, **kw)
+
         wrapper.__app_event__ = event
         wrapper.__app_fn_name__ = name
         wrapper.__app_fn_title__ = title
@@ -160,12 +161,12 @@ class AppManager(utils.DictClass):
         await item()
 
     async def loading_apps(self):
-        for item in self.__features__[events.__FEATURE_ON_APP_LOADING__]:
+        for item in self.__features__.get(events.__FEATURE_ON_APP_LOADING__, []):
             try:
                 await self.loading_app(item)
                 logging.info('[loading_apps] app item {} ok'.format(item))
             except Exception as e:
-                logging.warning('[loading_apps] error [{}]  {}'.format(item, e))
+                logging.exception('[loading_apps] error [{}]  {}'.format(item, e))
 
     async def load_apps(self):
         logging.info('start loading apps')

@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import coloredlogs, logging
+
+import utils
 from configs import NcmsConfig, __configs__
 
 if NcmsConfig.colored_log:
@@ -88,8 +90,21 @@ async def data_factory(app, handler):
         return parse_data
 
 
+# @web.middleware
+# async def error_middleware(request, handler):
+#     try:
+#         response = await handler(request)
+#         if response.status == 404:
+#             return api_response(response.message, 404)
+#         return response
+#     except web.HTTPException as ex:
+#         if ex.status == 404:
+#             return api_response(ex.reason, 404)
+#         raise
+
+
 def api_response(r, status_code=200):
-    resp = web.Response(status=status_code, body=json_dumps(api_response_body(r)))
+    resp = web.Response(status=status_code, body=utils.json_dumps(api_response_body(r)))
     resp.content_type = 'application/json;charset=utf-8'
     return resp
 
@@ -101,34 +116,11 @@ def api_response_body(r, status_code=200):
     return o
 
 
-def json_default(dt_fmt='%Y-%m-%d %H:%M:%S', date_fmt='%Y-%m-%d',
-                 decimal_fmt=str):
-    def _default(obj):
-        if isinstance(obj, datetime):
-            return obj.strftime(dt_fmt)
-        elif isinstance(obj, date):
-            return obj.strftime(date_fmt)
-        elif isinstance(obj, Decimal):
-            return decimal_fmt(obj)
-        elif isinstance(obj, UUID):
-            return str(obj)
-        else:
-            raise TypeError('%r is not JSON serializable' % obj)
-
-    return _default
-
-
-def json_dumps(obj, dt_fmt='%Y-%m-%d %H:%M:%S', date_fmt='%Y-%m-%d',
-               decimal_fmt=str, ensure_ascii=True):
-    return json.dumps(obj, ensure_ascii=ensure_ascii,
-                      default=json_default(dt_fmt, date_fmt, decimal_fmt))
-
-
 async def response_factory(app, handler):
     async def response(request):
         logging.info('Response handler...')
         r = await handler(request)
-        logging.info('response is instance of {}'.format(type(r)))
+        logging.info('response is instance of [{}]'.format(type(r)))
         if isinstance(r, web.StreamResponse):
             return r
 

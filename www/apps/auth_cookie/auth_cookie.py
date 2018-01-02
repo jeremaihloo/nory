@@ -1,14 +1,14 @@
-import app_cores
+import json
 import events
 from apps.auth_cookie.auth_cookie_utils import COOKIE_NAME, cookie2user, user2cookie
 from apps.core.apis import APIValueError
 from coroweb import post
 from apps.core.models import User, UserProfile
 import logging
-import hashlib, json
 from aiohttp import web
 from app_cores import feature
 from dbs import objects
+from utils import hash_pwd
 
 
 @feature(events.__FEATURE_AUTHING__, 'auth_cookie_provider', 'auth_cookie_provider')
@@ -26,29 +26,27 @@ async def auth_cookie_provider(app, request):
     return False, 'cookie str empty'
 
 
-@feature(events.__FEATURE_ROUTING__, 'api_login_using_cookie_by_email_and_password', 'api_login_using_cookie_by_email_and_password')
+@feature(events.__FEATURE_ROUTING__, 'api_login_using_cookie_by_email_and_password',
+         'api_login_using_cookie_by_email_and_password')
 @post('/api/login/cookie')
-async def api_login_using_cookie_by_email_and_password(*, email, passwd):
+async def api_login_using_cookie_by_email_and_password(*, email, password):
     if not email:
         raise APIValueError('email', 'Invalid email.')
-    if not passwd:
+    if not password:
         raise APIValueError('passwd', 'Invalid password.')
 
-    user = await objects.get(User.select(UserProfile).where(UserProfile.email==email))
-    if len(user) == 0:
-        raise APIValueError('email', 'Email not exist.')
+    user = await objects.get(User.select().join(UserProfile).where(UserProfile.email == email))
 
     # check passwd:
-    sha1 = hashlib.sha1()
-    sha1.update(user.id.encode('utf-8'))
-    sha1.update(b':')
-    sha1.update(passwd.encode('utf-8'))
-    if user.passwd != sha1.hexdigest():
-        raise APIValueError('passwd', 'Invalid password.')
+    if user.password != hash_pwd(password):
+        raise APIValueError('password', 'Invalid password.')
     # authenticate ok, set cookie:
     r = web.Response()
     r.set_cookie(COOKIE_NAME, user2cookie(user, 86400), max_age=86400, httponly=True)
-    user.passwd = '******'
+    user.password = '******'
     r.content_type = 'application/json'
-    r.body = json.dumps(user, ensure_ascii=False).encode('utf-8')
+    # r.body = json.dumps(model_to_dict(user), default=utils.json_default, ensure_ascii=False).encode('utf-8')
+    r.body = json.dumps({
+        'ok': True
+    })
     return r
