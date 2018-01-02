@@ -9,3 +9,7 @@ __home_page__ = 'https://github.com/jeremaihloo/ncms-plugin-manager'
 INDEXS = [
     'auth_cookie'
 ]
+
+dependency = [
+    'auth_base'
+]

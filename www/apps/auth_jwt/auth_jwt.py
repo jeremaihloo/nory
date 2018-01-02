@@ -1,10 +1,9 @@
-from pprint import pprint
-
 from playhouse.shortcuts import model_to_dict
 
 import app_cores
 import events
 import utils
+from apps.auth_base.white import allow_anyone
 from apps.core.apis import APIValueError
 from apps.core.models import User, UserProfile
 from coroweb import post
@@ -21,6 +20,7 @@ __home_page__ = 'https://github.com/jeremaihloo/ncms-auth-cookie'
 
 import jwt
 from app_cores import feature
+from apps.auth_base import white
 
 
 @feature(events.__FEATURE_AUTHING__, 'auth_jwt_provider', 'auth_jwt_provider')
@@ -33,6 +33,7 @@ async def auth_jwt_provider(app, request):
     return True, 'success set user to request context'
 
 
+@allow_anyone
 @feature(events.__FEATURE_ROUTING__, 'api_login_jwt_by_password_and_email', 'api_login_jwt_by_password_and_email')
 @post('/api/login/jwt')
 async def api_login_jwt_by_password_and_email(*, email, password):

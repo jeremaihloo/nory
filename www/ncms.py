@@ -61,17 +61,19 @@ async def auth_factory(app, handler):
         request.__user__ = None
         logging.info('auth user: %s %s' % (request.method, request.path))
         flag = False
+        logging.info('[auth_provider] : [{}]'.format(app.plugin_manager.__features__[events.__FEATURE_AUTHING__]))
         for fn in app.plugin_manager.__features__[events.__FEATURE_AUTHING__]:
-            if await fn(app, request) is True:
-                logging.info('auth fn : {} passed'.format(getattr(fn, '__app_fn_name__')))
+            auth_flag, msg = await fn(app, request)
+            if auth_flag:
+                logging.info('[auth] : [{}] passed'.format(getattr(fn, '__app_fn_name__')))
                 flag = True
             else:
-                logging.info('auth fn : {} unpass'.format(getattr(fn, '__app_fn_name__')))
+                logging.info('[auth] : [{}] un_pass'.format(getattr(fn, '__app_fn_name__')))
 
         if not flag:
-            for fn in app.plugin_manager.__features__.get(events.__FEATURE_AUTH_FLASE__, []):
+            for fn in app.plugin_manager.__features__.get(events.__FEATURE_AUTH_FALSE__, []):
                 await fn(app, request)
-        return (await handler(request))
+        return await handler(request)
 
     return auth
 

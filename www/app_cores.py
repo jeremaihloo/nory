@@ -125,7 +125,7 @@ def sort_app_info_by_dependency(app_infos):
     not_need_to_sorted = list(filter(lambda x: x.name not in sorted_deps, app_infos))
     sorted_app_info = [get_info_by_name(x) for x in sorted_deps]
     not_need_to_sorted.extend(sorted_app_info)
-    return not_need_to_sorted
+    return [x for x in not_need_to_sorted if x is not None]
 
 
 @utils.singleton
@@ -183,7 +183,7 @@ class AppManager(utils.DictClass):
                     app_infos.append(info)
                     logging.info('[load_app_info] found loader for [{}]'.format(item))
             except Exception as e:
-                logging.warning('load app info [{}] error :{}'.format(item, e))
+                logging.exception('load app info [{}] error', item, e)
 
         app_infos = sort_app_info_by_dependency(app_infos)
 
@@ -194,8 +194,7 @@ class AppManager(utils.DictClass):
                 await self.load_app(item)
                 logging.info('[load_apps] app [{}] loaded'.format(item.name))
             except Exception as e:
-                logging.warning('[load_apps] app [{}] load error'.format(item.name))
-                logging.warning(str(e))
+                logging.exception('[load_apps] app [{}] load error'.format(item.name))
 
         await self.loading_apps()
 

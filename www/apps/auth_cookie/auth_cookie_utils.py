@@ -4,6 +4,7 @@ import time
 
 from apps.core.models import User
 from configs import NcmsConfig
+from dbs import objects
 
 COOKIE_NAME = 'ncms_auth_cookie'
 _COOKIE_KEY = NcmsConfig.secret
@@ -15,20 +16,22 @@ async def cookie2user(cookie_str):
     if not cookie_str:
         return None
     try:
-        L = cookie_str.split('-')
+        L = cookie_str.split(':')
         if len(L) != 3:
+            raise Exception('login timeout')
             return None
         uid, expires, sha1 = L
         if int(expires) < time.time():
+            raise Exception('login timeout')
             return None
-        user = await User.select().where(User.id == uid)
+        user = await objects.get(User.select().where(User.id == uid))
         if user is None:
             return None
-        s = '%s-%s-%s-%s' % (uid, user.passwd, expires, _COOKIE_KEY)
+        s = '%s:%s:%s:%s' % (uid, user.password, expires, _COOKIE_KEY)
         if sha1 != hashlib.sha1(s.encode('utf-8')).hexdigest():
             logging.info('invalid sha1')
             return None
-        user.passwd = '******'
+        user.password = '******'
         return user
     except Exception as e:
         logging.exception(e)
@@ -41,6 +44,6 @@ def user2cookie(user, max_age):
     """
     # build cookie string by: id-expires-sha1
     expires = str(int(time.time() + max_age))
-    s = '%s-%s-%s-%s' % (str(user.id), user.password, expires, _COOKIE_KEY)
+    s = '%s:%s:%s:%s' % (str(user.id), user.password, expires, _COOKIE_KEY)
     L = [str(user.id), expires, hashlib.sha1(s.encode('utf-8')).hexdigest()]
-    return '-'.join(L)
+    return ':'.join(L)

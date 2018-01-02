@@ -2,8 +2,9 @@ from playhouse.shortcuts import model_to_dict
 
 import events
 from app_cores import feature
+from apps.core.models import User
 from apps.rbacm.models import Role, Menu, UserRoleMappings, UserGroup, PageDisplay, FileEntry, \
-    Operation, PermissionMenuMappings, PermissionOperationMappings, Permission
+    Operation, PermissionMenuMappings, PermissionOperationMappings, Permission, PermissionRoleMappings
 from coroweb import post, get
 from dbs import objects
 
@@ -129,8 +130,21 @@ async def api_create_menu(*, name, title, icon, parent, target):
 
 @feature(events.__FEATURE_ROUTING__, 'api_get_menus', 'api_get_menus')
 @get('/api/menus')
-async def api_get_menus():
-    menus = await objects.execute(Menu.select())
+async def api_get_menus(request):
+    query_permissions = (Permission.select()
+        .join(PermissionRoleMappings)
+        .join(Role)
+        .join(UserRoleMappings)
+        .join(User)
+        .where(User.id == request.__user__.id))
+    permissions = await objects.execute(query_permissions)
+
+    query_menu = (Menu.select()
+        .join(PermissionMenuMappings)
+        .join(Permission)
+        .where(Permission.id in [x.id for x in permissions]))
+    menus = await objects.execute(query_menu)
+
     return 200, [model_to_dict(x) for x in menus]
 
 

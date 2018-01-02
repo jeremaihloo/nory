@@ -2,6 +2,6 @@ import events
 from app_cores import feature
 
 
-@feature(events.__FEATURE_AUTHING__, '', '')
+@feature(events.__FEATURE_AUTHING__, 'auth_rbacm_provider', 'auth_rbacm_provider')
 async def auth_rbacm_provider(app, request):
-    return True, 'auth ok'
+    return False, 'auth ok'
