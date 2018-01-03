@@ -56,43 +56,53 @@ v-app(:dark="dark",standalone)
   main
     v-container.pa-4(fluid)
         v-alert(v-bind='message', v-model='message.body', dismissible) {{message.body}}
-        .py-2
+        .admin-content
           v-slide-y-transition(mode='out-in')
-            router-view
+            html-panel(:url.asyc='adminContentUrl')
 </template>
 
 <script>
-
 import { mapState } from 'vuex'
+import HtmlPanel from '../components/HtmlPanel'
 
 export default {
-  data () {
+  components: {
+    HtmlPanel
+  },
+  data() {
     return {
       dark: false,
       theme: 'primary',
       mini: false,
       drawer: true,
       locales: ['en-US', 'zh-CN'],
-      colors: ['blue', 'green', 'purple', 'red']
+      colors: ['blue', 'green', 'purple', 'red'],
+      adminContentUrl: 'http://www.baidu.com'
     }
   },
   computed: {
     ...mapState(['message', 'menu', 'pageTitle'])
   },
   methods: {
-    changeLocale (to) {
+    changeLocale(to) {
       global.helper.ls.set('locale', to)
       this.$i18n.locale = to
     },
-    fetchMenu () {
+    fetchMenu() {
       // fetch menu from server
       // this.$http.get('menu').then(({data}) => this.$store.commit('setMenu', data))
     }
   },
 
-  created () {
+  created() {
     this.fetchMenu()
   }
 }
 </script>
 
+<style lang="stylus" scoped>
+.admin-content {
+  width: 100%;
+  height: 100vh;
+}
+</style>
