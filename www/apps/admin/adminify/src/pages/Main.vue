@@ -65,6 +65,7 @@ v-app(:dark="dark",standalone)
 import { mapState } from 'vuex'
 import HtmlPanel from '../components/HtmlPanel'
 import * as TYPES from '../store/mutation_type'
+
 export default {
   components: {
     HtmlPanel
@@ -76,11 +77,21 @@ export default {
       drawer: true,
       locales: ['en-US', 'zh-CN'],
       colors: ['blue', 'green', 'purple', 'red'],
-      adminContentUrl: 'http://www.baidu.com'
+      staticMenu: [
+        { divider: true },
+        { header: 'System' },
+        { href: '/settings', title: 'Settings', icon: 'settings' },
+        { href: '/logout', icon: 'lock', title: 'Logout' }
+      ]
     }
   },
   computed: {
-    ...mapState(['message', 'menu', 'pageTitle']),
+    ...mapState(['message', 'pageTitle', 'adminContentUrl']),
+    menu() {
+      const staticMenu = Object.assign([], this.staticMenu)
+      const stateMenu = this.$store.state.menu
+      return Object.assign(staticMenu, stateMenu)
+    },
     dark: {
       get: function() {
         return this.$store.state.dark
@@ -99,7 +110,11 @@ export default {
       // fetch menu from server
       // this.$http.get('menu').then(({data}) => this.$store.commit('setMenu', data))
     },
-    goto() {},
+    goto(item) {
+      if (item.target === 'admin-content') {
+        this.$store.commit(TYPES.CHANGE_ADMIN_CONTENT_URL, item.href)
+      }
+    },
     onDarkChange() {}
   },
 

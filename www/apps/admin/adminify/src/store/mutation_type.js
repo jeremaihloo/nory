@@ -23,3 +23,5 @@ export const CHANGE_COLOR = 'CHANGE_COLOR'
 export const CHANGE_LANG = 'CHANGE_LANG'
 
 export const DARK_MODE = 'DARK_MODE'
+export const CHANGE_ADMIN_CONTENT_URL = 'CHANGE_ADMIN_CONTENT_URL'
+
