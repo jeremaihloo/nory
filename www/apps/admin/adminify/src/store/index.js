@@ -10,6 +10,7 @@ import createPersistedState from 'vuex-persistedstate'
 const store = new Vuex.Store({
   plugins: [createPersistedState()],
   state: {
+    dark: false,
     pageTitle: 'Home',
     menu: menu,
     user: {},
@@ -19,44 +20,44 @@ const store = new Vuex.Store({
       body: null
     },
     config: config
-
   },
   mutations: {
-
-    setAuth (state, { user, token }) {
+    setAuth(state, { user, token }) {
       state.user = user
       state.token = token
       global.helper.ls.set('user', user)
       global.helper.ls.set('token', token)
     },
-    setMenu (state, data) {
+    setMenu(state, data) {
       state.menu = data
     },
-    setPageTitle (state, data) {
+    setPageTitle(state, data) {
       state.pageTitle = data
     },
-    showMessage (state, type, body) {
+    showMessage(state, type, body) {
       state.message = { type, body }
     },
     ON_LOGIN(state, data) {
       state.user = data.user
     },
     ON_LOGOUT(state, data) {
-      state.message = {type: 'info', body: data}
+      state.message = { type: 'info', body: data }
     },
     ON_GET_MENU(state, data) {
       state.menu = data.body
     },
     ER(state, data) {
-      state.message = {type: 'info', body: data}
+      state.message = { type: 'info', body: data }
     },
     OK(state, data) {
-      state.message = {type: 'info', body: data}
+      state.message = { type: 'info', body: data }
+    },
+    DARK_MODE(state, ifDark) {
+      state.dark = ifDark
     }
   },
   actions: {
-
-    checkAuth ({ commit, state }) {
+    checkAuth({ commit, state }) {
       let data = {
         user: global.helper.ls.get('user'),
         token: global.helper.ls.get('token')
@@ -71,7 +72,7 @@ const store = new Vuex.Store({
       //   }
       // })
     },
-    checkPageTitle ({commit, state}, path) {
+    checkPageTitle({ commit, state }, path) {
       for (let k in state.menu) {
         if (state.menu[k].href === path) {
           commit('setPageTitle', state.menu[k].title)
@@ -79,9 +80,10 @@ const store = new Vuex.Store({
         }
       }
     },
-    DO_GET_MENU({commit}) {
+    DO_GET_MENU({ commit }) {
       return new Promise(function(resolve, reject) {
-        api.DO_GET_MENU()
+        api
+          .DO_GET_MENU()
           .then(res => {
             if (res.data.ok) {
               commit(TYPES.ON_GET_MENU, res.data)
@@ -97,53 +99,56 @@ const store = new Vuex.Store({
           })
       })
     },
-    DO_LOGIN({commit}, data) {
+    DO_LOGIN({ commit }, data) {
       return new Promise(function(resolve, reject) {
-        api.DO_LOGIN(data)
-        .then(res => {
-          if (res.data.ok) {
-            commit(TYPES.ON_LOGIN, res.data)
-            resolve(res)
-          } else {
-            commit(TYPES.ER)
+        api
+          .DO_LOGIN(data)
+          .then(res => {
+            if (res.data.ok) {
+              commit(TYPES.ON_LOGIN, res.data)
+              resolve(res)
+            } else {
+              commit(TYPES.ER)
+              reject(res)
+            }
+          })
+          .catch(res => {
+            commit(TYPES.ER, res.data)
             reject(res)
-          }
-        })
-        .catch(res => {
-          commit(TYPES.ER, res.data)
-          reject(res)
-        })
+          })
       })
     },
-    DO_LOGOUT({commit}) {
+    DO_LOGOUT({ commit }) {
       return new Promise(function(resolve, reject) {
-        api.DO_LOGOUT()
-        .then(res => {
-          if (res.data.ok) {
-            commit(TYPES.ON_LOGOUT, res.data)
-            resolve(res)
-          } else {
+        api
+          .DO_LOGOUT()
+          .then(res => {
+            if (res.data.ok) {
+              commit(TYPES.ON_LOGOUT, res.data)
+              resolve(res)
+            } else {
+              commit(TYPES.ER)
+              reject(res)
+            }
+          })
+          .catch(res => {
             commit(TYPES.ER)
             reject(res)
-          }
-        })
-        .catch(res => {
-          commit(TYPES.ER)
-          reject(res)
-        })
+          })
       })
     },
-    DO_AUTH_COOKIE_ME({commit}) {
+    DO_AUTH_COOKIE_ME({ commit }) {
       return new Promise(function(resolve, reject) {
-        api.DO_AUTH_COOKIE_ME()
-        .then(res => {
-          commit(TYPES.OK)
-          resolve(res)
-        })
-        .catch(res => {
-          commit(TYPES.ER)
-          reject(res)
-        })
+        api
+          .DO_AUTH_COOKIE_ME()
+          .then(res => {
+            commit(TYPES.OK)
+            resolve(res)
+          })
+          .catch(res => {
+            commit(TYPES.ER)
+            reject(res)
+          })
       })
     }
   }

@@ -5,7 +5,7 @@ v-app(:dark="dark",standalone)
       div.display-2.py-4 Adminify
       p {{$t('An admin dashboard based on Vuetify')}}
       div(style="padding-left:5em")
-        v-switch(:label="(!dark ? 'Light' : 'Dark') + ' Theme'", v-model="dark", :dark="dark", hide-details)
+        v-switch(:label="(!dark ? 'Light' : 'Dark') + ' Theme'", v-model="dark", :dark="dark", hide-details, @change='onDarkChange')
       div
         v-btn(dark, tag="a", href="https://github.com/wxs77577/adminify", primary) 
           v-icon(left, dark) star
@@ -24,14 +24,14 @@ v-app(:dark="dark",standalone)
             v-list-tile-action
               v-icon() keyboard_arrow_down
           
-          v-list-tile(v-for='subItem in item.items', :key='subItem.href',:to='subItem.href', v-bind:router='!subItem.target', ripple, v-bind:disabled='subItem.disabled', v-bind:target='subItem.target')
+          v-list-tile(v-for='subItem in item.items', :key='subItem.href', @click="goto(subItem)", ripple, v-bind:disabled='subItem.disabled')
             v-list-tile-action(v-if='subItem.icon')
               v-icon.success--text {{ subItem.icon }}
             v-list-tile-content
               v-list-tile-title {{ $t(subItem.title) }}
         v-subheader(v-else-if='item.header') {{ item.header }}
         v-divider(v-else-if='item.divider')
-        v-list-tile(v-else,:to='item.href', router, ripple, v-bind:disabled='item.disabled', :title="item.title")
+        v-list-tile(v-else, @click="goto(item)", router, ripple, v-bind:disabled='item.disabled', :title="item.title")
           v-list-tile-action
             v-icon() {{ item.icon }}
           v-list-tile-content
@@ -64,14 +64,13 @@ v-app(:dark="dark",standalone)
 <script>
 import { mapState } from 'vuex'
 import HtmlPanel from '../components/HtmlPanel'
-
+import * as TYPES from '../store/mutation_type'
 export default {
   components: {
     HtmlPanel
   },
   data() {
     return {
-      dark: false,
       theme: 'primary',
       mini: false,
       drawer: true,
@@ -81,7 +80,15 @@ export default {
     }
   },
   computed: {
-    ...mapState(['message', 'menu', 'pageTitle'])
+    ...mapState(['message', 'menu', 'pageTitle']),
+    dark: {
+      get: function() {
+        return this.$store.state.dark
+      },
+      set: function() {
+        this.$store.commit(TYPES.DARK_MODE, !this.$store.state.dark)
+      }
+    }
   },
   methods: {
     changeLocale(to) {
@@ -91,7 +98,9 @@ export default {
     fetchMenu() {
       // fetch menu from server
       // this.$http.get('menu').then(({data}) => this.$store.commit('setMenu', data))
-    }
+    },
+    goto() {},
+    onDarkChange() {}
   },
 
   created() {
