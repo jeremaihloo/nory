@@ -1,0 +1,9 @@
+{% extends 'core/templates/layout.html' %}
+
+{% block content %}
+    <div class="article-list">
+        {% for item in articles %}
+            <li class="article-item"><a href="/articles/{{ item.id }}">{{ item.title }}</a></li>
+        {% endfor %}
+    </div>
+{% endblock %}

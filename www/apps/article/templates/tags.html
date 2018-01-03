@@ -1,0 +1,9 @@
+{% extends 'article/templates/layout.html' %}
+{% block content %}
+<div class="tags">
+{% for item in tags %}
+    <li class="tag-item"><a href="/tags/{{ item.content }}">{{ item.content }}</a> </li>
+{% endfor %}
+    <div class="clear"></div>
+</div>
+{% endblock %}

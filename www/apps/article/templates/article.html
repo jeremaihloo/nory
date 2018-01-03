@@ -1,0 +1,16 @@
+{% extends 'article/templates/layout.html' %}
+
+{% block title %}NCMS{% endblock %}
+
+{% block content %}
+
+<div class="article">
+    {% if article %}
+        {{ article.content | md | safe }}
+    {% else %}
+        Article Not Found
+    {% endif %}
+</div>
+
+
+{% endblock %}
