@@ -1,7 +1,7 @@
 import Vue from 'vue'
-import config from '@/config'
+import config from '@/js/config'
 import VueI18n from 'vue-i18n'
-import helper from '../helper'
+import helper from '../js/helper'
 const locales = ['zh-CN', 'en-US']
 
 Vue.use(VueI18n)

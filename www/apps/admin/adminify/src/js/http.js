@@ -3,7 +3,7 @@ import axios from 'axios'
 import config from './config'
 
 // enable mock
-import mock from './mock'
+import mock from '../mock'
 if (!config.debug.mock) {
   mock.restore()
 }

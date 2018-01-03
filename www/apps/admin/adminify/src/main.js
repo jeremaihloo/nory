@@ -1,16 +1,16 @@
 import Vue from 'vue'
-import helper from './helper'
+import helper from './js/helper'
 global.helper = helper
-import config from './config'
+import config from './js/config'
 import store from './store/'
 global.store = store
 
-import router from './router'
+import router from './router/'
 import i18n from './i18n/'
 // import menu from './menu'
 import Vuetify from 'vuetify'
 Vue.use(Vuetify)
-import './http'
+import './js/http'
 
 import 'vuetify/src/stylus/main.styl'
 import 'vuetify/src/stylus/settings/_colors.styl'

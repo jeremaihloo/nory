@@ -7,7 +7,7 @@ function route (path, file, name, children) {
     path,
     name,
     children,
-    component: require(`./pages/${file}.vue`)
+    component: require(`../pages/${file}.vue`)
   }
 }
 

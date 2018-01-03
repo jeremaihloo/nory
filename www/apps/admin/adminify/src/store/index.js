@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import menu from '../menu'
-import config from '../config'
+import menu from '../js/menu'
+import config from '../js/config'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
