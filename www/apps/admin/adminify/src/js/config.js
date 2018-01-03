@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:3333'
+const baseUrl = 'http://localhost:3335'
 const config = {
   locale: 'en-US', // en-US, zh-CN
   url: baseUrl,
@@ -7,7 +7,7 @@ const config = {
     mock: true, // enable mock
     http: false // http request log
   },
-  api: `${baseUrl}/admin/api`
+  api: `${baseUrl}/`
   // locale: 'en', //en
   // api: 'http://192.168.1.108:3333/admin/api'
 }

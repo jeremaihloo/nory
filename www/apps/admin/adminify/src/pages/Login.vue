@@ -2,49 +2,59 @@
 div
   v-dialog(:value='true', persistent='')
     v-card(hover='', style='background:white')
-      v-card-row.deep-purple.darken-1
-        v-card-title.white--text
+        v-card-title.white--text.deep-purple.darken-1
           .text-xs-center  {{$t("Login")}}
-      v-card-row
         v-card-text.pt-4
-          v-form(v-model='model', action='login', :fields='fields', @success='onSuccess', submitButtonText="Login")
+          v-form(v-model='model', :error='onError', :fields='fields', :autoSubmit=False, @submit='onSubmit', submitButtonText="Login")
             .flex.pb-2
               small {{$t("* Indicates required field")}}
             
 </template>
 
 <style>
-  body{
-    background: #666 !important;
-  }
+body {
+  background: #666 !important;
+}
 </style>
 
 <script>
-
+import * as TYPES from '../store/mutation_type'
 export default {
-
-  data () {
+  data() {
     return {
       model: {
-        username: 'admin',
-        password: '123456'
+        email: '1006397539@qq.com',
+        password: '111'
       },
 
       fields: {
-        username: { label: 'Username' },
+        email: { label: 'Username' },
         password: { label: 'Password', type: 'password' }
       },
       show: true
     }
   },
   methods: {
-    onSuccess (data) {
-      this.$store.commit('setAuth', data)
-      this.$router.replace('/')
+    onSubmit() {
+      this.$store
+        .dispatch(TYPES.DO_LOGIN, {
+          email: this.model.email,
+          password: this.model.password
+        })
+        .then(res => {
+          if (res.data.ok) {
+            this.$router.replace('/')
+          }
+        })
+        .catch(res => {
+          console.log(res)
+        })
+    },
+    onError(e) {
+      console.log('login error:', e)
     }
   },
 
-  mounted () {
-  }
+  mounted() {}
 }
 </script>

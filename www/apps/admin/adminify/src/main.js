@@ -2,6 +2,7 @@ import Vue from 'vue'
 import helper from './js/helper'
 global.helper = helper
 import config from './js/config'
+import './js/http'
 import store from './store/'
 global.store = store
 
@@ -10,7 +11,6 @@ import i18n from './i18n/'
 // import menu from './menu'
 import Vuetify from 'vuetify'
 Vue.use(Vuetify)
-import './js/http'
 
 import 'vuetify/src/stylus/main.styl'
 import 'vuetify/src/stylus/settings/_colors.styl'
@@ -24,7 +24,7 @@ Vue.use(VueTimeago, {
   name: 'timeago', // component name, `timeago` by default
   locale: config.locale,
   locales: {
-    'en': require('vue-timeago/locales/en-US.json'),
+    en: require('vue-timeago/locales/en-US.json'),
     [config.locale]: require(`vue-timeago/locales/${config.locale}.json`)
   }
 })
@@ -49,6 +49,8 @@ Vue.component('v-form', VForm)
 Vue.component('v-grid', VGrid)
 Vue.component('v-field', VField)
 
+import * as TYPES from './store/mutation_type'
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -56,22 +58,31 @@ new Vue({
   store,
   router,
   render: h => h(App),
-  mounted () {
-
-  },
+  mounted() {},
   methods: {
-    back () {
+    back() {
       this.$router.go(-1)
     }
   },
-  created () {
+  created() {
     // this.$http.get('/users/1').then(({data}) => console.log(data))
     global.$t = this.$t
     // fetch menu from server
-    this.$http.get('/menu').then(({data}) => {
-      this.$store.commit('setMenu', data)
-    })
     this.$store.dispatch('checkPageTitle', this.$route.path)
-    this.$store.dispatch('checkAuth')
+    // this.$store.dispatch('checkAuth')
+    this.$store
+      .dispatch(TYPES.DO_AUTH_COOKIE_ME)
+      .then(res => {
+        this.$store.dispatch(TYPES.DO_GET_MENU)
+          .then(res => {
+
+          })
+          .catch(res => {
+
+          })
+      })
+      .catch(res => {
+        this.$router.replace('/login')
+      })
   }
 })

@@ -1,12 +1,10 @@
-import json
-
 from playhouse.shortcuts import model_to_dict
 
 import events
 from apps.auth_base.white import allow_anyone
 from apps.auth_cookie.auth_cookie_utils import COOKIE_NAME, cookie2user, user2cookie
 from apps.core.apis import APIValueError
-from coroweb import post
+from coroweb import post, get
 from apps.core.models import User, UserProfile
 import logging
 from aiohttp import web
@@ -57,3 +55,25 @@ async def api_login_using_cookie_by_email_and_password(*, email, password):
         'user': model_to_dict(user)
     })
     return r
+
+
+@allow_anyone
+@feature(events.__FEATURE_ROUTING__, 'api_logout_using_cookie_by_email_and_password',
+         'api_logout_using_cookie_by_email_and_password')
+@post('/api/logout/cookie')
+async def api_logout_using_cookie_by_email_and_password(request):
+    if request.__user__ is None:
+        return 200
+
+    r = web.Response()
+    r.set_cookie(COOKIE_NAME, '', max_age=-1, httponly=True)
+    return r
+
+
+@feature(events.__FEATURE_ROUTING__, 'api_auth_cookie_me', 'api_auth_cookie_me')
+@get('/api/auth/cookie/me')
+async def api_auth_cookie_me(request):
+    if request.__user__ is None:
+        return 403
+
+    return 200

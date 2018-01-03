@@ -158,6 +158,7 @@ async def response_factory(app, handler):
             t, m = r
             if isinstance(t, int) and t >= 100 and t < 600:
                 return api_response(m, status_code=t)
+
         # default:
         resp = web.Response(body=str(r).encode('utf-8'))
         resp.content_type = 'text/plain;charset=utf-8'
