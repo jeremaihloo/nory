@@ -4,7 +4,7 @@ from playhouse.shortcuts import model_to_dict
 
 import events
 from app_cores import feature
-from apps.core.models import User
+from apps.article.models import User
 from apps.rbacm.models import Role, Menu, UserRoleMappings, UserGroup, PageDisplay, FileEntry, \
     Operation, PermissionMenuMappings, PermissionOperationMappings, Permission, PermissionRoleMappings
 from coroweb import post, get

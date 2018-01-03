@@ -2,7 +2,7 @@ from datetime import datetime
 from uuid import uuid4
 from app_cores import feature
 from peewee import CharField, UUIDField, DateTimeField, ForeignKeyField, TextField
-from apps.core.models import User
+from apps.article.models import User
 from dbs import BaseModel, database
 import events
 

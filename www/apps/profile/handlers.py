@@ -2,7 +2,7 @@ from playhouse.shortcuts import model_to_dict
 
 from app_cores import feature
 import events
-from apps.core.models import Article
+from apps.article.models import Article
 from coroweb import get
 from dbs import objects
 

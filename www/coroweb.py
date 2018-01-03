@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from errors import NcmsWebApiError
 
 __author__ = 'Michael Liao'
 
@@ -8,8 +9,6 @@ import asyncio, os, inspect, logging, functools
 from urllib import parse
 
 from aiohttp import web
-
-from apps.core.apis import APIError
 
 import events
 
@@ -156,7 +155,7 @@ class RequestHandler(object):
         try:
             r = await self._func(**kw)
             return r
-        except APIError as e:
+        except NcmsWebApiError as e:
             return dict(error=e.error, data=e.data, message=e.message)
 
 
@@ -169,7 +168,7 @@ def add_route(app, fn):
         fn = asyncio.coroutine(fn)
     logging.info(
         '[add route] [%s] %s => %s(%s)' % (
-        beautify_http_method(method), path, fn.__name__, ', '.join(inspect.signature(fn).parameters.keys())))
+            beautify_http_method(method), path, fn.__name__, ', '.join(inspect.signature(fn).parameters.keys())))
     app.router.add_route(method, path, RequestHandler(app, fn))
 
     for item in app.plugin_manager.__features__[events.__FEATURE_ADD_ROUTE__]:

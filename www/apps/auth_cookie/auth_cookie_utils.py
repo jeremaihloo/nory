@@ -2,7 +2,7 @@ import hashlib
 import logging
 import time
 
-from apps.core.models import User
+from apps.article.models import User
 from configs import NcmsConfig
 from dbs import objects
 

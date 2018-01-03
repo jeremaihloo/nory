@@ -1,11 +1,10 @@
 from playhouse.shortcuts import model_to_dict
 
-import app_cores
+from errors import NcmsWebApiValueError
 import events
 import utils
 from apps.auth_base.white import allow_anyone
-from apps.core.apis import APIValueError
-from apps.core.models import User, UserProfile
+from apps.article.models import User, UserProfile
 from coroweb import post
 from dbs import objects
 from utils import hash_pwd
@@ -38,9 +37,9 @@ async def auth_jwt_provider(app, request):
 @post('/api/login/jwt')
 async def api_login_jwt_by_password_and_email(*, email, password):
     if not email:
-        raise APIValueError('email', 'Invalid email.')
+        raise NcmsWebApiValueError('email', 'Invalid email.')
     if not password:
-        raise APIValueError('passwd', 'Invalid password.')
+        raise NcmsWebApiValueError('passwd', 'Invalid password.')
 
     user = await objects.get(
         User.select().join(UserProfile).where(UserProfile.email == email, User.password == hash_pwd(password)))

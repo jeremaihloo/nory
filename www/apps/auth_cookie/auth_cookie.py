@@ -3,9 +3,9 @@ from playhouse.shortcuts import model_to_dict
 import events
 from apps.auth_base.white import allow_anyone
 from apps.auth_cookie.auth_cookie_utils import COOKIE_NAME, cookie2user, user2cookie
-from apps.core.apis import APIValueError
+from errors import NcmsWebApiValueError
 from coroweb import post, get
-from apps.core.models import User, UserProfile
+from apps.article.models import User, UserProfile
 import logging
 from aiohttp import web
 from app_cores import feature
@@ -34,16 +34,16 @@ async def auth_cookie_provider(app, request):
 @post('/api/login/cookie')
 async def api_login_using_cookie_by_email_and_password(*, email, password):
     if not email:
-        raise APIValueError('email', 'Invalid email.')
+        raise NcmsWebApiValueError('email', 'Invalid email.')
     if not password:
-        raise APIValueError('passwd', 'Invalid password.')
+        raise NcmsWebApiValueError('passwd', 'Invalid password.')
 
     user = await objects.get(
         User.select().join(UserProfile).where(UserProfile.email == email, User.password == hash_pwd(password)))
 
     # check passwd:
     if user.password != hash_pwd(password):
-        raise APIValueError('password', 'Invalid password.')
+        raise NcmsWebApiValueError('password', 'Invalid password.')
     # authenticate ok, set cookie:
     r = web.Response()
     r.set_cookie(COOKIE_NAME, user2cookie(user, 86400), max_age=86400, httponly=True)

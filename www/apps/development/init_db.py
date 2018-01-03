@@ -2,8 +2,8 @@ import logging
 
 import events
 from app_cores import feature
-from apps.core import models
-from apps.core.models import core_models
+from apps.article import models
+from apps.article.models import core_models
 from apps.rbacm.models import rbacm_models
 from apps.rbacm import models as rbacmm
 from configs import NcmsConfig
