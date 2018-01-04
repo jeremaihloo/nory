@@ -136,5 +136,5 @@ async def page_name(*, name):
 @get('/manage/article/create')
 async def create_article():
     return {
-        '__template__': 'article/templates/create-article.html'
+        '__template__': 'article/templates/create_article.html'
     }
