@@ -11,7 +11,14 @@ const store = new Vuex.Store({
   state: {
     dark: false,
     article: {
-      content: '# hello world'
+      create: {
+        id: null,
+        content: '# hello world'
+      },
+      update: {
+        id: null,
+        content: '# hello world'
+      }
     },
     config: config,
     message: {
@@ -21,7 +28,11 @@ const store = new Vuex.Store({
   },
   mutations: {
     SAVE(state, article) {
-      state.article = article
+      if (article.id) {
+        state.article.update = article
+      } else {
+        state.article.create = article
+      }
     },
     ER(state, data) {
       state.message = { type: 'info', body: data }

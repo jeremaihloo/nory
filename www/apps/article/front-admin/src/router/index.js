@@ -7,8 +7,8 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
-      name: 'CrudForm',
+      path: '/:action',
+      name: 'CreateArticle',
       component: CrudForm
     }
   ]

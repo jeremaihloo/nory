@@ -19,7 +19,7 @@ export default {
   computed: {
     article: {
       get: function() {
-        return this.$store.state.article
+        return this.$store.state.article[this.$route.params.action]
       },
       set: function(value) {
         this.$store.commit('SAVE', value)
