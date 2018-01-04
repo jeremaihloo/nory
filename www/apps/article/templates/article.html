@@ -2,9 +2,13 @@
 
 {% block title %}NCMS{% endblock %}
 
+{% block head %}
+    <link rel="stylesheet" href="/apps/article/static/css/github-markdown.css">
+{% endblock %}
+
 {% block content %}
 
-<div class="article">
+<div class="article markdown-body">
     {% if article %}
         {{ article.content | md | safe }}
     {% else %}
