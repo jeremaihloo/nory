@@ -2,6 +2,7 @@ import re
 import events
 from app_cores import feature
 from apps.article.models import Tag, Article, User, ArticleTagMapping
+from apps.auth_base.white import allow_anyone
 from coroweb import get, post
 from dbs import objects
 from utils import next_id, hash_pwd
@@ -80,47 +81,60 @@ async def api_get_articles_by_tag(*, tag):
     return [model_to_dict(x) for x in articles]
 
 
+@allow_anyone
 @feature(events.__FEATURE_ROUTING__, 'page_index', 'page_index')
 @get('/')
 async def page_index():
     articles = await api_get_articles(page=1)
     return {
         'articles': articles,
-        '__template__': 'core/templates/index.html'
+        '__template__': 'article/templates/index.html'
     }
 
 
+@allow_anyone
 @feature(events.__FEATURE_ROUTING__, 'page_tags', 'page_tags')
 @get('/tags')
 async def page_tags():
     tags = await api_get_tags()
     return {
-        '__template__': 'core/templates/tags.html',
+        '__template__': 'article/templates/tags.html',
         'tags': tags
     }
 
 
+@allow_anyone
 @feature(events.__FEATURE_ROUTING__, 'page_article_by_tag', 'page_article_by_tag')
 @get('/tags/{tag}')
 async def page_article_by_tag(*, tag):
     articles = await api_get_articles_by_tag(tag=tag)
     return {
-        '__template__': 'core/templates/tag-item.html',
+        '__template__': 'article/templates/tag-item.html',
         'articles': articles
     }
 
 
+@allow_anyone
 @feature(events.__FEATURE_ROUTING__, 'page_id', 'page_id')
 @get('/articles/{id}')
 async def page_article(*, id):
     article = await api_get_article_by_id(id=id)
     return {
         'article': article,
-        '__template__': 'core/templates/article.html'
+        '__template__': 'article/templates/article.html'
     }
 
 
+@allow_anyone
 @feature(events.__FEATURE_ROUTING__, 'page_name', 'page_name')
 @get('/page/{name}')
 async def page_name(*, name):
     pass
+
+
+@feature(events.__FEATURE_ROUTING__, 'create_article', 'create_article')
+@get('/manage/article/create')
+async def create_article():
+    return {
+        '__template__': 'article/templates/create-article.html'
+    }

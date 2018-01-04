@@ -54,22 +54,18 @@ v-app(:dark="dark",standalone)
       v-list
         v-list-tile(v-for="n in colors", :key="n", :class="n",@mouseover.native="theme = n")
   main
-    v-container.pa-4(fluid)
+    v-container.pa-2(fluid)
         v-alert(v-bind='message', v-model='message.body', dismissible) {{message.body}}
         .admin-content
           v-slide-y-transition(mode='out-in')
-            html-panel(:url.asyc='adminContentUrl')
+            iframe(:src.asyc='adminContentUrl')
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import HtmlPanel from '../components/HtmlPanel'
 import * as TYPES from '../store/mutation_type'
 
 export default {
-  components: {
-    HtmlPanel
-  },
   data() {
     return {
       theme: 'primary',
@@ -128,5 +124,10 @@ export default {
 .admin-content {
   width: 100%;
   height: 100vh;
+}
+.admin-content iframe {
+  width 100%
+  height 100%
+  border 0px
 }
 </style>
