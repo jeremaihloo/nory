@@ -63,7 +63,7 @@ class PyInfoLoader(AppInfoLoader):
             home_page=getattr(info_m, '__home_page__', 'None'),
             indexs=getattr(info_m, 'INDEXS', []),
             dependency=getattr(info_m, 'dependency', []),
-            static=getattr(info_m, 'static', [])
+            static=getattr(info_m, 'static', {})
         )
         return app_info
 
@@ -84,7 +84,7 @@ class AppYamlInfoLoader(AppInfoLoader):
             home_page=app_info.get('home_page'),
             indexs=app_info.get('indexs', []),
             dependency=app_info.get('dependency', []),
-            static=app_info.get('static', [])
+            static=app_info.get('static', {})
         )
         return app_info
 

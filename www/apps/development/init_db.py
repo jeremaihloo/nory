@@ -78,7 +78,7 @@ async def create_rbacm_init_data():
     create_article_menu, _ = await objects.get_or_create(rbacmm.Menu,
                                                          name='create_article',
                                                          title='Create Article',
-                                                         href='/manage/article/create',
+                                                         href='/manage/articles',
                                                          target='admin-content')
 
     create_article_permission, _ = await objects.get_or_create(rbacmm.Permission,

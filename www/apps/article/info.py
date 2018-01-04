@@ -12,6 +12,7 @@ INDEXS = [
     'install'
 ]
 
-static = [
-    'static'
-]
+static = {
+    'static': 'static',
+    'front-admin/static': 'front-admin/dist/static'
+}

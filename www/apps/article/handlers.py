@@ -1,5 +1,6 @@
 import re
 import events
+from apps.article.utils import get_markdown_h1
 from app_cores import feature
 from apps.article.models import Tag, Article, User, ArticleTagMapping
 from apps.auth_base.white import allow_anyone
@@ -60,8 +61,14 @@ async def api_get_articles(*, page=1):
 
 @feature(events.__FEATURE_ROUTING__, 'api_post_articles', 'api_post_articles')
 @post('/api/articles')
-async def api_post_articles(*, content):
-    return 200
+async def api_post_articles(request, *, content, id=None):
+    if id is None:
+        o, _ = await objects.get_or_create(Article, content=content, title=get_markdown_h1(content), user=request.__user__)
+    else:
+        o = await objects.get(Article, id=id)
+        o.content = content
+        await objects.update(o)
+    return 200, model_to_dict(o)
 
 
 @feature(events.__FEATURE_ROUTING__, 'api_get_article_by_id', 'api_get_article_by_id')
@@ -132,9 +139,9 @@ async def page_name(*, name):
     pass
 
 
-@feature(events.__FEATURE_ROUTING__, 'create_article', 'create_article')
-@get('/manage/article/create')
-async def create_article():
+@feature(events.__FEATURE_ROUTING__, 'manage_articles', 'manage_articles')
+@get('/manage/articles')
+async def manage_articles():
     return {
-        '__template__': 'article/templates/create_article.html'
+        '__template__': 'article/front-admin/dist/index.html'
     }

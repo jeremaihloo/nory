@@ -180,10 +180,12 @@ async def init(loop):
     add_routes(app)
 
     for item in app.plugin_manager.__apps__:
-        for path in item.static:
-            path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps', item.name, path)
+        logging.error('add static error {}'.format(item.name))
+
+        for k in item.static.keys():
+            path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps', item.name, item.static[k])
             try:
-                add_static(app, item.name, path)
+                add_static(app, os.path.join(item.name, k), path)
             except Exception as e:
                 logging.warning(str(e))
 
