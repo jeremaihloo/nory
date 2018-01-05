@@ -1,17 +1,17 @@
 <template>
   <v-app>
     <v-snackbar
-      :timeout="timeout"
-      :top="y === 'top'"
-      :bottom="y === 'bottom'"
-      :right="x === 'right'"
-      :left="x === 'left'"
-      :multi-line="mode === 'multi-line'"
-      :vertical="mode === 'vertical'"
-      v-model="snackbar"
+      :timeout="snackbar.timeout"
+      :top="snackbar.y === 'top'"
+      :bottom="snackbar.y === 'bottom'"
+      :right="snackbar.x === 'right'"
+      :left="snackbar.x === 'left'"
+      :multi-line="snackbar.mode === 'multi-line'"
+      :vertical="snackbar.mode === 'vertical'"
+      v-model="snackbar.snackbar"
     >
-      {{ text }}
-      <v-btn flat color="pink" @click.native="snackbar = false">Close</v-btn>
+      {{ snackbar.text }}
+      <v-btn flat color="primary" @click.native="snackbar.snackbar = false">Close</v-btn>
     </v-snackbar>
     <transition mode="out-in">
       <router-view></router-view>
@@ -22,18 +22,8 @@
 <script>
 import { mapState } from 'vuex'
 export default {
-  data() {
-    return {
-      snackbar: false,
-      y: 'top',
-      x: null,
-      mode: '',
-      timeout: 6000,
-      text: "Hello, I'm a snackbar"
-    }
-  },
   computed: {
-    ...mapState(['message'])
+    ...mapState(['message', 'snackbar'])
   },
   methods: {},
   created() {

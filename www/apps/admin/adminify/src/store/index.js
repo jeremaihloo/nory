@@ -22,6 +22,14 @@ const store = new Vuex.Store({
     config: config,
     adminContentUrl: {
       href: 'http://www.baidu.com'
+    },
+    snackbar: {
+      snackbar: false,
+      y: 'top',
+      x: null,
+      mode: '',
+      timeout: 6000,
+      text: "Hello, I'm a snackbar"
     }
   },
   mutations: {
@@ -50,10 +58,12 @@ const store = new Vuex.Store({
       state.menu = data.body
     },
     ER(state, data) {
-      state.message = { type: 'info', body: data }
+      state.snackbar.snackbar = true
+      state.snackbar.text = data
     },
     OK(state, data) {
-      state.message = { type: 'info', body: data }
+      state.snackbar.snackbar = true
+      state.snackbar.text = data
     },
     DARK_MODE(state, ifDark) {
       state.dark = ifDark
@@ -95,7 +105,7 @@ const store = new Vuex.Store({
               commit(TYPES.ON_GET_MENU, res.data)
               resolve(res)
             } else {
-              commit(TYPES.OK)
+              commit(TYPES.ER)
               reject(res)
             }
           })
@@ -112,6 +122,7 @@ const store = new Vuex.Store({
           .then(res => {
             if (res.data.ok) {
               commit(TYPES.ON_LOGIN, res.data)
+              commit(TYPES.OK, 'Login Ok !')
               resolve(res)
             } else {
               commit(TYPES.ER)
@@ -148,7 +159,6 @@ const store = new Vuex.Store({
         api
           .DO_AUTH_COOKIE_ME()
           .then(res => {
-            commit(TYPES.OK)
             resolve(res)
           })
           .catch(res => {
