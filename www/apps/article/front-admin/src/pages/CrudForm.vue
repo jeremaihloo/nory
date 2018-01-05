@@ -19,6 +19,7 @@ export default {
   computed: {
     article: {
       get: function() {
+        console.log('action', this.$route.params.action)
         return this.$store.state.article[this.$route.params.action]
       },
       set: function(value) {
@@ -32,7 +33,15 @@ export default {
       this.$store.dispatch('SAVE', this.article)
     },
     onPublish(data) {
-      this.$store.dispatch('PUBLISH', this.content)
+      if (this.article.id) {
+        this.$store.dispatch('PUBLISH', this.article.id)
+      }
+    }
+  },
+  created() {
+    if (this.$route.params.id) {
+      console.log('article id', this.$route.params.id)
+      this.$store.dispatch('GET_ARTICLE', this.$route.params.id)
     }
   }
 }

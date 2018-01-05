@@ -63,7 +63,8 @@ async def api_get_articles(*, page=1):
 @post('/api/articles')
 async def api_post_articles(request, *, content, id=None):
     if id is None:
-        o, _ = await objects.get_or_create(Article, content=content, title=get_markdown_h1(content), user=request.__user__)
+        o, _ = await objects.get_or_create(Article, content=content, title=get_markdown_h1(content),
+                                           user=request.__user__)
     else:
         o = await objects.get(Article, id=id)
         o.content = content
@@ -72,9 +73,45 @@ async def api_post_articles(request, *, content, id=None):
 
 
 @feature(events.__FEATURE_ROUTING__, 'api_get_article_by_id', 'api_get_article_by_id')
-@post('/api/articles/{id}')
+@get('/api/articles/{id}')
 async def api_get_article_by_id(*, id):
     article = await objects.get(Article.select().where(Article.id == id))
+    return model_to_dict(article)
+
+
+@feature(events.__FEATURE_ROUTING__, 'api_publish_article', 'api_publish_article')
+@post('/api/articles/{id}/publish')
+async def api_publish_article(*, id):
+    article = await objects.get(Article, id=id)
+    article.publish = True
+    await objects.update(article)
+    return model_to_dict(article)
+
+
+@feature(events.__FEATURE_ROUTING__, 'api_un_publish_article', 'api_un_publish_article')
+@post('/api/articles/{id}/un-publish')
+async def api_un_publish_article(*, id):
+    article = await objects.get(Article, id=id)
+    article.publish = False
+    await objects.update(article)
+    return model_to_dict(article)
+
+
+@feature(events.__FEATURE_ROUTING__, 'api_un_publish_article', 'api_un_publish_article')
+@post('/api/articles/{id}/enable')
+async def api_enable_article(*, id):
+    article = await objects.get(Article, id=id)
+    article.enabled = True
+    await objects.update(article)
+    return model_to_dict(article)
+
+
+@feature(events.__FEATURE_ROUTING__, 'api_un_publish_article', 'api_un_publish_article')
+@post('/api/articles/{id}/disable')
+async def api_disable_article(*, id):
+    article = await objects.get(Article, id=id)
+    article.enabled = False
+    await objects.update(article)
     return model_to_dict(article)
 
 

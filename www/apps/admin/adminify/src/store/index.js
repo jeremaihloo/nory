@@ -20,7 +20,9 @@ const store = new Vuex.Store({
       body: null
     },
     config: config,
-    adminContentUrl: 'http://www.baidu.com'
+    adminContentUrl: {
+      href: 'http://www.baidu.com'
+    }
   },
   mutations: {
     setAuth(state, { user, token }) {
@@ -56,8 +58,8 @@ const store = new Vuex.Store({
     DARK_MODE(state, ifDark) {
       state.dark = ifDark
     },
-    CHANGE_ADMIN_CONTENT_URL(state, url) {
-      state.adminContentUrl = url
+    CHANGE_ADMIN_CONTENT_URL(state, urlEntry) {
+      state.adminContentUrl = Object.assign({}, urlEntry)
     }
   },
   actions: {

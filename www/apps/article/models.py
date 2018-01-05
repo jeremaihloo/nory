@@ -7,7 +7,7 @@ Models for user, blog, comment.
 from datetime import datetime
 from uuid import uuid4
 from dbs import BaseModel
-from peewee import CharField, TextField, ForeignKeyField, UUIDField, DateTimeField
+from peewee import CharField, TextField, ForeignKeyField, UUIDField, DateTimeField, BooleanField
 
 
 class User(BaseModel):
@@ -41,6 +41,8 @@ class Article(BaseModel):
     user = ForeignKeyField(User, related_name='articles')
     title = TextField()
     content = TextField()
+    published = BooleanField(default=False)
+    enabled = BooleanField(default=True)
     created_at = DateTimeField(default=datetime.now)
 
 

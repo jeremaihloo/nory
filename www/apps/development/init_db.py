@@ -75,11 +75,14 @@ async def create_rbacm_init_data():
     admin_user_group_mapping, _ = await objects.get_or_create(rbacmm.UserGroupMappings,
                                                               group=admin_user_group,
                                                               user=admin)
+
+    # ------------------------------------------------------------------------------------------------------------------
     create_article_menu, _ = await objects.get_or_create(rbacmm.Menu,
                                                          name='create_article',
                                                          title='Create Article',
-                                                         href='/manage/articles',
-                                                         target='admin-content')
+                                                         href='/manage/articles#/create',
+                                                         target='admin-content',
+                                                         icon='note_add')
 
     create_article_permission, _ = await objects.get_or_create(rbacmm.Permission,
                                                                name='create_article',
@@ -95,7 +98,33 @@ async def create_rbacm_init_data():
     create_article_api_operation, _ = await objects.get_or_create(rbacmm.Operation,
                                                                   name='create_article',
                                                                   title='create_article',
-                                                                  url_pattern='/api/article')
+                                                                  url_pattern='POST:/api/articles')
+    create_article_api_operation_permission_mapping, _ = await objects.get_or_create(rbacmm.PermissionOperationMappings,
+                                                                                     permission=create_article_permission,
+                                                                                     operation=create_article_api_operation)
+    # ------------------------------------------------------------------------------------------------------------------
+    create_article_menu, _ = await objects.get_or_create(rbacmm.Menu,
+                                                         name='article_list',
+                                                         title='Articles',
+                                                         href='/manage/articles#/list',
+                                                         target='admin-content',
+                                                         icon='view_list')
+
+    create_article_permission, _ = await objects.get_or_create(rbacmm.Permission,
+                                                               name='article_list',
+                                                               title='article_list',
+                                                               type='U')
+    create_article_permission_role_mapping, _ = await objects.get_or_create(rbacmm.PermissionRoleMappings,
+                                                                            role=admin_role,
+                                                                            permission=create_article_permission)
+
+    create_article_menu_permission_mapping, _ = await objects.get_or_create(rbacmm.PermissionMenuMappings,
+                                                                            permission=create_article_permission,
+                                                                            menu=create_article_menu)
+    create_article_api_operation, _ = await objects.get_or_create(rbacmm.Operation,
+                                                                  name='article_list',
+                                                                  title='article_list',
+                                                                  url_pattern='GET:/api/articles')
     create_article_api_operation_permission_mapping, _ = await objects.get_or_create(rbacmm.PermissionOperationMappings,
                                                                                      permission=create_article_permission,
                                                                                      operation=create_article_api_operation)

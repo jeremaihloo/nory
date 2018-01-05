@@ -2,8 +2,8 @@
 v-app(:dark="dark",standalone)
   v-navigation-drawer(v-model='drawer',:mini-variant.sync="mini", persistent,enable-resize-watcher, :dark="dark")
     .pa-3.text-xs-center(v-show="!mini")
-      div.display-2.py-4 Adminify
-      p {{$t('An admin dashboard based on Vuetify')}}
+      div.display-2.py-4 NCMS
+      p {{$t('A simple content management system.')}}
       div(style="padding-left:5em")
         v-switch(:label="(!dark ? 'Light' : 'Dark') + ' Theme'", v-model="dark", :dark="dark", hide-details, @change='onDarkChange')
       div
@@ -58,7 +58,7 @@ v-app(:dark="dark",standalone)
         v-alert(v-bind='message', v-model='message.body', dismissible) {{message.body}}
         .admin-content
           v-slide-y-transition(mode='out-in')
-            iframe(:src.asyc='adminContentUrl')
+            iframe(:src.asyc='adminContentUrl.href', @onchange="onIframeChange")
 </template>
 
 <script>
@@ -82,7 +82,18 @@ export default {
     }
   },
   computed: {
-    ...mapState(['message', 'pageTitle', 'adminContentUrl']),
+    ...mapState(['message', 'pageTitle']),
+    adminContentUrl: {
+      get: function() {
+        return this.$store.state.adminContentUrl
+      },
+      set: function(val) {
+        console.log('tes')
+        this.$store.commit(TYPES.CHANGE_ADMIN_CONTENT_URL, {
+          href: val
+        })
+      }
+    },
     menu() {
       const staticMenu = Object.assign([], this.staticMenu)
       const stateMenu = this.$store.state.menu
@@ -108,10 +119,17 @@ export default {
     },
     goto(item) {
       if (item.target === 'admin-content') {
-        this.$store.commit(TYPES.CHANGE_ADMIN_CONTENT_URL, item.href)
+        this.$store.commit(TYPES.CHANGE_ADMIN_CONTENT_URL, {
+          href: item.href,
+          timing: new Date()
+        })
+        this.$store.commit('setPageTitle', item.title)
       }
     },
-    onDarkChange() {}
+    onDarkChange() {},
+    onIframeChange(url) {
+      console.log('onIframeChange', url)
+    }
   },
 
   created() {
@@ -125,9 +143,10 @@ export default {
   width: 100%;
   height: 100vh;
 }
+
 .admin-content iframe {
-  width 100%
-  height 100%
-  border 0px
+  width: 100%;
+  height: 100%;
+  border: 0px;
 }
 </style>
