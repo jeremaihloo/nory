@@ -58,7 +58,7 @@ v-app(:dark="dark",standalone)
         v-alert(v-bind='message', v-model='message.body', dismissible) {{message.body}}
         .admin-content
           v-slide-y-transition(mode='out-in')
-            iframe(:src.asyc='adminContentUrl.href', @onchange="onIframeChange")
+            iframe(:src.asyc='adminContentUrl.href', ref="adminContent", @onchange.native="onIframeChange", @onload.native="onIframeChange")
 </template>
 
 <script>
@@ -119,9 +119,10 @@ export default {
     },
     goto(item) {
       if (item.target === 'admin-content') {
+        const timing = new Date().getUTCMilliseconds()
         this.$store.commit(TYPES.CHANGE_ADMIN_CONTENT_URL, {
-          href: item.href,
-          timing: new Date()
+          href: item.href + '?timing=' + timing,
+          timing: timing
         })
         this.$store.commit('setPageTitle', item.title)
       }
@@ -131,7 +132,6 @@ export default {
       console.log('onIframeChange', url)
     }
   },
-
   created() {
     this.fetchMenu()
   }
