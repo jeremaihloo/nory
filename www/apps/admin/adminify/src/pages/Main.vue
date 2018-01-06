@@ -55,7 +55,7 @@ v-app(:dark="dark",standalone)
         v-list-tile(v-for="n in colors", :key="n", :class="n",@mouseover.native="theme = n")
   main
     v-container.pa-2(fluid)
-        v-alert(v-bind='message', v-model='message.body', dismissible) {{message.body}}
+        //- v-alert(v-bind='message', v-model='message.body', dismissible) {{message.body}}
         .admin-content
           v-slide-y-transition(mode='out-in')
             iframe(:src.asyc='adminContentUrl.href', ref="adminContent", @onchange.native="onIframeChange", @onload.native="onIframeChange")

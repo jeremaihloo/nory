@@ -70,6 +70,10 @@ const store = new Vuex.Store({
     },
     CHANGE_ADMIN_CONTENT_URL(state, urlEntry) {
       state.adminContentUrl = Object.assign({}, urlEntry)
+    },
+    MESSAGE_TYPE_SNACK_BAR (state, data) {
+      state.snackbar.snackbar = true
+      state.snackbar.text = data
     }
   },
   actions: {

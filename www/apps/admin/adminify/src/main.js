@@ -51,6 +51,8 @@ Vue.component('v-field', VField)
 
 import * as TYPES from './store/mutation_type'
 
+import './js/message'
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
