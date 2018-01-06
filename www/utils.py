@@ -8,6 +8,9 @@ from decimal import Decimal
 
 
 class DictClass(dict):
+    def __init__(self, *args, **kwargs):
+        super(DictClass, self).__init__(*args, **kwargs)
+
     def __getattr__(self, item):
         if self.get(item, None) is None:
             raise KeyError('{} key not exist !'.format(item))
@@ -17,10 +20,10 @@ class DictClass(dict):
         self[key] = value
 
 
-def singleton(cls, *args, **kw):
+def singleton(cls):
     instances = {}
 
-    def _singleton():
+    def _singleton(*args, **kw):
         if cls not in instances:
             instances[cls] = cls(*args, **kw)
         return instances[cls]

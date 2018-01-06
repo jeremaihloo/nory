@@ -11,9 +11,6 @@ async def websocket_handler(request):
     ws = web.WebSocketResponse()
     await ws.prepare(request)
 
-    if request.__user__ is None:
-        return None
-
     async for msg in ws:
         if msg.type == aiohttp.WSMsgType.TEXT:
             if msg.data == 'close':
@@ -30,5 +27,5 @@ async def websocket_handler(request):
 
 
 @feature(events.__FEATURE_ON_APP_LOADING__, 'start_admin_message_server', 'start_admin_message_server')
-async def start_admin_message_server():
-    app.router.add_get('/manage/message', websocket_handler)
+async def start_admin_message_server(app):
+    app.router.add_get('/manage/admin/message', websocket_handler)

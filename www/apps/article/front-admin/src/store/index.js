@@ -6,6 +6,8 @@ import * as api from './apis'
 Vue.use(Vuex)
 import createPersistedState from 'vuex-persistedstate'
 
+import MsgClient from '../js/message'
+
 const store = new Vuex.Store({
   plugins: [createPersistedState()],
   state: {
@@ -53,14 +55,17 @@ const store = new Vuex.Store({
           .then(res => {
             if (res.data.ok) {
               commit('OK', res.data.body)
+              MsgClient.Send('Save Article Ok !')
               resolve(res)
             } else {
               commit('ER')
+              MsgClient.Send('Save Article Error !')
               reject(res)
             }
           })
           .catch(res => {
             commit('ER')
+            MsgClient.Send('Save Article Error !')
             reject(res)
           })
       })
@@ -72,14 +77,17 @@ const store = new Vuex.Store({
           .then(res => {
             if (res.data.ok) {
               commit('OK', res.data.body)
+              MsgClient.Send('Publish Article Ok !')
               resolve(res)
             } else {
               commit('ER')
+              MsgClient.Send('Publish Article Error !')
               reject(res)
             }
           })
           .catch(res => {
             commit('ER')
+            MsgClient.Send('Publish Article Error !')
             reject(res)
           })
       })
@@ -91,6 +99,7 @@ const store = new Vuex.Store({
           .then(res => {
             if (res.data.ok) {
               commit('OK', res.data.body)
+              MsgClient.Send('UnPublish Article Ok !')
               resolve(res)
             } else {
               commit('ER')
@@ -99,6 +108,7 @@ const store = new Vuex.Store({
           })
           .catch(res => {
             commit('ER')
+            MsgClient.Send('UnPublish Article Error !')
             reject(res)
           })
       })
@@ -110,14 +120,17 @@ const store = new Vuex.Store({
           .then(res => {
             if (res.data.ok) {
               commit('OK', res.data.body)
+              MsgClient.Send('Enable Article Ok !')
               resolve(res)
             } else {
               commit('ER')
+              MsgClient.Send('Enable Article Error !')
               reject(res)
             }
           })
           .catch(res => {
             commit('ER')
+            MsgClient.Send('Enable Article Error !')
             reject(res)
           })
       })
@@ -129,14 +142,17 @@ const store = new Vuex.Store({
           .then(res => {
             if (res.data.ok) {
               commit('OK', res.data.body)
+              MsgClient.Send('Disable Article Ok !')
               resolve(res)
             } else {
               commit('ER')
+              MsgClient.Send('Disable Article Error !')
               reject(res)
             }
           })
           .catch(res => {
             commit('ER')
+            MsgClient.Send('Disable Article Error !')
             reject(res)
           })
       })

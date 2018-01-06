@@ -130,7 +130,7 @@ const store = new Vuex.Store({
             }
           })
           .catch(res => {
-            commit(TYPES.ER, res.data)
+            commit(TYPES.ER, 'Login Error')
             reject(res)
           })
       })
@@ -144,12 +144,12 @@ const store = new Vuex.Store({
               commit(TYPES.ON_LOGOUT, res.data)
               resolve(res)
             } else {
-              commit(TYPES.ER)
+              commit(TYPES.ER, 'Logout Error')
               reject(res)
             }
           })
           .catch(res => {
-            commit(TYPES.ER)
+            commit(TYPES.ER, 'Logout Error')
             reject(res)
           })
       })
@@ -162,7 +162,7 @@ const store = new Vuex.Store({
             resolve(res)
           })
           .catch(res => {
-            commit(TYPES.ER)
+            commit(TYPES.ER, 'Auth Error')
             reject(res)
           })
       })

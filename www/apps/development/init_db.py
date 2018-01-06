@@ -14,7 +14,7 @@ models_all = core_models + rbacm_models
 
 
 @feature(events.__FEATURE_ON_APP_LOADING__, 'core_debug_init_db', 'core_debug_init_db')
-async def app_core_debug_init_db():
+async def app_core_debug_init_db(app):
     if NcmsConfig.debug:
         database.drop_tables(models_all, safe=True)
     database.create_tables(models_all, safe=True)

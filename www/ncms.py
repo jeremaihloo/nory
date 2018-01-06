@@ -172,7 +172,7 @@ async def init(loop):
         logger_factory, auth_factory, response_factory
     ])
 
-    plugin_manager = AppManager()
+    plugin_manager = AppManager(app)
     await plugin_manager.load_apps()
     app.plugin_manager = plugin_manager
 

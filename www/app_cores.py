@@ -130,7 +130,8 @@ def sort_app_info_by_dependency(app_infos):
 
 @utils.singleton
 class AppManager(utils.DictClass):
-    def __init__(self):
+    def __init__(self, app):
+        self.app = app
         self.__apps__ = []
         self.__features__ = {}
 
@@ -158,7 +159,7 @@ class AppManager(utils.DictClass):
         pass
 
     async def loading_app(self, item):
-        await item()
+        await item(self.app)
 
     async def loading_apps(self):
         for item in self.__features__.get(events.__FEATURE_ON_APP_LOADING__, []):
