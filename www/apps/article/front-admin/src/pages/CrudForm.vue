@@ -19,7 +19,13 @@ export default {
   computed: {
     article: {
       get: function() {
-        console.log('action', this.$route.params.action)
+        console.log('[article] action', this.$route.params.action)
+        if (this.$route.params.action === 'create') {
+          return {
+            content: this.$store.state.article[this.$route.params.action]
+              .content
+          }
+        }
         return this.$store.state.article[this.$route.params.action]
       },
       set: function(value) {

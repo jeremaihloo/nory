@@ -68,6 +68,7 @@ async def api_post_articles(request, *, content, id=None):
     else:
         o = await objects.get(Article, id=id)
         o.content = content
+        o.title = get_markdown_h1(content)
         await objects.update(o)
     return 200, model_to_dict(o)
 
