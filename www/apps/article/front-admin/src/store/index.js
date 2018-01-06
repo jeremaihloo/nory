@@ -116,7 +116,7 @@ const store = new Vuex.Store({
     ENABLE({ commit }, id) {
       return new Promise(function(resolve, reject) {
         api
-          .PUBLISH(id)
+          .ENABLE(id)
           .then(res => {
             if (res.data.ok) {
               commit('OK', res.data.body)
@@ -138,7 +138,7 @@ const store = new Vuex.Store({
     DISABLE({ commit }, id) {
       return new Promise(function(resolve, reject) {
         api
-          .PUBLISH(id)
+          .DISABLE(id)
           .then(res => {
             if (res.data.ok) {
               commit('OK', res.data.body)
