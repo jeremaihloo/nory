@@ -14,9 +14,6 @@ else:
 logging.info('[configs] {}'.format(__configs__))
 
 from collections import OrderedDict
-from datetime import datetime, date
-from uuid import UUID
-from decimal import Decimal
 from app_cores import AppManager
 from utils import singleton
 from aiohttp import web
@@ -160,7 +157,7 @@ async def response_factory(app, handler):
                 return api_response(m, status_code=t)
 
         # default:
-        resp = web.Response(body=str(r).encode('utf-8'))
+        resp = web.Response(body=str(r ).encode('utf-8'))
         resp.content_type = 'text/plain;charset=utf-8'
         return resp
 
