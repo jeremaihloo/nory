@@ -39,7 +39,8 @@ def get_apps_paths():
 
 @utils.singleton
 class AppManager(object):
-    def __init__(self, app):
+    def __init__(self, ncms_application):
+        self.ncms_application = ncms_application
         self.apps = {}
 
     def init_fns(self):
@@ -49,7 +50,12 @@ class AppManager(object):
 
     async def reload_apps(self):
 
-        self.load_apps()
+        await self.load_apps()
+
+    async def do_app_loading(self):
+        loadings = self.get_worked_features(events.__FEATURE_ON_APP_LOADING__)
+        for item in loadings:
+            await item(self.ncms_application)
 
     async def load_apps(self):
         logging.info('start loading apps')
@@ -57,6 +63,8 @@ class AppManager(object):
 
         app_infos = await self.load_app_infos(app_names)
         apps = await self.load_app_entries(app_infos)
+
+        await self.do_app_loading()
         return apps
 
     async def load_app_infos(self, app_names):
