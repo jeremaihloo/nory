@@ -2,6 +2,7 @@ import time
 import datetime
 import events
 import markdown
+import markdown2
 
 from app_cores import feature
 
@@ -23,6 +24,7 @@ def filter_datetime(t: datetime.datetime):
 
 @feature(events.__FEATURE_TEMPLATE_FILTER__, 'md', 'markdown it')
 def filter_md(t):
+    # return markdown2.markdown(t)
     return markdown.markdown(t, ['markdown.extensions.tables',
                                  'pymdownx.magiclink',
                                  'pymdownx.betterem',

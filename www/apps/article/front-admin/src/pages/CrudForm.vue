@@ -3,7 +3,7 @@ v-layout
   v-flex(xs8)
     form(@submit.prevent='onSubmit')
       div(slot="buttons",class="my-4")
-        <markdown-editor v-model="article.content" ref="markdownEditor" class="editor-width-100"></markdown-editor>
+        <markdown-editor v-model="article.content" ref="markdownEditor" preview-class="markdown-body" :highlight="true"></markdown-editor>
         v-btn(color="primary", dark, type='button', @click="onSave") {{$t('Save')}}
           v-icon(right, dark) send
         v-btn(color="primary", dark, type='button', @click="onPublish") {{$t('Publish')}}
@@ -11,6 +11,9 @@ v-layout
 </template>
 
 <script>
+import hljs from 'highlight.js'
+window.hljs = hljs
+
 import markdownEditor from 'vue-simplemde/src/markdown-editor'
 export default {
   components: {
@@ -55,4 +58,17 @@ export default {
 
 <style>
 @import 'simplemde/dist/simplemde.min.css';
+@import 'github-markdown-css';
+@import 'highlight.js/styles/atom-one-dark.css';
+
+code::before,
+code::after {
+  content: '';
+  letter-spacing: -1px;
+}
+.editor-preview-side pre,
+.editor-preview pre {
+  color: #abb2bf !important;
+  background: #282c34 !important;
+}
 </style>
