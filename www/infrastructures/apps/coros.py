@@ -95,7 +95,7 @@ class AppManager(object):
         features = []
         for item in enabled_apps:
             app_features = [x for x in item.features[event]]
-            enabled_features = [x for x in app_features if getattr(x, 'enabled', False)]
+            enabled_features = [x for x in app_features if getattr(x, 'enabled', True)]
             features.extend(enabled_features)
-        logging.info('[get_worked_features] {}'.format(features))
+        logging.debug('[get_worked_features] {}'.format(features))
         return features

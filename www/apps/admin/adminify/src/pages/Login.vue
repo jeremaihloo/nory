@@ -43,7 +43,18 @@ export default {
         })
         .then(res => {
           if (res.data.ok) {
-            this.$router.replace('/')
+            this.$store
+              .dispatch(TYPES.DO_GET_MENU)
+              .then(r => {
+                if (r.data.ok) {
+                  this.$router.replace('/')
+                } else {
+                  console.log(r)
+                }
+              })
+              .catch(r => {
+                console.log(r)
+              })
           }
         })
         .catch(res => {

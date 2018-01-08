@@ -169,6 +169,8 @@ async def response_factory(app, handler):
 
 def add_apps_statics(app):
     for item in app.app_manager.apps.values():
+        if not item.info.enabled:
+            continue
 
         for k in item.info.static.keys():
             path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps', item.info.name, item.info.static[k])
