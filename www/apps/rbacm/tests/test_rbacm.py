@@ -4,7 +4,7 @@ import importlib
 
 from camel_case_switcher import CamelCaseToUnderscope
 from info_generators import NameGenerator
-from dbs import BaseModel
+from infrastructures.dbs import BaseModel
 import random
 
 

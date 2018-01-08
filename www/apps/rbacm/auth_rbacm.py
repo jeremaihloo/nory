@@ -1,5 +1,5 @@
-import events
-from app_cores import feature
+from infrastructures import events
+from infrastructures.apps.decorators import feature
 
 
 @feature(events.__FEATURE_AUTHING__, 'auth_rbacm_provider', 'auth_rbacm_provider')

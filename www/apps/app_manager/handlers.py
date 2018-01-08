@@ -1,9 +1,9 @@
-import app_cores
-from app_cores import feature, AppManager
-from coroweb import get
+from infrastructures.apps import coros
+from infrastructures.apps.coros import feature, AppManager
+from infrastructures.web.coros import get
 
 
-@feature(app_cores.__EVENT_ROUTING__, 'get_plugins', 'get plugin infos')
+@feature(coros.__EVENT_ROUTING__, 'get_plugins', 'get plugin infos')
 @get('/api/plugins')
 async def api_get_plugins():
     manager = AppManager()
@@ -13,7 +13,7 @@ async def api_get_plugins():
     }
 
 
-@feature(app_cores.__EVENT_ROUTING__, 'get_plugin_features', 'get plugin feautures')
+@feature(coros.__EVENT_ROUTING__, 'get_plugin_features', 'get plugin feautures')
 @get('/api/plugins/features')
 async def api_get_features():
     manager = AppManager()
@@ -22,7 +22,7 @@ async def api_get_features():
     }
 
 
-@feature(app_cores.__EVENT_ROUTING__, 'reload_plugins', 'reload plugins')
+@feature(coros.__EVENT_ROUTING__, 'reload_plugins', 'reload plugins')
 @get('/api/plugins/reload')
 async def api_get_features():
     manager = AppManager()

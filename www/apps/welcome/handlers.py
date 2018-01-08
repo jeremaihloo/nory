@@ -1,6 +1,6 @@
-import events
-from app_cores import feature
-from coroweb import get
+from infrastructures import events
+from infrastructures.apps.coros import feature
+from infrastructures.web.coros import get
 
 
 @feature(events.__FEATURE_ROUTING__, 'page_welcome', 'page_welcome')

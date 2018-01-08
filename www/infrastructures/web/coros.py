@@ -1,50 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from errors import NcmsWebApiError
+from infrastructures.errors import NcmsWebApiError
 
 __author__ = 'Michael Liao'
 
-import asyncio, os, inspect, logging, functools
+import asyncio, os, inspect, logging
 
 from urllib import parse
 
 from aiohttp import web
 
-import events
-
-
-def get(path):
-    '''
-    Define decorator @get('/path')
-    '''
-
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kw):
-            return func(*args, **kw)
-
-        wrapper.__method__ = 'GET'
-        wrapper.__route__ = path
-        return wrapper
-
-    return decorator
-
-
-def post(path):
-    '''
-    Define decorator @post('/path')
-    '''
-
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kw):
-            return func(*args, **kw)
-
-        wrapper.__method__ = 'POST'
-        wrapper.__route__ = path
-        return wrapper
-
-    return decorator
+from infrastructures import events
 
 
 def get_required_kw_args(fn):
@@ -171,7 +137,7 @@ def add_route(app, fn):
             beautify_http_method(method), path, fn.__name__, ', '.join(inspect.signature(fn).parameters.keys())))
     app.router.add_route(method, path, RequestHandler(app, fn))
 
-    for item in app.plugin_manager.__features__[events.__FEATURE_ADD_ROUTE__]:
+    for item in app.plugin_manager.__features__.get(events.__FEATURE_ADD_ROUTE__, []):
         params = [x for x in inspect.signature(fn).parameters.keys()]
         item(method, path, params)
 

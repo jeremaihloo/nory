@@ -1,5 +1,5 @@
-import events
-from app_cores import feature
+from infrastructures import events
+from infrastructures.apps.coros import feature
 
 
 @feature(events.__FEATURE_TASK__, 'upload_to_qiniu', 'upload_to_qiniu')

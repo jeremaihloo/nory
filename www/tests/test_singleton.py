@@ -1,4 +1,4 @@
-from utils import singleton
+from infrastructures.utils import singleton
 
 
 @singleton

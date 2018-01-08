@@ -1,14 +1,12 @@
-import logging
-
-import events
-from app_cores import feature
+from infrastructures import events
+from infrastructures.apps.coros import feature
 from apps.article import models
 from apps.article.install import create_rbacm_init_data
 from apps.article.models import core_models
 from apps.rbacm.models import rbacm_models
-from configs import NcmsConfig
-from dbs import database, objects
-from utils import hash_pwd
+from infrastructures.configs import NcmsConfig
+from infrastructures.dbs import database, objects
+from infrastructures.utils import hash_pwd
 
 models_all = core_models + rbacm_models
 

@@ -1,10 +1,8 @@
-import time
 import datetime
-import events
+from infrastructures import events
 import markdown
-import markdown2
 
-from app_cores import feature
+from infrastructures.apps.decorators import feature
 
 
 @feature(events.__FEATURE_TEMPLATE_FILTER__, 'datetime', 'datetime friendly filter')

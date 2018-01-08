@@ -6,7 +6,7 @@ Models for user, blog, comment.
 """
 from datetime import datetime
 from uuid import uuid4
-from dbs import BaseModel
+from infrastructures.dbs import BaseModel
 from peewee import CharField, TextField, ForeignKeyField, UUIDField, DateTimeField, BooleanField
 
 

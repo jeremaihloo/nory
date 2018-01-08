@@ -2,25 +2,27 @@
 # -*- coding: utf-8 -*-
 
 import coloredlogs, logging
+from infrastructures.configs.config_loaders import load_configs
 
-import utils
-from configs import NcmsConfig, __configs__
+configs = load_configs()
+
+from infrastructures.configs.models import NcmsConfig
 
 if NcmsConfig.colored_log:
     coloredlogs.install(level=NcmsConfig.log_level)
 else:
     logging.basicConfig(level=NcmsConfig.log_level)
 
-logging.info('[configs] {}'.format(__configs__))
+logging.info('[configs] {}'.format(configs))
 
 from collections import OrderedDict
-from app_cores import AppManager
-from utils import singleton
+from infrastructures.apps.coros import AppManager
+from infrastructures.utils import singleton
 from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
-from coroweb import add_routes, add_static
-import events
-import asyncio, os, json
+from infrastructures.web.coros import add_routes, add_static
+from infrastructures import events, utils
+import asyncio, os
 
 
 def init_jinja2(app, **kw):
@@ -48,7 +50,7 @@ async def logger_factory(app, handler):
     async def logger(request):
         logging.info('Request: %s %s' % (request.method, request.path))
         # await asyncio.sleep(0.3)
-        return (await handler(request))
+        return await handler(request)
 
     return logger
 
@@ -85,7 +87,7 @@ async def data_factory(app, handler):
             elif request.content_type.startswith('application/x-www-form-urlencoded'):
                 request.__data__ = await request.post()
                 logging.info('request form: %s' % str(request.__data__))
-        return (await handler(request))
+        return await handler(request)
 
         return parse_data
 
@@ -217,4 +219,4 @@ if __name__ == '__main__':
     try:
         run()
     except KeyboardInterrupt:
-        logging.info('ncms close by keyboard inerrupt')
+        logging.info('Stoping ncms ...')

@@ -1,8 +1,8 @@
 import aiohttp
 from aiohttp import web
 import logging
-import events
-from app_cores import feature
+from infrastructures import events
+from infrastructures.apps.decorators import feature
 
 MESSAGE_TYPE_SNACK_BAR = 'MESSAGE_TYPE_SNACK_BAR'
 

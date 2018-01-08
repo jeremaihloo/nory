@@ -7,9 +7,8 @@ import os
 import importlib
 import functools
 import yaml
-import utils
-import events
-from dependency import sort_app_dependency
+from infrastructures import events, utils
+from infrastructures.apps.dependency import sort_app_dependency
 
 
 def feature(event, name='', title='', description=''):

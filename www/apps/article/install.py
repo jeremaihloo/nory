@@ -1,13 +1,13 @@
 import logging
 
-import events
-from app_cores import feature
+from infrastructures import events
+from infrastructures.apps.decorators import feature
 from apps.article import models
 from apps.article.models import core_models
 from apps.rbacm.models import rbacm_models
 from apps.rbacm import models as rbacmm
-from dbs import database, objects
-from utils import hash_pwd
+from infrastructures.dbs import database, objects
+from infrastructures.utils import hash_pwd
 
 models_all = core_models + rbacm_models
 

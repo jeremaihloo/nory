@@ -1,4 +1,4 @@
-import utils
+from infrastructures import utils
 
 
 def test_ncms_path():

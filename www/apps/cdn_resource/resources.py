@@ -1,7 +1,7 @@
 import os
 
-import events
-from app_cores import feature
+from infrastructures import events
+from infrastructures.apps.coros import feature
 
 __resources__ = {}
 

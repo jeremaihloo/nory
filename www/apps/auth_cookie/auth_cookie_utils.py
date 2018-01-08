@@ -3,8 +3,8 @@ import logging
 import time
 
 from apps.article.models import User
-from configs import NcmsConfig
-from dbs import objects
+from infrastructures.configs.models import NcmsConfig
+from infrastructures.dbs import objects
 
 COOKIE_NAME = 'ncms_auth_cookie'
 _COOKIE_KEY = NcmsConfig.secret

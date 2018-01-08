@@ -1,7 +1,6 @@
-import app_cores
-import events
-from coroweb import get
-from app_cores import feature
+from infrastructures import events
+from infrastructures.web.coros import get
+from infrastructures.apps.coros import feature
 
 routes = []
 

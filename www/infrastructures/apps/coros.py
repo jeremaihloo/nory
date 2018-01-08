@@ -5,93 +5,16 @@ import inspect
 import logging
 import os
 import importlib
-import functools
-import yaml
-import utils
-import events
-from configs import NcmsConfig
-from dependency import sort_app_dependency
+from infrastructures import events, utils
+from infrastructures.apps.app_info_loaders import PyInfoLoader, AppYamlInfoLoader
+from infrastructures.apps.dependency import sort_app_info_by_dependency
+from infrastructures.configs.models import NcmsConfig
 
-
-def feature(event, name='', title='', description=''):
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kw):
-            return func(*args, **kw)
-
-        wrapper.__app_event__ = event
-        wrapper.__app_fn_name__ = name
-        wrapper.__app_fn_title__ = title
-        wrapper.__app_fn_description__ = description
-
-        return wrapper
-
-    return decorator
-
-
-class AppInfo(object):
-    def __init__(self, name, version, description, author, home_page, indexs, dependency, static, enabled):
-        self.name = name
-        self.version = version
-        self.description = description
-        self.author = author
-        self.home_page = home_page
-        self.indexs = indexs
-        self.dependency = dependency
-        self.static = static
-        self.enabled = enabled
 
 
 class AppLoader(object):
     def load(self, name):
         pass
-
-
-class AppInfoLoader(object):
-    def load(self, name):
-        pass
-
-
-class PyInfoLoader(AppInfoLoader):
-    """info.py"""
-
-    def load(self, name):
-        info_m = importlib.import_module('apps.{}.info'.format(name))
-        app_info = AppInfo(
-            name=name,
-            author=getattr(info_m, '__author__', 'None'),
-            version=getattr(info_m, '__version__', 'None'),
-            description=getattr(info_m, '__description__', 'None'),
-            home_page=getattr(info_m, '__home_page__', 'None'),
-            indexs=getattr(info_m, 'INDEXS', []),
-            dependency=getattr(info_m, 'dependency', []),
-            static=getattr(info_m, 'static', {}),
-            enabled=getattr(info_m, 'enabled', False)
-        )
-        return app_info
-
-
-class AppYamlInfoLoader(AppInfoLoader):
-    """app.yaml"""
-
-    def load(self, name):
-        abs_p = os.path.abspath('.')
-        path = os.path.join(abs_p, 'apps/{}/{}'.format(name, 'app.yaml'))
-        app_info = yaml.load(open(path))
-        logging.debug('app_info from yaml:{}'.format(app_info))
-        app_info = AppInfo(
-            name=name,
-            author=app_info.get('author', ''),
-            version=app_info.get('version', ''),
-            description=app_info.get('description', ''),
-            home_page=app_info.get('home_page'),
-            indexs=app_info.get('indexs', []),
-            dependency=app_info.get('dependency', []),
-            static=app_info.get('static', {}),
-            enabled=app_info.get('enabled', False)
-        )
-        return app_info
-
 
 def load_app_info(name):
     m = {
@@ -110,26 +33,6 @@ def load_app_info(name):
     if loader is not None:
         return loader.load(name)
     raise Exception('[load_app_info] loader not found for [{}]'.format(name))
-
-
-def sort_app_info_by_dependency(app_infos):
-    maps = []
-    for item in app_infos:
-        for dep in item.dependency:
-            maps.append((item, dep))
-    logging.info('dependency mappings:{}'.format(maps))
-    sorted_deps = sort_app_dependency(maps)
-
-    def get_info_by_name(name):
-        for item in app_infos:
-            if name == item.name:
-                return item
-        return None
-
-    not_need_to_sorted = list(filter(lambda x: x.name not in sorted_deps, app_infos))
-    sorted_app_info = [get_info_by_name(x) for x in sorted_deps]
-    not_need_to_sorted.extend(sorted_app_info)
-    return [x for x in not_need_to_sorted if x is not None]
 
 
 @utils.singleton
@@ -222,3 +125,4 @@ class AppManager(utils.DictClass):
                             if self.__features__.get(event, None) is None:
                                 self.__features__[event] = []
                             self.__features__[event].append(fn)
+

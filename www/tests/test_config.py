@@ -1,6 +1,6 @@
 import unittest
 
-from configs import load_config_from_command_line
+from infrastructures.configs import load_config_from_command_line
 
 
 class MyTestCase(unittest.TestCase):

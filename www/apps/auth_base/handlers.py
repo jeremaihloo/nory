@@ -2,8 +2,8 @@ import logging
 
 from aiohttp import web
 
-import events
-from app_cores import feature
+from infrastructures import events
+from infrastructures.apps.coros import feature
 from apps.auth_base import white
 
 

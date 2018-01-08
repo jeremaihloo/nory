@@ -1,7 +1,7 @@
-import events
-from app_cores import feature
+from infrastructures import events
+from infrastructures.apps.decorators import feature
 from apps.auth_base.white import allow_anyone
-from coroweb import get
+from infrastructures.web.decorators import get
 
 
 @allow_anyone
