@@ -9,6 +9,7 @@ import functools
 import yaml
 import utils
 import events
+from configs import NcmsConfig
 from dependency import sort_app_dependency
 
 
@@ -29,7 +30,7 @@ def feature(event, name='', title='', description=''):
 
 
 class AppInfo(object):
-    def __init__(self, name, version, description, author, home_page, indexs, dependency, static):
+    def __init__(self, name, version, description, author, home_page, indexs, dependency, static, enabled):
         self.name = name
         self.version = version
         self.description = description
@@ -38,6 +39,7 @@ class AppInfo(object):
         self.indexs = indexs
         self.dependency = dependency
         self.static = static
+        self.enabled = enabled
 
 
 class AppLoader(object):
@@ -63,7 +65,8 @@ class PyInfoLoader(AppInfoLoader):
             home_page=getattr(info_m, '__home_page__', 'None'),
             indexs=getattr(info_m, 'INDEXS', []),
             dependency=getattr(info_m, 'dependency', []),
-            static=getattr(info_m, 'static', {})
+            static=getattr(info_m, 'static', {}),
+            enabled=getattr(info_m, 'enabled', False)
         )
         return app_info
 
@@ -84,7 +87,8 @@ class AppYamlInfoLoader(AppInfoLoader):
             home_page=app_info.get('home_page'),
             indexs=app_info.get('indexs', []),
             dependency=app_info.get('dependency', []),
-            static=app_info.get('static', {})
+            static=app_info.get('static', {}),
+            enabled=app_info.get('enabled', False)
         )
         return app_info
 
@@ -191,9 +195,14 @@ class AppManager(utils.DictClass):
         logging.info('sorted app info dependency [{}]'.format([x.name for x in app_infos]))
 
         for item in app_infos:
+            if item.name in NcmsConfig.pre_installed_apps and not utils.ncms_has_been_installed():
+                item.enabled = True
             try:
-                await self.load_app(item)
-                logging.info('[load_apps] app [{}] loaded'.format(item.name))
+                if item.enabled:
+                    await self.load_app(item)
+                    logging.info('[load_apps] app [{}] loaded'.format(item.name))
+                else:
+                    logging.info('[load_apps] app [{}] skiped [disabled]'.format(item.name))
             except Exception as e:
                 logging.exception('[load_apps] app [{}] load error'.format(item.name))
 

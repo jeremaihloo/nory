@@ -78,7 +78,7 @@ class NcmsConfig(ConfigBase):
 
     secret = 'ncms'
 
-    pre_installed_apps = ['core', 'admin', 'app_manager', 'app_store_client', 'auth_cookie', 'rbacm']
+    pre_installed_apps = ['article', 'admin', 'app_manager', 'app_store_client', 'auth_cookie', 'rbacm']
 
     log_level = 'INFO'
     colored_log = True

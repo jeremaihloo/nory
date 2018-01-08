@@ -37,7 +37,7 @@ def init_jinja2(app, **kw):
     logging.info('set jinja2 template path: %s' % path)
 
     env = Environment(loader=FileSystemLoader(path), **options)
-    filters = app.plugin_manager.__features__[events.__FEATURE_TEMPLATE_FILTER__]
+    filters = app.plugin_manager.__features__.get(events.__FEATURE_TEMPLATE_FILTER__, [])
     if filters is not None:
         for f in filters:
             env.filters[getattr(f, '__app_fn_name__')] = f
@@ -58,8 +58,9 @@ async def auth_factory(app, handler):
         request.__user__ = None
         logging.info('auth user: %s %s' % (request.method, request.path))
         flag = False
-        logging.info('[auth_provider] : [{}]'.format(app.plugin_manager.__features__[events.__FEATURE_AUTHING__]))
-        for fn in app.plugin_manager.__features__[events.__FEATURE_AUTHING__]:
+        logging.info(
+            '[auth_provider] : [{}]'.format(app.plugin_manager.__features__.get(events.__FEATURE_AUTHING__, [])))
+        for fn in app.plugin_manager.__features__.get(events.__FEATURE_AUTHING__, []):
             auth_flag, msg = await fn(app, request)
             if auth_flag:
                 logging.info('[auth] : [{}] passed'.format(getattr(fn, '__app_fn_name__')))
@@ -157,7 +158,7 @@ async def response_factory(app, handler):
                 return api_response(m, status_code=t)
 
         # default:
-        resp = web.Response(body=str(r ).encode('utf-8'))
+        resp = web.Response(body=str(r).encode('utf-8'))
         resp.content_type = 'text/plain;charset=utf-8'
         return resp
 

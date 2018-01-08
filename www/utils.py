@@ -6,6 +6,8 @@ from datetime import datetime, date
 
 from decimal import Decimal
 
+import os
+
 
 class DictClass(dict):
     def __init__(self, *args, **kwargs):
@@ -67,3 +69,7 @@ def json_dumps(obj, dt_fmt='%Y-%m-%d %H:%M:%S', date_fmt='%Y-%m-%d',
 class JsonEncoder(json.JSONEncoder):
     def iterencode(self, o, _one_shot=False):
         return json_dumps(o)
+
+
+def ncms_has_been_installed():
+    return os.path.exists('ncms.lock')
