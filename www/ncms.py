@@ -177,7 +177,6 @@ async def init(loop):
     add_routes(app)
 
     for item in app.plugin_manager.__apps__:
-        logging.error('add static error {}'.format(item.name))
 
         for k in item.static.keys():
             path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps', item.name, item.static[k])
