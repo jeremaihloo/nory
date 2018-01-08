@@ -10,3 +10,8 @@ INDEXS = [
     'handlers',
     'message'
 ]
+
+static = {
+    'static':'static',
+    'adminify/static':'adminify/dist/static'
+}

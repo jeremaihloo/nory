@@ -3,7 +3,7 @@ v-layout
   v-flex(xs8)
     form(@submit.prevent='onSubmit')
       div(slot="buttons",class="my-4")
-        <markdown-editor v-model="article.content" ref="markdownEditor"></markdown-editor>
+        <markdown-editor v-model="article.content" ref="markdownEditor" class="editor-width-100"></markdown-editor>
         v-btn(color="primary", dark, type='button', @click="onSave") {{$t('Save')}}
           v-icon(right, dark) send
         v-btn(color="primary", dark, type='button', @click="onPublish") {{$t('Publish')}}
