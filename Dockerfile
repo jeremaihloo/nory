@@ -1,14 +1,14 @@
 FROM node:latest as admin-builder
 WORKDIR /workspace
 COPY www/apps/admin/adminify/package.json /workspace/package.json
-RUN npm install
+RUN npm install --registry https://registry.npm.taobao.org
 COPY www/apps/admin/adminify /workspace/
 RUN npm run build 
 
 FROM node:latest as article-builder
 WORKDIR /workspace
 COPY www/apps/article/front-admin/package.json /workspace/package.json
-RUN npm install
+RUN npm install --registry https://registry.npm.taobao.org
 COPY www/apps/article/front-admin /workspace
 RUN npm run build
 
@@ -24,7 +24,7 @@ ENV TZ 'Asia/Shanghai'
 
 COPY ./requirements.txt /workspace/
 
-RUN pip install -r requirements.txt && \
+RUN pip install -r requirements.txt -i https://pypi.douban.com/simple && \
     rm -rf /root/.cache
 
 EXPOSE 9000
