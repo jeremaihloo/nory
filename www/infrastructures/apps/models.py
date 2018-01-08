@@ -15,8 +15,24 @@ class AppInfo(object):
 
 
 class App(object):
-    def __init__(self):
+    def __init__(self, info):
+        self.info = info
         self.features = {}
         for item in dir(events):
             if item.startswith('__FEATURE'):
                 self.features[item] = []
+
+    def on_installing(self):
+        pass
+
+    def on_loading(self):
+        pass
+
+    def on_uninstall(self):
+        pass
+
+    def on_enable_feature(self):
+        pass
+
+    def on_disable_feature(self):
+        pass

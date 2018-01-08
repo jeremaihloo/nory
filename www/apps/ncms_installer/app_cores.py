@@ -164,9 +164,9 @@ class AppManager(utils.DictClass):
         for item in self.__features__.get(events.__FEATURE_ON_APP_LOADING__, []):
             try:
                 await self.loading_app(item)
-                logging.info('[loading_apps] app item {} ok'.format(item))
+                logging.info('[do_apps_on_loading_feature] app item {} ok'.format(item))
             except Exception as e:
-                logging.exception('[loading_apps] error [{}]  {}'.format(item, e))
+                logging.exception('[do_apps_on_loading_feature] error [{}]  {}'.format(item, e))
 
     async def load_apps(self):
         logging.info('start loading apps')

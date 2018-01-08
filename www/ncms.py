@@ -26,7 +26,7 @@ import asyncio, os
 
 
 def init_jinja2(app, **kw):
-    logging.info('init jinja2...')
+    logging.info('[init jinja2] ...')
     options = dict(
         autoescape=kw.get('autoescape', True),
         block_start_string=kw.get('block_start_string', '{%'),
@@ -36,10 +36,10 @@ def init_jinja2(app, **kw):
         auto_reload=kw.get('auto_reload', True)
     )
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps')
-    logging.info('set jinja2 template path: %s' % path)
+    logging.info('[init_jinja2] set jinja2 template path: %s' % path)
 
     env = Environment(loader=FileSystemLoader(path), **options)
-    filters = app.plugin_manager.__features__.get(events.__FEATURE_TEMPLATE_FILTER__, [])
+    filters = app.app_manager.get_worked_features(events.__FEATURE_TEMPLATE_FILTER__)
     if filters is not None:
         for f in filters:
             env.filters[getattr(f, '__app_fn_name__')] = f
@@ -48,7 +48,7 @@ def init_jinja2(app, **kw):
 
 async def logger_factory(app, handler):
     async def logger(request):
-        logging.info('Request: %s %s' % (request.method, request.path))
+        logging.info('[logger_factory] Request: %s %s' % (request.method, request.path))
         # await asyncio.sleep(0.3)
         return await handler(request)
 
@@ -61,8 +61,8 @@ async def auth_factory(app, handler):
         logging.info('auth user: %s %s' % (request.method, request.path))
         flag = False
         logging.info(
-            '[auth_provider] : [{}]'.format(app.plugin_manager.__features__.get(events.__FEATURE_AUTHING__, [])))
-        for fn in app.plugin_manager.__features__.get(events.__FEATURE_AUTHING__, []):
+            '[auth_provider] : {}'.format(app.app_manager.get_worked_features(events.__FEATURE_AUTHING__)))
+        for fn in app.app_manager.get_worked_features(events.__FEATURE_AUTHING__):
             auth_flag, msg = await fn(app, request)
             if auth_flag:
                 logging.info('[auth] : [{}] passed'.format(getattr(fn, '__app_fn_name__')))
@@ -71,7 +71,7 @@ async def auth_factory(app, handler):
                 logging.info('[auth] : [{}] un_pass'.format(getattr(fn, '__app_fn_name__')))
 
         if not flag:
-            for fn in app.plugin_manager.__features__.get(events.__FEATURE_AUTH_FALSE__, []):
+            for fn in app.app_manager.get_worked_features(events.__FEATURE_AUTH_FALSE__):
                 await fn(app, request)
         return await handler(request)
 
@@ -148,7 +148,7 @@ async def response_factory(app, handler):
                 resp.content_type = 'text/html;charset=utf-8'
                 return resp
 
-        if isinstance(r, int) and r >= 100 and r < 600:
+        if isinstance(r, int) and 100 <= r < 600:
             return api_response(None, status_code=r)
 
         if isinstance(r, list):
@@ -156,7 +156,7 @@ async def response_factory(app, handler):
 
         if isinstance(r, tuple) and len(r) == 2:
             t, m = r
-            if isinstance(t, int) and t >= 100 and t < 600:
+            if isinstance(t, int) and 100 <= t < 600:
                 return api_response(m, status_code=t)
 
         # default:
@@ -167,26 +167,30 @@ async def response_factory(app, handler):
     return response
 
 
+def add_apps_statics(app):
+    for item in app.app_manager.apps.values():
+
+        for k in item.info.static.keys():
+            path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps', item.info.name, item.info.static[k])
+            try:
+                add_static(app, os.path.join(item.info.name, k), path)
+            except Exception as e:
+                logging.warning('[add_apps_statics] add app [{}] static error'.format(item.info.name))
+
+
 async def init(loop):
     app = web.Application(loop=loop, middlewares=[
         logger_factory, auth_factory, response_factory
     ])
 
-    plugin_manager = AppManager(app)
-    await plugin_manager.load_apps()
-    app.plugin_manager = plugin_manager
+    app_manager = AppManager(app)
+    await app_manager.load_apps()
+    app.app_manager = app_manager
 
     init_jinja2(app)
     add_routes(app)
 
-    for item in app.plugin_manager.__apps__:
-
-        for k in item.static.keys():
-            path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps', item.name, item.static[k])
-            try:
-                add_static(app, os.path.join(item.name, k), path)
-            except Exception as e:
-                logging.warning(str(e))
+    add_apps_statics(app)
 
     srv = await loop.create_server(app.make_handler(), '0.0.0.0', 9000)
 

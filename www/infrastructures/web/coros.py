@@ -147,7 +147,7 @@ def beautify_http_method(method: str):
 
 
 def add_routes(app):
-    for item in app.plugin_manager.__features__.get(events.__FEATURE_ROUTING__, []):
+    for item in app.app_manager.get_worked_features(events.__FEATURE_ROUTING__):
         add_route(app, item)
 
 

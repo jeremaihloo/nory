@@ -51,3 +51,22 @@ class AppYamlInfoLoader(AppInfoLoader):
             enabled=app_info.get('enabled', False)
         )
         return app_info
+
+
+def load_app_info(name):
+    m = {
+        'info.py': PyInfoLoader(),
+        'app.yaml': AppYamlInfoLoader()
+    }
+    abs_p = os.path.abspath('.')
+    filter_path = lambda key: os.path.exists(os.path.join(abs_p, 'apps/{}/{}'.format(name, key)))
+    keys = list(filter(filter_path, m.keys()))
+    if keys is None or len(keys) == 0:
+        raise FileNotFoundError('app info file not found {}'.format(name))
+    elif len(keys) > 1:
+        raise Exception('more than one app info file exists')
+
+    loader = m.get(keys[0], None)
+    if loader is not None:
+        return loader.load(name)
+    raise Exception('[load_app_info] loader not found for [{}]'.format(name))
