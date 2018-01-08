@@ -24,7 +24,8 @@ ENV TZ 'Asia/Shanghai'
 
 COPY ./requirements.txt /workspace/
 
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt && \
+    rm -rf /root/.cache
 
 EXPOSE 9000
 
