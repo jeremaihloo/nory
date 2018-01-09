@@ -15,3 +15,9 @@ static = {
     'static':'static',
     'adminify/static':'adminify/dist/static'
 }
+
+dependency = [
+    'welcome',
+    'rbacm',
+    'auth_cookie'
+]

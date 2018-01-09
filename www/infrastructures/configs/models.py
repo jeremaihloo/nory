@@ -1,4 +1,3 @@
-from infrastructures.utils import singleton
 
 __configs__ = {}
 
