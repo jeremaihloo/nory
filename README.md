@@ -1,54 +1,77 @@
-# ncms
+# Ncms
 
-A simple python content management system.
+Ncms is an open-source modular and extensible application framework built with python3 async/await, and a content management system (CMS) built on top of that application framework.
 
-## Warning
+## Build Status
 
-This project is developing !
+Stable (master):
 
-## TODO：
+Nightly (dev):
 
-* Theme
+## Status
+
+### Pre-Alpha
+
+The software is still under active development and not feature complete or ready for consumption by anyone other than software developers. There may be milestones during the pre-alpha which deliver specific sets of functionality, and nightly builds for other developers or users who are comfortable living on the absolute bleeding edge.
+
+### Goals
+
+Validate all the core components of Ncms work together to enable module development. We should be able to setup an Ncms site and run a blog engine with a minimal set of custom modules.
+
+### Fully or partially implemented
+
 * admin
 * app_manager
 * app_store_client
 * app_store_server
+* article
+* auth_base
 * auth_cookie
 * auth_jwt
+* bookmarks
+* bts
 * cache_redis
-* core
+* cdn_resource
+* cmd
 * demo
+* development
 * displays
+* errors_response
 * health_check
+* i18n
 * mail
 * message
+* ncms_installer
 * page_statistics
+* plannings
 * profile
-* rbac
+* rbacm
 * routes_viewer
 * security (page rate limits)
 * sms
+* system_information
+* task_manager
+* welcome
+* worker_manager
+
+## Getting Started
+
+## Command line
+
+## Pycharm
+
+## Docker
+
+```bash
+docker run jeremaihloo/ncms
+```
+
+## Contributing
+
+## Documentation
 
 ## License
 
 The MIT License (MIT)
 
 Copyright (c) 2017 jeremaihloo
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.

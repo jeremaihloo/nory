@@ -54,8 +54,14 @@ async def api_post_tags(*, content):
 
 @feature(events.__FEATURE_ROUTING__, 'api_get_articles', 'api_get_articles')
 @get('/api/articles')
-async def api_get_articles(*, page=1):
-    articles = await objects.execute(Article.select().paginate(page))
+async def api_get_articles(*, published=False, page=1):
+    query = Article.select()
+    if published:
+        query = query.where(Article.published == True)
+
+    count = query.count()
+    articles = await objects.execute(query.paginate(page))
+
     return [model_to_dict(x, recurse=False) for x in articles]
 
 
@@ -75,8 +81,8 @@ async def api_post_articles(request, *, content, id=None):
 
 @feature(events.__FEATURE_ROUTING__, 'api_get_article_by_id', 'api_get_article_by_id')
 @get('/api/articles/{id}')
-async def api_get_article_by_id(*, id):
-    article = await objects.get(Article.select().where(Article.id == id))
+async def api_get_article_by_id(*, id, published=False):
+    article = await objects.get(Article.select().where(Article.id == id, Article.published==published))
     return model_to_dict(article)
 
 
@@ -84,7 +90,7 @@ async def api_get_article_by_id(*, id):
 @post('/api/articles/{id}/publish')
 async def api_publish_article(*, id):
     article = await objects.get(Article, id=id)
-    article.publish = True
+    article.published = True
     await objects.update(article)
     return model_to_dict(article)
 
@@ -93,7 +99,7 @@ async def api_publish_article(*, id):
 @post('/api/articles/{id}/un-publish')
 async def api_un_publish_article(*, id):
     article = await objects.get(Article, id=id)
-    article.publish = False
+    article.published = False
     await objects.update(article)
     return model_to_dict(article)
 
@@ -130,7 +136,7 @@ async def api_get_articles_by_tag(*, tag):
 @feature(events.__FEATURE_ROUTING__, 'page_index', 'page_index')
 @get('/')
 async def page_index():
-    articles = await api_get_articles(page=1)
+    articles = await api_get_articles(published=True, page=1)
     return {
         'articles': articles,
         '__template__': 'article/templates/index.html'
@@ -163,7 +169,7 @@ async def page_article_by_tag(*, tag):
 @feature(events.__FEATURE_ROUTING__, 'page_id', 'page_id')
 @get('/articles/{id}')
 async def page_article(*, id):
-    article = await api_get_article_by_id(id=id)
+    article = await api_get_article_by_id(id=id, published=True)
     return {
         'article': article,
         '__template__': 'article/templates/article.html'
