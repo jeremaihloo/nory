@@ -33,3 +33,4 @@ class DbConfig(ConfigBase):
     db_password = 'root'
     db_database = 'ncms'
     db_port = '3306'
+    db_charset = 'utf8mb4'

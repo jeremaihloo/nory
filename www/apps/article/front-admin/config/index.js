@@ -10,7 +10,13 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api': 'http://127.0.0.1:9000'
+      '/api': 'http://127.0.0.1:9000',
+      '/manage/admin/message': {
+        target: 'http://127.0.0.1:9000',
+        ws: true
+      },
+      '/manage': 'http://127.0.0.1:9000',
+      '/apps': 'http://127.0.0.1:9000'
     },
 
     // Various Dev Server settings

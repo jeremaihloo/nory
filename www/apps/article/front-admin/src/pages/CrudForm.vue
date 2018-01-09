@@ -3,7 +3,7 @@ v-layout
   v-flex(xs8)
     form(@submit.prevent='onSubmit')
       div(slot="buttons",class="my-4")
-        <markdown-editor v-model="article.content" ref="markdownEditor" preview-class="markdown-body" :highlight="true"></markdown-editor>
+        <markdown-editor @input="$store.commit('SAVE', article)" v-model="article.content" ref="markdownEditor" preview-class="markdown-body" :highlight="true"></markdown-editor>
         v-btn(color="primary", dark, type='button', @click="onSave") {{$t('Save')}}
           v-icon(right, dark) send
         v-btn(color="primary", dark, type='button', @click="onPublish") {{$t('Publish')}}
@@ -19,27 +19,21 @@ export default {
   components: {
     markdownEditor
   },
-  computed: {
-    article: {
-      get: function() {
-        console.log('[article] action', this.$route.params.action)
-        if (this.$route.params.action === 'create') {
-          return {
-            content: this.$store.state.article[this.$route.params.action]
-              .content
-          }
-        }
-        return this.$store.state.article[this.$route.params.action]
-      },
-      set: function(value) {
-        this.$store.commit('SAVE', value)
+  data() {
+    return {
+      article: {
+        content: '你好，中国！'
       }
     }
   },
   methods: {
     updateFields() {},
     onSave() {
-      this.$store.dispatch('SAVE', this.article)
+      this.$store.dispatch('SAVE', this.article).then(res => {
+        if (this.$route.params.action === 'create') {
+          this.$router.push(`/update/${res.data.body.id}`)
+        }
+      })
     },
     onPublish(data) {
       if (this.article.id) {
@@ -50,7 +44,16 @@ export default {
   created() {
     if (this.$route.params.id) {
       console.log('article id', this.$route.params.id)
-      this.$store.dispatch('GET_ARTICLE', this.$route.params.id)
+      this.$store
+        .dispatch('GET_ARTICLE', this.$route.params.id)
+        .then(res => {
+          this.article = this.$store.state.article[this.$route.params.action]
+        })
+        .catch(res => {})
+    } else {
+      if (this.$route.params.action) {
+        this.article = this.$store.state.article[this.$route.params.action]
+      }
     }
   }
 }
