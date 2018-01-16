@@ -26,7 +26,8 @@ class PyInfoLoader(AppInfoLoader):
             indexs=getattr(info_m, 'INDEXS', []),
             dependency=getattr(info_m, 'dependency', []),
             static=getattr(info_m, 'static', {}),
-            enabled=getattr(info_m, 'enabled', False)
+            enabled=getattr(info_m, 'enabled', False),
+            locale=getattr(info_m, 'locale', {})
         )
         return app_info
 
@@ -48,7 +49,8 @@ class AppYamlInfoLoader(AppInfoLoader):
             indexs=app_info.get('indexs', []),
             dependency=app_info.get('dependency', []),
             static=app_info.get('static', {}),
-            enabled=app_info.get('enabled', False)
+            enabled=app_info.get('enabled', False),
+            locale=app_info.get('locale', {})
         )
         return app_info
 

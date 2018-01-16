@@ -2,7 +2,7 @@ from infrastructures import events
 
 
 class AppInfo(object):
-    def __init__(self, name, version, description, author, home_page, indexs, dependency, static, enabled):
+    def __init__(self, name, version, description, author, home_page, indexs, dependency, static, enabled, locale):
         self.name = name
         self.version = version
         self.description = description
@@ -12,7 +12,7 @@ class AppInfo(object):
         self.dependency = dependency
         self.static = static
         self.enabled = enabled
-
+        self.locale = locale
 
 class App(object):
     def __init__(self, info):

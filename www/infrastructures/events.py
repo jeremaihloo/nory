@@ -29,7 +29,6 @@ def subscribe(name):
                 __events_bus__[name] = fns
             else:
                 __events_bus__[name].append(func)
-
             func(*args, **kwargs)
 
         return wrapper

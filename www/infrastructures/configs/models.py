@@ -34,3 +34,8 @@ class DbConfig(ConfigBase):
     db_database = 'ncms'
     db_port = '3306'
     db_charset = 'utf8mb4'
+
+class RedisConfig(ConfigBase):
+    redis_host = 'localhost'
+    redis_db = 0
+    redis_password = ''
