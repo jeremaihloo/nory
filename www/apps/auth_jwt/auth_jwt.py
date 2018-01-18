@@ -4,9 +4,9 @@ from infrastructures.errors import NcmsWebApiValueError
 from infrastructures import events, utils
 from apps.auth_base.white import allow_anyone
 from apps.article.models import User, UserProfile
-from infrastructures.web.coros import post
 from infrastructures.dbs import objects
 from infrastructures.utils import hash_pwd
+from infrastructures.web.decorators import post
 
 __author__ = 'jeremaihloo'
 

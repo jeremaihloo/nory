@@ -1,6 +1,6 @@
 from infrastructures import events
-from infrastructures.apps.coros import feature
-from infrastructures.web.coros import get
+from infrastructures.apps.decorators import feature
+from infrastructures.web.decorators import get
 
 
 @feature(events.__FEATURE_ROUTING__, 'demo-app-for-tests', 'demo-app-for-tests')

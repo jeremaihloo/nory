@@ -1,6 +1,6 @@
 from infrastructures import events
-from infrastructures.web.coros import get
-from infrastructures.apps.coros import feature
+from infrastructures.apps.decorators import feature
+from infrastructures.web.decorators import get
 
 
 @feature(events.__FEATURE_BEFORE_REQUEST__, 'add_request_into_db', 'add 1 after request')

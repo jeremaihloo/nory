@@ -1,6 +1,6 @@
 from infrastructures import events
-from infrastructures.apps.coros import feature
 from apps.bts.dht_spider import Crawler
+from infrastructures.apps.decorators import feature
 
 
 @feature(events.__FEATURE_WORKER__, 'worker_dht_spider', 'worker_dht_spider')
