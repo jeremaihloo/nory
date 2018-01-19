@@ -1,4 +1,6 @@
 import re
+
+from apps.pagination.coros import get_pagination
 from infrastructures import events
 from apps.article.utils import get_markdown_h1
 from infrastructures.apps.decorators import feature
@@ -8,6 +10,7 @@ from infrastructures.web.decorators import get, post
 from infrastructures.dbs import objects
 from infrastructures.utils import next_id, hash_pwd
 from playhouse.shortcuts import model_to_dict
+from infrastructures.errors import NcmsWebApiValueError, NcmsWebApiError
 
 
 @feature(events.__FEATURE_ROUTING__, 'api_get_users', 'api_get_users')
@@ -24,14 +27,14 @@ _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$'
 @post('/api/users')
 async def api_register_user(*, email, name, passwd):
     if not name or not name.strip():
-        raise NcmsWebApiError('name')
+        raise NcmsWebApiValueError('name')
     if not email or not _RE_EMAIL.match(email):
-        raise APIValueError('email')
+        raise NcmsWebApiValueError('email')
     if not passwd:
-        raise APIValueError('passwd')
+        raise NcmsWebApiValueError('passwd')
     users = await objects.get(User.select().where(User.email))
     if len(users) > 0:
-        raise APIError('register:failed', 'email', 'Email is already in use.')
+        raise NcmsWebApiError('register:failed', 'email', 'Email is already in use.')
     uid = next_id()
 
     await objects.create(User, id=uid, name=name.strip(), email=email, passwd=hash_pwd(passwd))
@@ -41,15 +44,16 @@ async def api_register_user(*, email, name, passwd):
 
 @feature(events.__FEATURE_ROUTING__, 'api_get_tags', 'api_get_tags')
 @get('/api/tags')
-async def api_get_tags():
-    tags = await objects.execute(Tag.select())
+async def api_get_tags(*, page=1):
+    tags = await get_pagination(Tag.select(), page_index=page)
     return tags
 
 
 @feature(events.__FEATURE_ROUTING__, 'api_post_tags', 'api_post_tags')
 @post('/api/tags')
 async def api_post_tags(*, content):
-    return 200
+    o, _ = await objects.create_or_get(Tag, content=content)
+    return 200, model_to_dict(o)
 
 
 @feature(events.__FEATURE_ROUTING__, 'api_get_articles', 'api_get_articles')
@@ -59,8 +63,7 @@ async def api_get_articles(*, published=False, page=1):
     if published:
         query = query.where(Article.published == True)
 
-    count = query.count()
-    articles = await objects.execute(query.paginate(page))
+    articles = await get_pagination(query, page)
 
     return [model_to_dict(x, recurse=False) for x in articles]
 
@@ -82,7 +85,7 @@ async def api_post_articles(request, *, content, id=None):
 @feature(events.__FEATURE_ROUTING__, 'api_get_article_by_id', 'api_get_article_by_id')
 @get('/api/articles/{id}')
 async def api_get_article_by_id(*, id, published=False):
-    article = await objects.get(Article.select().where(Article.id == id, Article.published==published))
+    article = await objects.get(Article.select().where(Article.id == id, Article.published == published))
     return model_to_dict(article)
 
 
@@ -124,12 +127,13 @@ async def api_disable_article(*, id):
 
 @feature(events.__FEATURE_ROUTING__, 'api_get_article_by_id', 'api_get_article_by_id')
 @post('/api/tags/{tag}/articles')
-async def api_get_articles_by_tag(*, tag):
-    articles = await objects.execute((Article.select()
+async def api_get_articles_by_tag(*, tag, page=1):
+    query = (Article.select()
         .join(ArticleTagMapping)
         .join(Tag)
-        .where(Tag.content == tag)))
-    return [model_to_dict(x) for x in articles]
+        .where(Tag.content == tag))
+    articles = await get_pagination(query, page_index=page)
+    return 200, articles
 
 
 @allow_anyone
