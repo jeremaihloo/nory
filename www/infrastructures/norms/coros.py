@@ -253,7 +253,7 @@ class Field(object):
         self.default = default
 
     def __str__(self):
-        return '<%s, %s:%s>' % (self.__class__.__name__, self.column_type, self.name)
+        return '%s %s %s' % (self.name, self.column_type, 'primary key' if self.primary_key else '')
 
 
 class StringField(Field):

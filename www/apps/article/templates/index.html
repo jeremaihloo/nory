@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="article-list">
-        {% for item in articles %}
+        {% for item in articles.items %}
             <li class="article-item">
                 <a href="/articles/{{ item.id }}">{{ item.title }}</a>
                 <span>{{ item.created_at | datetime }}</span>
