@@ -42,6 +42,7 @@ export default {
           password: this.model.password
         })
         .then(res => {
+          console.log(res)
           if (res.data.ok) {
             this.$store
               .dispatch(TYPES.DO_GET_MENU)

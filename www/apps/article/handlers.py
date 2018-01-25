@@ -65,7 +65,7 @@ async def api_get_articles(*, published=False, page=1):
 
     articles = await get_pagination(query, page)
 
-    return [model_to_dict(x, recurse=False) for x in articles]
+    return articles
 
 
 @feature(events.__FEATURE_ROUTING__, 'api_post_articles', 'api_post_articles')
