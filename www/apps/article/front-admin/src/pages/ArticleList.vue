@@ -13,7 +13,7 @@
     </v-card-title>
     <v-data-table
         v-bind:headers="headers"
-        v-bind:items="items"
+        v-bind:items="list.items"
         v-bind:search="search"
       >
       <template slot="items" slot-scope="props">
@@ -30,10 +30,10 @@
           </v-btn>
         </td>
       </template>
-      <template slot="pageText" slot-scope="{ pageStart, pageStop }">
-        From {{ pageStart }} to {{ pageStop }}
-      </template>
     </v-data-table>
+    <div class="text-xs-center pt-2">
+      <v-pagination v-model="list.page_index" :length="list.page_total"></v-pagination>
+    </div>
   </v-card>
 </template>
 
@@ -44,7 +44,6 @@ export default {
       max25chars: v => v.length <= 25 || 'Input too long!',
       tmp: '',
       search: '',
-      pagination: {},
       headers: [
         {
           text: 'Title',
@@ -62,7 +61,7 @@ export default {
     }
   },
   computed: {
-    items() {
+    list() {
       return this.$store.state.article.list
     }
   },
