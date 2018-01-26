@@ -19,6 +19,7 @@ from infrastructures.errors import NcmsWebApiValueError, NcmsWebApiError
 @get('/')
 async def page_index():
     articles = await api_get_articles(published=True, page=1)
+    print(articles)
     return {
         'articles': articles,
         '__template__': 'article/templates/index.html'
