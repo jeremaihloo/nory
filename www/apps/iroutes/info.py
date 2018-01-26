@@ -8,5 +8,5 @@ __description__ = 'provide jwt auth'
 __home_page__ = 'https://github.com/jeremaihloo/ncms-rbacm'
 
 INDEXS = [
-    'routes_viewer'
+    'iroutes'
 ]

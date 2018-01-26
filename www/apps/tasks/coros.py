@@ -34,7 +34,7 @@ class Task(object):
 
         self.feature = self.executor.submit(demo)
 
-    def start(self, *args, **kwargs):
+    async def start(self, *args, **kwargs):
         try:
             self.feature = self.executor.submit(self.func, *args, **kwargs)
             self.info.status = TASK_STATUS_RUNNING

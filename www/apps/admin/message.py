@@ -1,7 +1,7 @@
 import aiohttp
 from aiohttp import web
 import logging
-from infrastructures import events
+from infrastructures.apps import features
 from infrastructures.apps.decorators import feature
 
 MESSAGE_TYPE_SNACK_BAR = 'MESSAGE_TYPE_SNACK_BAR'
@@ -30,7 +30,7 @@ async def websocket_handler(request):
     return ws
 
 
-@feature(events.__FEATURE_ON_APP_LOADING__, 'start_admin_message_server', 'start_admin_message_server')
+@feature(features.__FEATURE_ON_APP_LOADING__, 'start_admin_message_server', 'start_admin_message_server')
 async def start_admin_message_server(app):
     app['websockets'] = []
     app.router.add_get('/manage/admin/message', websocket_handler)

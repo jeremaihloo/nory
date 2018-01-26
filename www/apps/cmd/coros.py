@@ -45,36 +45,48 @@ class CommandHandler(object):
         return self._func(**kw)
 
 
-def parse_command_args(line):
+class CommandDescriptor(object):
+
+    def __init__(self, cmd, args, options, fn):
+        self.cmd = cmd
+        self.args = args
+        self.options = options
+        self.fn = fn
+
+    def to_cmd_line(self):
+        pass
+
+
+def parse_command_descriptor(line):
     args = []
     kw = {}
     for item in line.split(' '):
         if item.startswith('--'):
             split_array = item.split('=')
-            kw[split_array[0][2:]] = convert_data(split_array[1])
+            kw[split_array[0][2:]] = convert_cmd_options(split_array[1])
         else:
             args.append(item)
-    return args, kw
+    return CommandDescriptor(args[0], args[1:], kw, None)
 
 
 async def run_command(line):
     global __commands__
-    args, kw = parse_command_args(line)
+    descriptor = parse_command_descriptor(line)
     for item in __commands__:
         name = getattr(item, 'name')
-        if name == args[0]:
+        if name == descriptor.cmd:
             fn = CommandHandler(item)
-            r = await fn(*args[1:], **kw)
+            r = await fn(*descriptor.args, **descriptor.options)
             print('command [{}] ok ! {}'.format(line, r if r is not None else ''))
             return True
     print('command [{}] not found'.format(line))
     return False
 
 
-def convert_data(val: str):
-    if val == 'true':
+def convert_cmd_options(val: str):
+    if val in ('true', 'True', 1, '1'):
         return True
-    if val == 'false':
+    if val in ('false', 'False', 0, '0'):
         return False
     if val.isdigit():
         return int(val)

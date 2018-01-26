@@ -4,7 +4,7 @@ from infrastructures.apps.decorators import feature
 from peewee import CharField, UUIDField, DateTimeField, ForeignKeyField, TextField
 from apps.article.models import User
 from infrastructures.dbs import BaseModel, database
-from infrastructures import events
+from infrastructures.apps import features
 
 
 class Role(BaseModel):
@@ -144,7 +144,7 @@ rbacm_models = [
 ]
 
 
-@feature(events.__FEATURE_ON_APP_INSTALLING__)
+@feature(features.__FEATURE_ON_APP_INSTALLING__)
 async def on_app_installing_init_db():
     global rbacm_models
     database.create_tables(rbacm_models)

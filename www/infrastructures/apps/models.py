@@ -1,4 +1,4 @@
-from infrastructures import events
+from infrastructures.apps import features
 
 
 class AppInfo(object):
@@ -18,7 +18,7 @@ class App(object):
     def __init__(self, info):
         self.info = info
         self.features = {}
-        for item in dir(events):
+        for item in dir(features):
             if item.startswith('__FEATURE'):
                 self.features[item] = []
 

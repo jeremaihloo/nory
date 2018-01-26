@@ -1,7 +1,7 @@
 import json
 
 from apps.auth_base.white import allow_anyone
-from infrastructures import events
+from infrastructures.apps import features
 from infrastructures.apps.decorators import feature
 from infrastructures.apps.models import AppInfo
 from infrastructures.utils import singleton
@@ -38,7 +38,7 @@ class I18N(object):
 
 
 @allow_anyone
-@feature(events.__FEATURE_ROUTING__, 'api_i18n_json', 'api_i18n_json')
+@feature(features.__FEATURE_ROUTING__, 'api_i18n_json', 'api_i18n_json')
 @get('/api/i18n.json')
 def api_i18n_json():
     return 200, I18N.mapping

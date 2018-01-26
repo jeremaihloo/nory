@@ -1,16 +1,18 @@
 import functools
 
+from infrastructures import constants
 
-def feature(event, name='', title='', description=''):
+
+def feature(feature_type, name='', title='', description=''):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kw):
             return func(*args, **kw)
 
-        wrapper.__app_event__ = event
-        wrapper.__app_fn_name__ = name
-        wrapper.__app_fn_title__ = title
-        wrapper.__app_fn_description__ = description
+        setattr(wrapper, constants.FEATURE_TYPE, feature_type)
+        setattr(wrapper, constants.FEATURE_NAME, name)
+        setattr(wrapper, constants.FEATURE_TITLE, title)
+        setattr(wrapper, constants.FEATURE_DESCRIPTION, description)
 
         return wrapper
 

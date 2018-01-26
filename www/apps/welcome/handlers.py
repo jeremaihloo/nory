@@ -1,9 +1,9 @@
-from infrastructures import events
-from infrastructures.apps.coros import feature
-from infrastructures.web.coros import get
+from infrastructures.apps import features
+from infrastructures.apps.decorators import feature
+from infrastructures.web.decorators import get
 
 
-@feature(events.__FEATURE_ROUTING__, 'page_welcome', 'page_welcome')
+@feature(features.__FEATURE_ROUTING__, 'page_welcome', 'page_welcome')
 @get('/apps/admin/welcome')
 async def page_welcome(request):
     return {

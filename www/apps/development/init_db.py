@@ -1,4 +1,4 @@
-from infrastructures import events
+from infrastructures.apps import features
 from infrastructures.apps.coros import feature
 from apps.article import models
 from apps.article.install import create_rbacm_init_data
@@ -11,7 +11,7 @@ from infrastructures.utils import hash_pwd
 models_all = core_models + rbacm_models
 
 
-@feature(events.__FEATURE_ON_APP_LOADING__, 'core_debug_init_db', 'core_debug_init_db')
+@feature(features.__FEATURE_ON_APP_LOADING__, 'core_debug_init_db', 'core_debug_init_db')
 async def app_core_debug_init_db(app):
     if NcmsConfig.debug:
         database.drop_tables(models_all, safe=True)

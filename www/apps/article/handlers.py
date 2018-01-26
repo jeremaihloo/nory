@@ -1,7 +1,7 @@
 import re
 
 from apps.pagination.coros import get_pagination
-from infrastructures import events
+from infrastructures.apps import features
 from apps.article.utils import get_markdown_h1
 from infrastructures.apps.decorators import feature
 from apps.article.models import Tag, Article, User, ArticleTagMapping
@@ -13,7 +13,7 @@ from playhouse.shortcuts import model_to_dict
 from infrastructures.errors import NcmsWebApiValueError, NcmsWebApiError
 
 
-@feature(events.__FEATURE_ROUTING__, 'api_get_users', 'api_get_users')
+@feature(features.__FEATURE_ROUTING__, 'api_get_users', 'api_get_users')
 @get('/api/users')
 async def api_get_users(*, page=1):
     users = await objects.execute(User.select().paginate(page))
@@ -23,7 +23,7 @@ async def api_get_users(*, page=1):
 _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$')
 
 
-@feature(events.__FEATURE_ROUTING__, 'api_register_user', 'api_register_user')
+@feature(features.__FEATURE_ROUTING__, 'api_register_user', 'api_register_user')
 @post('/api/users')
 async def api_register_user(*, email, name, passwd):
     if not name or not name.strip():
@@ -42,21 +42,21 @@ async def api_register_user(*, email, name, passwd):
     return 200
 
 
-@feature(events.__FEATURE_ROUTING__, 'api_get_tags', 'api_get_tags')
+@feature(features.__FEATURE_ROUTING__, 'api_get_tags', 'api_get_tags')
 @get('/api/tags')
 async def api_get_tags(*, page=1):
     tags = await get_pagination(Tag.select(), page_index=page)
     return tags
 
 
-@feature(events.__FEATURE_ROUTING__, 'api_post_tags', 'api_post_tags')
+@feature(features.__FEATURE_ROUTING__, 'api_post_tags', 'api_post_tags')
 @post('/api/tags')
 async def api_post_tags(*, content):
     o, _ = await objects.create_or_get(Tag, content=content)
     return 200, model_to_dict(o)
 
 
-@feature(events.__FEATURE_ROUTING__, 'api_get_articles', 'api_get_articles')
+@feature(features.__FEATURE_ROUTING__, 'api_get_articles', 'api_get_articles')
 @get('/api/articles')
 async def api_get_articles(*, published=False, page=1):
     query = Article.select()
@@ -68,7 +68,7 @@ async def api_get_articles(*, published=False, page=1):
     return articles
 
 
-@feature(events.__FEATURE_ROUTING__, 'api_post_articles', 'api_post_articles')
+@feature(features.__FEATURE_ROUTING__, 'api_post_articles', 'api_post_articles')
 @post('/api/articles')
 async def api_post_articles(request, *, content, id=None):
     if id is None:
@@ -82,14 +82,14 @@ async def api_post_articles(request, *, content, id=None):
     return 200, model_to_dict(o)
 
 
-@feature(events.__FEATURE_ROUTING__, 'api_get_article_by_id', 'api_get_article_by_id')
+@feature(features.__FEATURE_ROUTING__, 'api_get_article_by_id', 'api_get_article_by_id')
 @get('/api/articles/{id}')
 async def api_get_article_by_id(*, id, published=False):
     article = await objects.get(Article.select().where(Article.id == id, Article.published == published))
     return model_to_dict(article)
 
 
-@feature(events.__FEATURE_ROUTING__, 'api_publish_article', 'api_publish_article')
+@feature(features.__FEATURE_ROUTING__, 'api_publish_article', 'api_publish_article')
 @post('/api/articles/{id}/publish')
 async def api_publish_article(*, id):
     article = await objects.get(Article, id=id)
@@ -98,7 +98,7 @@ async def api_publish_article(*, id):
     return model_to_dict(article)
 
 
-@feature(events.__FEATURE_ROUTING__, 'api_un_publish_article', 'api_un_publish_article')
+@feature(features.__FEATURE_ROUTING__, 'api_un_publish_article', 'api_un_publish_article')
 @post('/api/articles/{id}/un-publish')
 async def api_un_publish_article(*, id):
     article = await objects.get(Article, id=id)
@@ -107,7 +107,7 @@ async def api_un_publish_article(*, id):
     return model_to_dict(article)
 
 
-@feature(events.__FEATURE_ROUTING__, 'api_un_publish_article', 'api_un_publish_article')
+@feature(features.__FEATURE_ROUTING__, 'api_un_publish_article', 'api_un_publish_article')
 @post('/api/articles/{id}/enable')
 async def api_enable_article(*, id):
     article = await objects.get(Article, id=id)
@@ -116,7 +116,7 @@ async def api_enable_article(*, id):
     return model_to_dict(article)
 
 
-@feature(events.__FEATURE_ROUTING__, 'api_un_publish_article', 'api_un_publish_article')
+@feature(features.__FEATURE_ROUTING__, 'api_un_publish_article', 'api_un_publish_article')
 @post('/api/articles/{id}/disable')
 async def api_disable_article(*, id):
     article = await objects.get(Article, id=id)
@@ -125,7 +125,7 @@ async def api_disable_article(*, id):
     return model_to_dict(article)
 
 
-@feature(events.__FEATURE_ROUTING__, 'api_get_article_by_id', 'api_get_article_by_id')
+@feature(features.__FEATURE_ROUTING__, 'api_get_article_by_id', 'api_get_article_by_id')
 @post('/api/tags/{tag}/articles')
 async def api_get_articles_by_tag(*, tag, page=1):
     query = (Article.select()
@@ -137,7 +137,7 @@ async def api_get_articles_by_tag(*, tag, page=1):
 
 
 @allow_anyone
-@feature(events.__FEATURE_ROUTING__, 'page_index', 'page_index')
+@feature(features.__FEATURE_ROUTING__, 'page_index', 'page_index')
 @get('/')
 async def page_index():
     articles = await api_get_articles(published=True, page=1)
@@ -148,7 +148,7 @@ async def page_index():
 
 
 @allow_anyone
-@feature(events.__FEATURE_ROUTING__, 'page_tags', 'page_tags')
+@feature(features.__FEATURE_ROUTING__, 'page_tags', 'page_tags')
 @get('/tags')
 async def page_tags():
     tags = await api_get_tags()
@@ -159,7 +159,7 @@ async def page_tags():
 
 
 @allow_anyone
-@feature(events.__FEATURE_ROUTING__, 'page_article_by_tag', 'page_article_by_tag')
+@feature(features.__FEATURE_ROUTING__, 'page_article_by_tag', 'page_article_by_tag')
 @get('/tags/{tag}')
 async def page_article_by_tag(*, tag):
     articles = await api_get_articles_by_tag(tag=tag)
@@ -170,7 +170,7 @@ async def page_article_by_tag(*, tag):
 
 
 @allow_anyone
-@feature(events.__FEATURE_ROUTING__, 'page_id', 'page_id')
+@feature(features.__FEATURE_ROUTING__, 'page_id', 'page_id')
 @get('/articles/{id}')
 async def page_article(*, id):
     article = await api_get_article_by_id(id=id, published=True)
@@ -181,13 +181,13 @@ async def page_article(*, id):
 
 
 @allow_anyone
-@feature(events.__FEATURE_ROUTING__, 'page_name', 'page_name')
+@feature(features.__FEATURE_ROUTING__, 'page_name', 'page_name')
 @get('/page/{name}')
 async def page_name(*, name):
     pass
 
 
-@feature(events.__FEATURE_ROUTING__, 'manage_articles', 'manage_articles')
+@feature(features.__FEATURE_ROUTING__, 'manage_articles', 'manage_articles')
 @get('/manage/articles')
 async def manage_articles():
     return {

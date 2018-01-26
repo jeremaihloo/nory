@@ -1,6 +1,6 @@
 import os
 
-from infrastructures import events
+from infrastructures.apps import features
 from infrastructures.apps.coros import feature
 
 __resources__ = {}
@@ -17,7 +17,7 @@ def add_resource_file(name, path, title='', description='', cdn_domain=None):
     __resources__[name] = file
 
 
-@feature(events.__FEATURE_TEMPLATE_FILTER__, 'resource', 'resource')
+@feature(features.__FEATURE_TEMPLATE_FILTER__, 'resource', 'resource')
 def resource(name, use_cdn=True):
     global __resources__
     res = __resources__.get(name, '')

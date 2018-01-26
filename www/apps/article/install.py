@@ -1,6 +1,6 @@
 import logging
 
-from infrastructures import events
+from infrastructures.apps import features
 from infrastructures.apps.decorators import feature
 from apps.article import models
 from apps.article.models import core_models
@@ -12,7 +12,7 @@ from infrastructures.utils import hash_pwd
 models_all = core_models + rbacm_models
 
 
-@feature(events.__FEATURE_ON_APP_LOADING__, 'core_debug_init_db', 'core_debug_init_db')
+@feature(features.__FEATURE_ON_APP_LOADING__, 'core_debug_init_db', 'core_debug_init_db')
 async def init_db(app):
     database.create_tables(models_all, safe=True)
 

@@ -21,7 +21,8 @@ from infrastructures.utils import singleton
 from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
 from infrastructures.web.coros import add_routes, add_static
-from infrastructures import events, utils
+from infrastructures import utils, constants
+from infrastructures.apps import features
 import asyncio, os
 
 
@@ -39,10 +40,10 @@ def init_jinja2(app, **kw):
     logging.info('[init_jinja2] set jinja2 template path: %s' % path)
 
     env = Environment(loader=FileSystemLoader(path), **options)
-    filters = app.app_manager.get_worked_features(events.__FEATURE_TEMPLATE_FILTER__)
+    filters = app.app_manager.get_worked_features(features.__FEATURE_TEMPLATE_FILTER__)
     if filters is not None:
         for f in filters:
-            env.filters[getattr(f, '__app_fn_name__')] = f
+            env.filters[getattr(f, constants.FEATURE_NAME)] = f
     app['__templating__'] = env
 
 
@@ -61,17 +62,17 @@ async def auth_factory(app, handler):
         logging.info('auth user: %s %s' % (request.method, request.path))
         flag = False
         logging.info(
-            '[auth_provider] : {}'.format(app.app_manager.get_worked_features(events.__FEATURE_AUTHING__)))
-        for fn in app.app_manager.get_worked_features(events.__FEATURE_AUTHING__):
+            '[auth_provider] : {}'.format(app.app_manager.get_worked_features(features.__FEATURE_AUTHING__)))
+        for fn in app.app_manager.get_worked_features(features.__FEATURE_AUTHING__):
             auth_flag, msg = await fn(app, request)
             if auth_flag:
-                logging.info('[auth] : [{}] passed'.format(getattr(fn, '__app_fn_name__')))
+                logging.info('[auth] : [{}] passed'.format(getattr(fn, constants.FEATURE_NAME)))
                 flag = True
             else:
-                logging.info('[auth] : [{}] un_pass'.format(getattr(fn, '__app_fn_name__')))
+                logging.info('[auth] : [{}] un_pass'.format(getattr(fn, constants.FEATURE_NAME)))
 
         if not flag:
-            for fn in app.app_manager.get_worked_features(events.__FEATURE_AUTH_FALSE__):
+            for fn in app.app_manager.get_worked_features(features.__FEATURE_AUTH_FALSE__):
                 await fn(app, request)
         return await handler(request)
 
@@ -211,9 +212,15 @@ class NCMS(object):
 
         self.running = True
 
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(init(loop))
-        loop.run_forever()
+        self.loop = asyncio.get_event_loop()
+        self.loop.run_until_complete(init(self.loop))
+        self.loop.run_forever()
+
+    def stop(self):
+        if not self.running:
+            pass
+
+        self.loop.stop()
 
 
 def run():

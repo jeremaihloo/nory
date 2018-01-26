@@ -5,7 +5,8 @@ import inspect
 import logging
 import os
 import importlib
-from infrastructures import events, utils
+from infrastructures import utils, constants
+from infrastructures.apps import features
 from infrastructures.apps.app_info_loaders import load_app_info
 from infrastructures.apps.dependency import sort_app_info_by_dependency
 from infrastructures.apps.models import App
@@ -21,7 +22,7 @@ class AppLoader(object):
             for attr in dir(m):
                 fn = getattr(m, attr, None)
                 if fn is not None and inspect.isfunction(fn):
-                    event = getattr(fn, '__app_event__', None)
+                    event = getattr(fn, constants.FEATURE_TYPE, None)
                     if event is not None:
                         if app.features.get(event, None) is None:
                             app.features[event] = []
@@ -43,17 +44,12 @@ class AppManager(object):
         self.ncms_application = ncms_application
         self.apps = {}
 
-    def init_fns(self):
-        es = list(filter(lambda x: x.startswith('__EVENT'), dir(events)))
-        for item in es:
-            self.__features__[getattr(events, item)] = []
-
     async def reload_apps(self):
 
         await self.load_apps()
 
     async def do_app_loading(self):
-        loadings = self.get_worked_features(events.__FEATURE_ON_APP_LOADING__)
+        loadings = self.get_worked_features(features.__FEATURE_ON_APP_LOADING__)
         for item in loadings:
             await item(self.ncms_application)
 

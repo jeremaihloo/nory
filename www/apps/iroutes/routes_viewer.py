@@ -1,11 +1,11 @@
-from infrastructures import events
+from infrastructures.apps import features
 from infrastructures.web.coros import get
 from infrastructures.apps.coros import feature
 
 routes = []
 
 
-@feature(events.__FEATURE_ADD_ROUTE__, 'add_route_to_table', 'on add route do this ')
+@feature(features.__FEATURE_ADD_ROUTE__, 'add_route_to_table', 'on add route do this ')
 def add_route_to_table(method, url, params):
     routes.append({
         'method': method,
@@ -14,7 +14,7 @@ def add_route_to_table(method, url, params):
     })
 
 
-@feature(events.__FEATURE_ROUTING__, 'get_routes', 'on add route do this ')
+@feature(features.__FEATURE_ROUTING__, 'get_routes', 'on add route do this ')
 @get('/api/routes')
 def api_get_routes():
     return  {
@@ -22,7 +22,7 @@ def api_get_routes():
     }
 
 
-@feature(events.__FEATURE_ROUTING__, 'get_api_table', 'get api table')
+@feature(features.__FEATURE_ROUTING__, 'get_api_table', 'get api table')
 @get('/apis')
 def api_get_api_tables():
     return {

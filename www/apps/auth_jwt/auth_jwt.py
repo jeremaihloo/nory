@@ -1,7 +1,8 @@
 from playhouse.shortcuts import model_to_dict
 
 from infrastructures.errors import NcmsWebApiValueError
-from infrastructures import events, utils
+from infrastructures import utils
+from infrastructures.apps import features
 from apps.auth_base.white import allow_anyone
 from apps.article.models import User, UserProfile
 from infrastructures.dbs import objects
@@ -20,7 +21,7 @@ import jwt
 from infrastructures.apps.coros import feature
 
 
-@feature(events.__FEATURE_AUTHING__, 'auth_jwt_provider', 'auth_jwt_provider')
+@feature(features.__FEATURE_AUTHING__, 'auth_jwt_provider', 'auth_jwt_provider')
 async def auth_jwt_provider(app, request):
     au_header_value = request.headers.get('Authorization', None)
     if au_header_value is None:
@@ -31,7 +32,7 @@ async def auth_jwt_provider(app, request):
 
 
 @allow_anyone
-@feature(events.__FEATURE_ROUTING__, 'api_login_jwt_by_password_and_email', 'api_login_jwt_by_password_and_email')
+@feature(features.__FEATURE_ROUTING__, 'api_login_jwt_by_password_and_email', 'api_login_jwt_by_password_and_email')
 @post('/api/login/jwt')
 async def api_login_jwt_by_password_and_email(*, email, password):
     if not email:

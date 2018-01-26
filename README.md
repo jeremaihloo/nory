@@ -41,12 +41,12 @@ Validate all the core components of Ncms work together to enable module developm
 * i18n
 * mail
 * message
-* ncms_installer
+* installer
 * page_statistics
 * plannings
 * profile
 * rbacm
-* routes_viewer
+* iroutes
 * security (page rate limits)
 * sms
 * system_information

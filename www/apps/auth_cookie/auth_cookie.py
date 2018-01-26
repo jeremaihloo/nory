@@ -1,6 +1,6 @@
 from playhouse.shortcuts import model_to_dict
 
-from infrastructures import events
+from infrastructures.apps import features
 from apps.auth_base.white import allow_anyone
 from apps.auth_cookie.auth_cookie_utils import COOKIE_NAME, cookie2user, user2cookie
 from infrastructures.errors import NcmsWebApiValueError
@@ -13,7 +13,7 @@ from infrastructures.dbs import objects
 from infrastructures.utils import hash_pwd, json_dumps
 
 
-@feature(events.__FEATURE_AUTHING__, 'auth_cookie_provider', 'auth_cookie_provider')
+@feature(features.__FEATURE_AUTHING__, 'auth_cookie_provider', 'auth_cookie_provider')
 async def auth_cookie_provider(app, request):
     """provider cookie into ncms auth"""
     cookie_str = request.cookies.get(COOKIE_NAME)
@@ -29,7 +29,7 @@ async def auth_cookie_provider(app, request):
 
 
 @allow_anyone
-@feature(events.__FEATURE_ROUTING__, 'api_login_using_cookie_by_email_and_password',
+@feature(features.__FEATURE_ROUTING__, 'api_login_using_cookie_by_email_and_password',
          'api_login_using_cookie_by_email_and_password')
 @post('/api/login/cookie')
 async def api_login_using_cookie_by_email_and_password(*, email, password):
@@ -58,7 +58,7 @@ async def api_login_using_cookie_by_email_and_password(*, email, password):
 
 
 @allow_anyone
-@feature(events.__FEATURE_ROUTING__, 'api_logout_using_cookie_by_email_and_password',
+@feature(features.__FEATURE_ROUTING__, 'api_logout_using_cookie_by_email_and_password',
          'api_logout_using_cookie_by_email_and_password')
 @post('/api/logout/cookie')
 async def api_logout_using_cookie_by_email_and_password(request):
@@ -70,7 +70,7 @@ async def api_logout_using_cookie_by_email_and_password(request):
     return r
 
 
-@feature(events.__FEATURE_ROUTING__, 'api_auth_cookie_me', 'api_auth_cookie_me')
+@feature(features.__FEATURE_ROUTING__, 'api_auth_cookie_me', 'api_auth_cookie_me')
 @get('/api/auth/cookie/me')
 async def api_auth_cookie_me(request):
     if request.__user__ is None:

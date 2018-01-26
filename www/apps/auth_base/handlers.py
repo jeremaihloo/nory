@@ -2,12 +2,12 @@ import logging
 
 from aiohttp import web
 
-from infrastructures import events
+from infrastructures.apps import features
 from infrastructures.apps.coros import feature
 from apps.auth_base import white
 
 
-@feature(events.__FEATURE_AUTH_FALSE__, 'auth_cookie_provider', 'auth_cookie_provider')
+@feature(features.__FEATURE_AUTH_FALSE__, 'auth_cookie_provider', 'auth_cookie_provider')
 async def auth_false_provider(app, request):
     """provider cookie into ncms auth"""
     logging.info('[auth_false_provider] auth white urls : {}'.format(white.__urls__))

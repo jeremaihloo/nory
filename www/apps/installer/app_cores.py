@@ -7,7 +7,8 @@ import os
 import importlib
 import functools
 import yaml
-from infrastructures import events, utils
+from infrastructures import utils
+from infrastructures.apps import features
 from infrastructures.apps.dependency import sort_app_dependency
 
 
@@ -137,9 +138,9 @@ class AppManager(utils.DictClass):
         self.init_fns()
 
     def init_fns(self):
-        es = list(filter(lambda x: x.startswith('__EVENT'), dir(events)))
+        es = list(filter(lambda x: x.startswith('__EVENT'), dir(features)))
         for item in es:
-            self.__features__[getattr(events, item)] = []
+            self.__features__[getattr(features, item)] = []
 
     async def reload_apps(self):
         self.__apps__ = []
@@ -161,7 +162,7 @@ class AppManager(utils.DictClass):
         await item(self.app)
 
     async def loading_apps(self):
-        for item in self.__features__.get(events.__FEATURE_ON_APP_LOADING__, []):
+        for item in self.__features__.get(features.__FEATURE_ON_APP_LOADING__, []):
             try:
                 await self.loading_app(item)
                 logging.info('[do_apps_on_loading_feature] app item {} ok'.format(item))
