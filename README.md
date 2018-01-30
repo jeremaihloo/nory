@@ -31,7 +31,7 @@ Validate all the core components of Ncms work together to enable module developm
 * bookmarks
 * bts
 * cache_redis
-* cdn_resource
+* resources
 * cmd
 * demo
 * development

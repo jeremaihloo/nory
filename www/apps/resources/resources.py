@@ -1,7 +1,7 @@
 import os
 
 from infrastructures.apps import features
-from infrastructures.apps.coros import feature
+from infrastructures.apps.decorators import feature
 
 __resources__ = {}
 

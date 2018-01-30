@@ -1,12 +1,12 @@
 <template>
   <v-app>
     <v-snackbar
-      :timeout="3000"
+      :timeout="snackbar.timeout"
       :multi-line="mode === 'multi-line'"
-      :vertical="mode === 'vertical'"
-      v-model="snackbar"
+      :vertical="snackbar.mode === 'vertical'"
+      v-model="snackbar.snackbar"
     >
-      {{ text }}
+      {{ snackbar.text }}
       <v-btn dark flat @click.native="snackbar.snackbar = false">Close</v-btn>
     </v-snackbar>
     <transition mode="out-in">
@@ -18,17 +18,8 @@
 <script>
 import { mapState } from 'vuex'
 export default {
-  data() {
-    return {
-      snackbar: true,
-      color: '',
-      mode: '',
-      timeout: 6000,
-      text: "Hello, I'm a snackbar"
-    }
-  },
   computed: {
-    ...mapState(['message'])
+    ...mapState(['message', 'snackbar'])
   },
   methods: {},
   created() {

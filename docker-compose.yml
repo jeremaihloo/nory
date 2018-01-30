@@ -1,7 +1,7 @@
 version: '2'
 services:
   web:
-    image: jeremaihloo/ncms
+    image: registry.cn-hangzhou.aliyuncs.com/jeremaihloo/ncms
     links:
     - db:db
     command:
@@ -13,16 +13,21 @@ services:
     - --debug=False
     - --db_host=db
     - --db_password=123456
-  bloglb:
-    image: rancher/lb-service-haproxy:v0.7.15
-    ports:
-    - 80:80/tcp
-    labels:
-      io.rancher.container.agent.role: environmentAdmin,agent
-      io.rancher.container.agent_service.drain_provider: 'true'
-      io.rancher.container.create_agent: 'true'
+#  bloglb:
+#    image: rancher/lb-service-haproxy:v0.7.15
+#    ports:
+#    - 80:80/tcp
+#    labels:
+#      io.rancher.container.agent.role: environmentAdmin,agent
+#      io.rancher.container.agent_service.drain_provider: 'true'
+#      io.rancher.container.create_agent: 'true'
   db:
     image: mysql
     environment:
       MYSQL_DATABASE: ncms
       MYSQL_ROOT_PASSWORD: '123456'
+    volumes:
+      - ncms_data:/var/lib/mysql
+
+volumes:
+  ncms_data:
