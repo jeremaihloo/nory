@@ -58,3 +58,4 @@ www/tests/.cache/
 .vscode/.ropeproject/
 www/apps/plannings/
 www/apps/bookmarks/
+www/apps/todohub/

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import signal
 
 import coloredlogs, logging
 from infrastructures.configs.config_loaders import load_configs
@@ -36,7 +37,7 @@ def init_jinja2(app, **kw):
         variable_end_string=kw.get('variable_end_string', '}}'),
         auto_reload=kw.get('auto_reload', True)
     )
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps')
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'extensions')
     logging.info('[init_jinja2] set jinja2 template path: %s' % path)
 
     env = Environment(loader=FileSystemLoader(path), **options)
@@ -174,7 +175,7 @@ def add_apps_statics(app):
             continue
 
         for k in item.info.static.keys():
-            path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps', item.info.name, item.info.static[k])
+            path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'extensions', item.info.name, item.info.static[k])
             try:
                 add_static(app, os.path.join(item.info.name, k), path)
             except Exception as e:
@@ -214,22 +215,36 @@ class NCMS(object):
 
         self.loop = asyncio.get_event_loop()
         self.loop.run_until_complete(init(self.loop))
-        self.loop.run_forever()
 
-    def stop(self):
+    def shutdown(self):
         if not self.running:
             pass
 
         self.loop.stop()
+        self.running = False
 
 
-def run():
+def graceful():
+
     n = NCMS()
-    n.run()
 
+    def onSigInt(signo, frame):
+        print('Shutdown...')
+        n.shutdown()
+
+    def onSigTerm(signo, frame):
+        print('Shutdown...')
+        n.shutdown()
+
+    def onSigKill(signo, frame):
+        print('Shutdown...')
+        n.shutdown()
+
+    signal.signal(signal.SIGINT, onSigInt)
+    signal.signal(signal.SIGTERM, onSigTerm)
+
+    return n
 
 if __name__ == '__main__':
-    try:
-        run()
-    except KeyboardInterrupt:
-        logging.info('Stoping ncms ...')
+    n = graceful()
+    n.run()

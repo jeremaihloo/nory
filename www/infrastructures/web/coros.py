@@ -155,5 +155,5 @@ def add_static(app, app_name, path):
     # path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
     if not os.path.exists(path):
         raise Exception('add static error dir not exists : {}'.format(path))
-    app.router.add_static('/apps/' + app_name, path)
-    logging.info('add static %s => %s' % ('/apps/' + app_name, path))
+    app.router.add_static('/extensions/' + app_name, path)
+    logging.info('add static %s => %s' % ('/extensions/' + app_name, path))

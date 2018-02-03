@@ -16,7 +16,7 @@ class PyInfoLoader(AppInfoLoader):
     """info.py"""
 
     def load(self, name):
-        info_m = importlib.import_module('apps.{}.info'.format(name))
+        info_m = importlib.import_module('extensions.{}.info'.format(name))
         app_info = AppInfo(
             name=name,
             author=getattr(info_m, '__author__', 'None'),
@@ -37,7 +37,7 @@ class AppYamlInfoLoader(AppInfoLoader):
 
     def load(self, name):
         abs_p = os.path.abspath('.')
-        path = os.path.join(abs_p, 'apps/{}/{}'.format(name, 'app.yaml'))
+        path = os.path.join(abs_p, 'extensions/{}/{}'.format(name, 'app.yaml'))
         app_info = yaml.load(open(path))
         logging.debug('app_info from yaml:{}'.format(app_info))
         app_info = AppInfo(
@@ -61,7 +61,7 @@ def load_app_info(name):
         'app.yaml': AppYamlInfoLoader()
     }
     abs_p = os.path.abspath('.')
-    filter_path = lambda key: os.path.exists(os.path.join(abs_p, 'apps/{}/{}'.format(name, key)))
+    filter_path = lambda key: os.path.exists(os.path.join(abs_p, 'extensions/{}/{}'.format(name, key)))
     keys = list(filter(filter_path, m.keys()))
     if keys is None or len(keys) == 0:
         raise FileNotFoundError('app info file not found {}'.format(name))

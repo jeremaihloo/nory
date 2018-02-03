@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import signal
 
 __author__ = 'Michael Liao'
 
@@ -24,52 +25,56 @@ class MyFileSystemEventHander(FileSystemEventHandler):
             self.restart()
 
 
-command = ['echo', 'ok']
-process = None
+class Hotting(object):
+    def __init__(self, version=1, tasks=None):
+        self.version = version
+        self.tasks = tasks
+
+    def parse(self, filename='.hottings'):
+        pass
+
+    def start(self):
+        for t in self.tasks:
+            t.start()
+
+    def start_and_watch(self):
+        self.start()
+        self.watch()
+
+    def watch(self):
+        observer = Observer()
+        for t in self.tasks:
+            observer.schedule(MyFileSystemEventHander(t.restart), t.src, recursive=True)
+            log('Watching directory %s...' % t.src)
+
+        observer.start()
+
+        try:
+            while True:
+                time.sleep(0.5)
+        except KeyboardInterrupt:
+            observer.stop()
+        observer.join()
 
 
-def kill_process():
-    global process
-    if process:
-        log('Kill process [%s]...' % process.pid)
-        process.kill()
-        process.wait()
-        log('Process ended with code %s.' % process.returncode)
-        process = None
+class HottingTask(object):
+    def __init__(self, cmd=None, src=None, reload=True):
+        self.cmd = cmd
+        self.src = src
+        self.reload = reload
 
+    def start(self):
+        self.process = subprocess.Popen(self.cmd, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr)
 
-def start_process():
-    global process, command
-    log('Start process %s...' % ' '.join(command))
-    process = subprocess.Popen(command, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr)
+    def stop(self):
+        self.process.send_signal(signal.SIGTERM)
 
+    def kill(self):
+        self.process.kill()
 
-def restart_process():
-    kill_process()
-    start_process()
-
-
-def start_watch(path, callback):
-    observer = Observer()
-    observer.schedule(MyFileSystemEventHander(restart_process), path, recursive=True)
-    observer.start()
-    log('Watching directory %s...' % path)
-    start_process()
-    try:
-        while True:
-            time.sleep(0.5)
-    except KeyboardInterrupt:
-        observer.stop()
-    observer.join()
-
+    def restart(self):
+        self.kill()
+        self.start()
 
 if __name__ == '__main__':
-    argv = sys.argv[1:]
-    if not argv:
-        print('Usage: hotting your-script.py')
-        exit(0)
-    if argv[0] != 'python3':
-        argv.insert(0, 'python3')
-    command = argv
-    path = os.path.abspath('.')
-    start_watch(path, None)
+    from click import
