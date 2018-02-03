@@ -54,8 +54,9 @@ MANIFEST
 .idea
 venv
 .cache
-www/tests/.cache/
+nory/tests/.cache/
 .vscode/.ropeproject/
-www/apps/plannings/
-www/apps/bookmarks/
-www/apps/todohub/
+nory/apps/plannings/
+nory/apps/bookmarks/
+nory/apps/todohub/
+nory/tests/.cache
