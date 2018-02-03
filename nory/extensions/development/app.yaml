@@ -1,0 +1,7 @@
+author: jeremaihloo
+version: 0.0.1
+description: demo-app-for-tests
+home_page: http://github.com/jeremaihloo/ncms
+indexs:
+  - init_db
+dependency: []
