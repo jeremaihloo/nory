@@ -1,6 +1,0 @@
-
-
-EVERY_HOUR = ''
-EVERY_HALF_HOUR = ''
-EVERY_HALF_DAY = ''
-EVERY_DAY = ''

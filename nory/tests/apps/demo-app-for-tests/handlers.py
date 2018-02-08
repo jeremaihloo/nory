@@ -1,6 +1,6 @@
-from infrastructures.apps import features
-from infrastructures.apps.coros import feature
-from infrastructures.web.coros import get
+from infras.extensions import features
+from infras.extensions.coros import feature
+from infras.web.coros import get
 
 
 @feature(features.__FEATURE_ROUTING__, 'demo-app-for-tests', 'demo-app-for-tests')

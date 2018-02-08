@@ -1,6 +1,6 @@
 import pytest
 
-from infrastructures.apps.coros import AppManager
+from infras.extensions.coros import AppManager
 
 @pytest.mark.asyncio
 async def test_load_plugins():

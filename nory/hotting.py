@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import asyncio
 import signal
 
 __author__ = 'Michael Liao'
@@ -8,6 +9,7 @@ import os, sys, time, subprocess
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+from infras.cli import CommandHost, command
 
 
 def log(s):
@@ -28,15 +30,19 @@ class MyFileSystemEventHander(FileSystemEventHandler):
 class Hotting(object):
     def __init__(self, version=1, tasks=None):
         self.version = version
-        self.tasks = tasks
+        self.tasks = [] if tasks is None else tasks
 
-    def parse(self, filename='.hottings'):
-        pass
+    @classmethod
+    def parse(cls, filename='.hottings'):
+        if not os.path.exists(filename):
+            raise FileExistsError(filename)
+        h = cls()
+        return h
 
-    def start(self):
+    async def start(self):
         for t in self.tasks:
-            t.start()
-
+            await t.start()
+            
     def start_and_watch(self):
         self.start()
         self.watch()
@@ -63,7 +69,7 @@ class HottingTask(object):
         self.src = src
         self.reload = reload
 
-    def start(self):
+    async def start(self):
         self.process = subprocess.Popen(self.cmd, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr)
 
     def stop(self):
@@ -76,5 +82,16 @@ class HottingTask(object):
         self.kill()
         self.start()
 
+
+@command(name='start')
+async def start_hotting(filename='.hottings'):
+    h = Hotting.parse(filename)
+    await h.start()
+
+
 if __name__ == '__main__':
-    from click import
+    host = CommandHost()
+    host.register(start_hotting)
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(
+        host.run_command(' '.join(sys.argv[1:])))

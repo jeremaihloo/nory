@@ -2,7 +2,7 @@
 
 import pytest
 
-from ncms import NCMS
+from application import NCMS
 
 
 @pytest.fixture()
