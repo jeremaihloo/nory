@@ -5,7 +5,11 @@ SCOPED = 'SCOPED'
 
 
 class IService(object):
-    pass
+    def start(self):
+        pass
+
+    def stop(self):
+        pass
 
 
 class ServiceProvider(object):
@@ -33,9 +37,6 @@ class Container(object):
     def set(self, service, key=None, type=None):
         name = nameof(service) if key is None else key
         type = scopeof(service) if type is None else type
-
-        if type == SINGLETON and callable(service):
-            service = service()
 
         item = DiItem(name, type, service)
         if self.__mappings__.get(name) is None:
@@ -86,6 +87,22 @@ class DemoScopedServiceA(IDemoScopedServiceBase):
 
 class DemoScopedServiceB(IDemoScopedServiceBase):
     user_name = 'dadada'
+
+
+class Startup(object):
+    def __init__(self, container: Container = None):
+        self.container = container
+
+        if self.container is None:
+            self.container = Container()
+
+    def configure(self):
+        pass
+
+    def entry_service(self) -> IService:
+        provider = self.container.build()
+        entry = provider.get_services('__main__')
+        return entry
 
 
 if __name__ == '__main__':
