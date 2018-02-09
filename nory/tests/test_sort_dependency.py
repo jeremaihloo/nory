@@ -1,4 +1,4 @@
-from infras.extensions.dependency import sort_app_dependency
+from infras.exts.dependency import sort_app_dependency
 
 
 def test_sort_dependency():

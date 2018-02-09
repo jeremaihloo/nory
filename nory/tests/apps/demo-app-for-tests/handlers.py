@@ -1,5 +1,5 @@
-from infras.extensions import features
-from infras.extensions.coros import feature
+from infras.exts import features
+from infras.exts.coros import feature
 from infras.web.coros import get
 
 

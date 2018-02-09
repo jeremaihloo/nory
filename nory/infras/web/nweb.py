@@ -7,9 +7,8 @@ from jinja2 import Environment, FileSystemLoader
 from infras import constants
 from infras.exts import features
 from infras.exts.coros import AppManager
-from infras.services import WebService
 from infras.utils import json_dumps
-from infras.web.coros import add_static
+from infras.web.coros import add_static, add_routes
 from infras.web.models import Jinja2Options, WebOptions
 
 import os
@@ -130,7 +129,7 @@ async def data_factory(app, handler):
         return parse_data
 
 
-class NoryWebService(WebService):
+class NoryWebService(object):
 
     def __init__(self, _logger: logging.Logger,
                  _app_manager: AppManager,
@@ -140,9 +139,6 @@ class NoryWebService(WebService):
         self._app_manager = _app_manager
         self._jinja2_options = _jinja2_options
         self._web_options = _web_options
-
-    def initialize(self, loop=None):
-        pass
 
     def init_jinja2(self, app, **kw):
         self._logger.info('[init jinja2] ...')
@@ -158,7 +154,7 @@ class NoryWebService(WebService):
         self._logger.info('[init_jinja2] set jinja2 template path: %s' % path)
 
         env = Environment(loader=FileSystemLoader(path), **options)
-        filters = app.app_manager.get_worked_features(features.__FEATURE_TEMPLATE_FILTER__)
+        filters = self._app_manager.get_worked_features(features.__FEATURE_TEMPLATE_FILTER__)
         if filters is not None:
             for f in filters:
                 env.filters[getattr(f, constants.FEATURE_NAME)] = f
@@ -197,7 +193,8 @@ class NoryWebService(WebService):
         await self._app_manager.load_apps()
 
         self.init_jinja2(app, **self._jinja2_options)
-        self.add_routes(app)
+
+        add_routes(app, self._app_manager)
 
         self.add_apps_statics(app)
 
