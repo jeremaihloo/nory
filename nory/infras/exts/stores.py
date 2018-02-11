@@ -2,7 +2,7 @@ from datetime import datetime
 
 import os
 
-from infras.utils import singleton
+from nory.infras.utils import singleton
 
 import requests
 

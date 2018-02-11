@@ -9,7 +9,7 @@ import os, sys, time, subprocess
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-from infras.cli import CommandHost, command
+from nory.infras.cli import CommandHost, command
 
 
 def log(s):

@@ -192,8 +192,7 @@ class NoryWebService(object):
             logger_factory, auth_factory, data_factory, response_factory
         ])
 
-        # await self._app_manager.load_extensions()
-        assert isinstance(self._jinja2_options, Configuration)
+        await self._app_manager.load_extensions()
 
         self.init_jinja2(app, **self._jinja2_options)
 

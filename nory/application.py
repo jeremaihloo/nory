@@ -35,6 +35,7 @@ class NoryHost(object):
                               _web_options=web_options)
         self.loop = asyncio.get_event_loop()
         self.loop.run_until_complete(nory.init(self.loop))
+        self.loop.run_forever()
 
 
 def graceful(env: NoryEnvironment):

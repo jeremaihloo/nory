@@ -1,8 +1,0 @@
-author: jeremaihloo
-version: 0.0.1
-description: demo-b
-home_page: http://github.com/jeremaihloo/ncms
-indexs:
-  - handlers
-dependency:
-  - 'demo-a'

@@ -51,7 +51,6 @@ class ExtensionManager(object):
                     logging.debug('[load_extension_info] found loader for [{}]'.format(item))
             except Exception as e:
                 logging.exception('[load_extension_infos] load extension info [{}] error', item, e)
-        print(extension_infos)
         extension_infos = sort_extension_dependency(extension_infos)
 
         logging.info('[load_extension_infos] sorted extension info dependency [{}]'.format([x.name for x in extension_infos]))

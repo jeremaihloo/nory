@@ -2,8 +2,8 @@ import asyncio
 import functools
 import inspect
 
-from infras.utils import singleton, nameof, descriptionof
-from infras.web.coros import has_var_kw_arg, has_named_kw_args, get_named_kw_args, get_required_kw_args
+from nory.infras.utils import singleton, nameof, descriptionof
+from nory.infras.web.coros import has_var_kw_arg, has_named_kw_args, get_named_kw_args, get_required_kw_args
 
 __commands__ = []
 
