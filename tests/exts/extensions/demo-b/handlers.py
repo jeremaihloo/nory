@@ -1,6 +1,6 @@
 from nory.infras.exts import features
 from nory.infras.exts.managers import feature
-from nory.infras.web.coros import get
+from nory.infras.web.req import get
 
 
 @feature(features.__FEATURE_ROUTING__, 'demo-a', 'demo-a')

@@ -29,10 +29,11 @@ async def test_extension_loader():
     loader = ExtensionLoader(paths=[__package__])
     extension = await loader.load(info)
     assert len(extension.features[features.__FEATURE_ROUTING__]) == 1
-
+    assert len(extension.get_worked_features(features.__FEATURE_ROUTING__)) == 1
 
 @pytest.mark.asyncio
 async def test_load_extension_manager():
     manager = ExtensionManager()
     await manager.load_extensions()
     assert len(manager.extensions) == 2
+    assert len(manager.get_worked_features(features.__FEATURE_ROUTING__)) == 2

@@ -11,8 +11,6 @@ from urllib import parse
 
 from aiohttp import web
 
-from nory.infras.exts import features
-
 
 def get_required_kw_args(fn):
     args = []
@@ -124,37 +122,3 @@ class RequestHandler(object):
             return r
         except NcmsWebApiError as e:
             return dict(error=e.error, data=e.data, message=e.message)
-
-
-def add_route(app, fn):
-    method = getattr(fn, '__method__', None)
-    path = getattr(fn, '__route__', None)
-    if path is None or not isinstance(path, str) or method is None or not isinstance(method, str):
-        raise ValueError('@get or @post not defined in %s.' % str(fn))
-    if not asyncio.iscoroutinefunction(fn) and not inspect.isgeneratorfunction(fn):
-        fn = asyncio.coroutine(fn)
-    logging.info(
-        '[add route] [%s] %s => %s(%s)' % (
-            beautify_http_method(method), path, fn.__name__, ', '.join(inspect.signature(fn).parameters.keys())))
-    app.router.add_route(method, path, RequestHandler(app, fn))
-
-    for item in app.app_manager.get_worked_features(features.__FEATURE_ADD_ROUTE__):
-        params = [x for x in inspect.signature(fn).parameters.keys()]
-        item(method, path, params)
-
-
-def beautify_http_method(method: str):
-    return method.ljust(6, ' ')
-
-
-def add_routes(app, app_manager: ExtensionManager):
-    for item in app_manager.get_worked_features(features.__FEATURE_ROUTING__):
-        add_route(app, item)
-
-
-def add_static(app, app_name, path):
-    # path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
-    if not os.path.exists(path):
-        raise Exception('add static error dir not exists : {}'.format(path))
-    app.router.add_static('/extensions/' + app_name, path)
-    logging.info('add static %s => %s' % ('/extensions/' + app_name, path))

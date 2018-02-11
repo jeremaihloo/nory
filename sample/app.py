@@ -15,5 +15,8 @@ if __name__ == '__main__':
     env = Environment(mode=modes.Development)
     env.configuration = ConfigurationBuilder(env).add_file_by_prefix('appsettings').build()
 
-    host = NoryHost(name='nory', env=env, logger=logging.getLogger(__name__))
+    logger = logging.getLogger('sample')
+    logger.setLevel(logging.DEBUG)
+
+    host = NoryHost(ext_load_paths=['sample'], name='nory', env=env, logger=logger)
     host.start()

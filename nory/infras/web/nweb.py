@@ -1,144 +1,26 @@
+import inspect
 import logging
-from collections import OrderedDict
-
 from aiohttp import web
+import asyncio
 from jinja2 import Environment, FileSystemLoader
-
 from nory.infras import constants
-from nory.infras.envs.models import Configuration
 from nory.infras.exts import features
 from nory.infras.exts.managers import ExtensionManager
-from nory.infras.utils import json_dumps
-from nory.infras.web.coros import add_static, add_routes
+from nory.infras.web.middlewares import logger_factory, auth_factory, data_factory, response_factory
 from nory.infras.web.models import Jinja2Options, WebOptions
-
+from nory.infras.web.req import RequestHandler
 import os
 
-
-async def logger_factory(app, handler):
-    l = logging.getLogger('logger_factory')
-
-    async def logger(request):
-        l.info('[logger_factory] Request: %s %s' % (request.method, request.path))
-        # await asyncio.sleep(0.3)
-        return await handler(request)
-
-    return logger
-
-
-async def auth_factory(app, handler):
-    logger = logging.getLogger('auth_factory')
-
-    async def auth(request):
-        request.__user__ = None
-        logger.info('auth user: %s %s' % (request.method, request.path))
-        flag = False
-        logger.info(
-            '[auth_provider] : {}'.format(app.app_manager.get_worked_features(features.__FEATURE_AUTHING__)))
-        for fn in app.app_manager.get_worked_features(features.__FEATURE_AUTHING__):
-            auth_flag, msg = await fn(app, request)
-            if auth_flag:
-                logger.info('[auth] : [{}] passed'.format(getattr(fn, constants.FEATURE_NAME)))
-                flag = True
-            else:
-                logger.info('[auth] : [{}] un_pass'.format(getattr(fn, constants.FEATURE_NAME)))
-
-        if not flag:
-            for fn in app.app_manager.get_worked_features(features.__FEATURE_AUTH_FALSE__):
-                await fn(app, request)
-        return await handler(request)
-
-    return auth
-
-
-def api_response(r, status_code=200):
-    resp = web.Response(status=status_code, body=json_dumps(api_response_body(r)))
-    resp.content_type = 'application/json;charset=utf-8'
-    return resp
-
-
-def api_response_body(r, status_code=200):
-    o = OrderedDict()
-    o['ok'] = True if status_code == 200 else False
-    o['body'] = r if r is not None else ('everything is ok !' if status_code == 200 else 'got something bad !')
-    return o
-
-
-async def response_factory(app, handler):
-    logger = logging.getLogger('response_factory')
-
-    async def response(request):
-        logger.info('Response handler...')
-        r = await handler(request)
-        logger.info('response is instance of [{}]'.format(type(r)))
-        if isinstance(r, web.StreamResponse):
-            return r
-
-        if isinstance(r, bytes):
-            resp = web.Response(body=r)
-            resp.content_type = 'application/octet-stream'
-            return resp
-
-        if isinstance(r, str):
-            if r.startswith('redirect:'):
-                return web.HTTPFound(r[9:])
-            resp = web.Response(body=r.encode('utf-8'))
-            resp.content_type = 'text/html;charset=utf-8'
-            return resp
-
-        if isinstance(r, dict):
-            template = r.get('__template__')
-            if template is None:
-                return api_response(r)
-            else:
-                r['__user__'] = request.__user__
-                resp = web.Response(body=app['__templating__'].get_template(template).render(**r).encode('utf-8'))
-                resp.content_type = 'text/html;charset=utf-8'
-                return resp
-
-        if isinstance(r, int) and 100 <= r < 600:
-            return api_response(None, status_code=r)
-
-        if isinstance(r, list):
-            return api_response(r)
-
-        if isinstance(r, tuple) and len(r) == 2:
-            t, m = r
-            if isinstance(t, int) and 100 <= t < 600:
-                return api_response(m, status_code=t)
-
-        # default:
-        resp = web.Response(body=str(r).encode('utf-8'))
-        resp.content_type = 'text/plain;charset=utf-8'
-        return resp
-
-    return response
-
-
-async def data_factory(app, handler):
-    logger = logging.getLogger('data_factory')
-
-    async def parse_data(request):
-        if request.method == 'POST':
-            if request.content_type.startswith('application/json'):
-                request.__data__ = await request.json()
-                logger.info('request json: %s' % str(request.__data__))
-            elif request.content_type.startswith('application/x-nory-form-urlencoded'):
-                request.__data__ = await request.post()
-                logger.info('request form: %s' % str(request.__data__))
-        return await handler(request)
-
-        return parse_data
 
 
 class NoryWebService(object):
 
     def __init__(self, _logger: logging.Logger,
-                 _app_manager: ExtensionManager,
+                 _ext_manager: ExtensionManager,
                  _jinja2_options: Jinja2Options,
                  _web_options: WebOptions):
         self._logger = _logger
-        self._app_manager = _app_manager
+        self._ext_manager = _ext_manager
         self._jinja2_options = _jinja2_options
         self._web_options = _web_options
 
@@ -156,26 +38,14 @@ class NoryWebService(object):
         self._logger.info('[init_jinja2] set jinja2 template path: %s' % path)
 
         env = Environment(loader=FileSystemLoader(path), **options)
-        filters = self._app_manager.get_worked_features(features.__FEATURE_TEMPLATE_FILTER__)
+        filters = self._ext_manager.get_worked_features(features.__FEATURE_TEMPLATE_FILTER__)
         if filters is not None:
             for f in filters:
                 env.filters[getattr(f, constants.FEATURE_NAME)] = f
         app['__templating__'] = env
 
-    # @web.middleware
-    # async def error_middleware(request, handler):
-    #     try:
-    #         response = await handler(request)
-    #         if response.status == 404:
-    #             return api_response(response.message, 404)
-    #         return response
-    #     except web.HTTPException as ex:
-    #         if ex.status == 404:
-    #             return api_response(ex.reason, 404)
-    #         raise
-
-    def add_apps_statics(self, app):
-        for item in self._app_manager.extensions.values():
+    def add_statics(self, app):
+        for item in self._ext_manager.extensions.values():
             if not item.info.enabled:
                 continue
 
@@ -183,22 +53,55 @@ class NoryWebService(object):
                 path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'extensions', item.info.name,
                                     item.info.static[k])
                 try:
-                    add_static(app, os.path.join(item.info.name, k), path)
+                    self.add_static(app, os.path.join(item.info.name, k), path)
                 except Exception as e:
-                    self._logger.warning('[add_apps_statics] add app [{}] static error'.format(item.info.name))
+                    self._logger.warning('[add_statics] add app [{}] static error'.format(item.info.name))
+
+    def add_route(self, app, fn):
+        method = getattr(fn, '__method__', None)
+        path = getattr(fn, '__route__', None)
+        if path is None or not isinstance(path, str) or method is None or not isinstance(method, str):
+            raise ValueError('@get or @post not defined in %s.' % str(fn))
+        if not asyncio.iscoroutinefunction(fn) and not inspect.isgeneratorfunction(fn):
+            fn = asyncio.coroutine(fn)
+        logging.info(
+            '[add route] [%s] %s => %s(%s)' % (
+                self.beautify_http_method(method), path, fn.__name__,
+                ', '.join(inspect.signature(fn).parameters.keys())))
+        app.router.add_route(method, path, RequestHandler(app, fn))
+
+        for item in app.app_manager.get_worked_features(features.__FEATURE_ADD_ROUTE__):
+            params = [x for x in inspect.signature(fn).parameters.keys()]
+            item(method, path, params)
+
+    def beautify_http_method(self, method: str):
+        return method.ljust(6, ' ')
+
+    def add_routes(self, app, app_manager: ExtensionManager):
+        for item in app_manager.get_worked_features(features.__FEATURE_ROUTING__):
+            self.add_route(app, item)
+
+    def add_static(self, app, app_name, path):
+        # path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+        if not os.path.exists(path):
+            raise Exception('add static error dir not exists : {}'.format(path))
+        app.router.add_static('/extensions/' + app_name, path)
+        logging.info('add static %s => %s' % ('/extensions/' + app_name, path))
 
     async def init(self, loop):
         app = web.Application(loop=loop, middlewares=[
             logger_factory, auth_factory, data_factory, response_factory
         ])
 
-        await self._app_manager.load_extensions()
+        await self._ext_manager.load_extensions()
+
+        app.app_manager = self._ext_manager
 
         self.init_jinja2(app, **self._jinja2_options)
 
-        add_routes(app, self._app_manager)
+        self.add_routes(app, self._ext_manager)
 
-        self.add_apps_statics(app)
+        self.add_statics(app)
 
         srv = await loop.create_server(app.make_handler(), self._web_options.host, self._web_options.port)
 

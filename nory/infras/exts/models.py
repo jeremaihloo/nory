@@ -1,5 +1,6 @@
 import importlib
 import inspect
+import logging
 
 from nory.infras import constants
 from nory.infras.exts import features
@@ -20,12 +21,12 @@ class ExtensionInfo(object):
 
 
 class Extension(object):
-    def __init__(self, info, app=None, loader=None):
+    def __init__(self, info, loader, app=None):
         self.info = info
         self.app = app
         self.init_features()
 
-        self.loader = ExtensionLoader() if loader is None else loader
+        self.loader = loader
 
     def init_features(self):
         self.features = {}
@@ -71,9 +72,14 @@ class Extension(object):
         return enabled_features
 
 
+class ExtensionLoadError(Exception):
+    pass
+
+
 class ExtensionLoader(object):
-    def __init__(self, paths=None):
-        self.paths = [] if paths is None else paths
+    def __init__(self, paths, logger: logging = None):
+        self.paths = paths
+        self.logger = logger if logger is not None else logging.getLogger('extension_loader')
 
     async def load(self, info: ExtensionInfo, app=None) -> Extension:
         for item in self.paths:
@@ -81,6 +87,7 @@ class ExtensionLoader(object):
             if m is not None:
                 return await self._load(m, info, app)
         # TODO: raize exception
+        raise ExtensionLoadError()
 
     async def _load(self, m, info: ExtensionInfo, app=None):
         extension = Extension(info, app)
@@ -91,6 +98,7 @@ class ExtensionLoader(object):
                 if event is not None:
                     if extension.features.get(event, None) is None:
                         extension.features[event] = []
+                    self.logger.info('feature [{}] [{}] loaded'.format(event, fn))
                     extension.features[event].append(fn)
         return extension
 
