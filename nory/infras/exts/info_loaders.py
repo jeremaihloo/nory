@@ -4,18 +4,18 @@ import logging
 import os
 import yaml
 
-from infras.exts.models import ExtensionInfo
+from nory.infras.exts.models import ExtensionInfo
 
 
-class AppInfoLoader(object):
-    def load(self, name):
+class ExtensionInfoLoader(object):
+    def load(self, name) -> ExtensionInfo:
         pass
 
 
-class PyInfoLoader(AppInfoLoader):
+class ExtensionPyInfoLoader(ExtensionInfoLoader):
     """info.py"""
 
-    def load(self, name):
+    def load(self, name) -> ExtensionInfo:
         info_m = importlib.import_module('extensions.{}.info'.format(name))
         app_info = ExtensionInfo(
             name=name,
@@ -32,10 +32,10 @@ class PyInfoLoader(AppInfoLoader):
         return app_info
 
 
-class AppYamlInfoLoader(AppInfoLoader):
+class ExtensionYamlInfoLoader(ExtensionInfoLoader):
     """app.yaml"""
 
-    def load(self, name):
+    def load(self, name) -> ExtensionInfo:
         abs_p = os.path.abspath('.')
         path = os.path.join(abs_p, 'extensions/{}/{}'.format(name, 'app.yaml'))
         app_info = yaml.load(open(path))
@@ -55,10 +55,10 @@ class AppYamlInfoLoader(AppInfoLoader):
         return app_info
 
 
-def load_app_info(name):
+def load_extension_info(name) -> ExtensionInfo:
     m = {
-        'info.py': PyInfoLoader(),
-        'app.yaml': AppYamlInfoLoader()
+        'info.py': ExtensionPyInfoLoader(),
+        'app.yaml': ExtensionYamlInfoLoader()
     }
     abs_p = os.path.abspath('.')
     filter_path = lambda key: os.path.exists(os.path.join(abs_p, 'extensions/{}/{}'.format(name, key)))
@@ -71,4 +71,4 @@ def load_app_info(name):
     loader = m.get(keys[0], None)
     if loader is not None:
         return loader.load(name)
-    raise Exception('[load_app_info] loader not found for [{}]'.format(name))
+    raise Exception('[load_extension_info] loader not found for [{}]'.format(name))

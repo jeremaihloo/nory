@@ -1,10 +1,6 @@
 import functools
 import logging
 
-from aiohttp import web
-
-from infras.web.nweb import NoryWebService
-
 __FEATURE_ROUTING__ = '__FEATURE_ROUTING__'
 __FEATURE_AUTHING__ = '__FEATURE_AUTHING__'
 __FEATURE_AUTH_FALSE__ = '__FEATURE_AUTH_FALSE__'
@@ -51,10 +47,3 @@ async def publish(name, app, *args, **kwargs):
         except Exception as e:
             logging.error('[event] [publish] [{}] => [{}] [error]'.format(name, item))
     return True
-
-
-class FeatureContext(object):
-
-    def __init__(self, app: NoryWebService = None, request: web.Request = None):
-        self.app = app
-        self.request = request

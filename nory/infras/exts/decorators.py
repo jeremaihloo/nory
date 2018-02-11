@@ -1,6 +1,6 @@
 import functools
 
-from infras import constants
+from nory.infras import constants
 
 
 def feature(feature_type, name='', title='', description=''):

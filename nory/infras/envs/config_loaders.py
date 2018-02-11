@@ -4,8 +4,7 @@ import os
 
 import yaml
 
-from infras.envs import modes
-from infras.envs.models import Configuration, Environment
+from .models import modes, Configuration, Environment
 
 
 class ConfigLoader(object):

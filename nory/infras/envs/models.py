@@ -1,4 +1,4 @@
-from infras.envs import modes
+from . import modes
 
 
 class Configuration(dict):
@@ -19,9 +19,7 @@ class Configuration(dict):
     def option(self, key, obj):
         values = self.get(key, dict())
 
-        for key, val in values.items():
-            setattr(obj, key, val)
-            obj[key] = val
+        obj.update(values)
         return obj
 
 

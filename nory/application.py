@@ -3,12 +3,14 @@
 import asyncio
 import logging
 import signal
-import envtypes
+from nory import envtypes
 import os
-from infras.envs.models import Environment as NoryEnvironment, Configuration
-from infras.exts.coros import AppManager
-from infras.web.models import Jinja2Options, WebOptions
-from infras.web.nweb import NoryWebService
+
+from nory.infras.envs.config_loaders import ConfigurationBuilder
+from nory.infras.envs.models import Environment as NoryEnvironment, Configuration
+from nory.infras.exts.managers import ExtensionManager
+from nory.infras.web.models import Jinja2Options, WebOptions
+from nory.infras.web.nweb import NoryWebService
 
 
 class NoryHost(object):
@@ -18,18 +20,17 @@ class NoryHost(object):
         self.env = env if env is not None else NoryEnvironment(name=self.name)
         self.logger = logger
 
-    def set_env_mode_from_sys_env(self):
-        mode = os.environ.get('mode', envtypes.Development)
-        self.env.mode = mode
-
-    def add_config_from_file(self, filename):
-        pass
-
     def start(self):
         logger = self.logger.getChild('nory')
-        app_manager = AppManager()
-        jinja2_options = self.env.configuration.option('jinja2', Jinja2Options)
-        web_options = self.env.configuration.option('web', WebOptions)
+
+        app_manager = ExtensionManager()
+
+        jinja2_options = Jinja2Options()
+        self.env.configuration.option('jinja2', jinja2_options)
+
+        web_options = WebOptions()
+        web_options = self.env.configuration.option('web', web_options)
+
         nory = NoryWebService(_logger=logger, _app_manager=app_manager, _jinja2_options=jinja2_options,
                               _web_options=web_options)
         self.loop = asyncio.get_event_loop()

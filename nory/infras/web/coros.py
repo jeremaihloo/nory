@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from infras.errors import NcmsWebApiError
-from infras.exts.coros import AppManager
+from nory.infras.errors import NcmsWebApiError
+from nory.infras.exts.managers import ExtensionManager
 
 __author__ = 'Michael Liao'
 
@@ -11,7 +11,7 @@ from urllib import parse
 
 from aiohttp import web
 
-from infras.exts import features
+from nory.infras.exts import features
 
 
 def get_required_kw_args(fn):
@@ -147,7 +147,7 @@ def beautify_http_method(method: str):
     return method.ljust(6, ' ')
 
 
-def add_routes(app, app_manager: AppManager):
+def add_routes(app, app_manager: ExtensionManager):
     for item in app_manager.get_worked_features(features.__FEATURE_ROUTING__):
         add_route(app, item)
 

@@ -4,14 +4,16 @@ from collections import OrderedDict
 from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
 
-from infras import constants
-from infras.exts import features
-from infras.exts.coros import AppManager
-from infras.utils import json_dumps
-from infras.web.coros import add_static, add_routes
-from infras.web.models import Jinja2Options, WebOptions
+from nory.infras import constants
+from nory.infras.envs.models import Configuration
+from nory.infras.exts import features
+from nory.infras.exts.managers import ExtensionManager
+from nory.infras.utils import json_dumps
+from nory.infras.web.coros import add_static, add_routes
+from nory.infras.web.models import Jinja2Options, WebOptions
 
 import os
+
 
 async def logger_factory(app, handler):
     l = logging.getLogger('logger_factory')
@@ -132,7 +134,7 @@ async def data_factory(app, handler):
 class NoryWebService(object):
 
     def __init__(self, _logger: logging.Logger,
-                 _app_manager: AppManager,
+                 _app_manager: ExtensionManager,
                  _jinja2_options: Jinja2Options,
                  _web_options: WebOptions):
         self._logger = _logger
@@ -173,7 +175,7 @@ class NoryWebService(object):
     #         raise
 
     def add_apps_statics(self, app):
-        for item in self._app_manager.apps.values():
+        for item in self._app_manager.extensions.values():
             if not item.info.enabled:
                 continue
 
@@ -190,7 +192,8 @@ class NoryWebService(object):
             logger_factory, auth_factory, data_factory, response_factory
         ])
 
-        await self._app_manager.load_apps()
+        # await self._app_manager.load_extensions()
+        assert isinstance(self._jinja2_options, Configuration)
 
         self.init_jinja2(app, **self._jinja2_options)
 

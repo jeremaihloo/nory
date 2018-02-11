@@ -14,7 +14,6 @@ def ext_hash(name, version):
     return hash('{}{}'.format(name, version))
 
 
-@singleton
 class ExtensionStoreClient(object):
 
     def __init__(self, domain):
@@ -42,4 +41,3 @@ class ExtensionStoreClient(object):
             with open(self.path_app_package.format(name=name, version=version)) as f:
                 for chunk in res:
                     f.write(chunk)
-

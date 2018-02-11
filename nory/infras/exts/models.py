@@ -1,8 +1,8 @@
 import importlib
 import inspect
 
-from infras import constants
-from infras.exts import features
+from nory.infras import constants
+from nory.infras.exts import features
 
 
 class ExtensionInfo(object):
@@ -20,10 +20,12 @@ class ExtensionInfo(object):
 
 
 class Extension(object):
-    def __init__(self, info, ncms_application):
+    def __init__(self, info, app=None, loader=None):
         self.info = info
-        self.ncms_application = ncms_application
+        self.app = app
         self.init_features()
+
+        self.loader = ExtensionLoader() if loader is None else loader
 
     def init_features(self):
         self.features = {}
@@ -32,18 +34,7 @@ class Extension(object):
                 self.features[item] = []
 
     async def load(self):
-        m = importlib.import_module('extensions.{}.__init__'.format(self.info.name))
-        await self._load(m)
-
-    async def _load(self, m):
-        for attr in dir(m):
-            fn = getattr(m, attr, None)
-            if fn is not None and inspect.isfunction(fn):
-                event = getattr(fn, constants.FEATURE_TYPE, None)
-                if event is not None:
-                    if self.features.get(event, None) is None:
-                        self.features[event] = []
-                    self.features[event].append(fn)
+        await self.loader.load(self.info, app=self.app)
 
     async def reload(self):
         self.init_features()
@@ -78,3 +69,32 @@ class Extension(object):
         app_features = [x for x in self.features[event]]
         enabled_features = [x for x in app_features if getattr(x, 'enabled', True)]
         return enabled_features
+
+
+class ExtensionLoader(object):
+    def __init__(self, paths=None):
+        self.paths = [] if paths is None else paths
+
+    async def load(self, info: ExtensionInfo, app=None) -> Extension:
+        for item in self.paths:
+            m = importlib.import_module('.extensions.{}'.format(info.name), item)
+            if m is not None:
+                return await self._load(m, info, app)
+        # TODO: raize exception
+
+    async def _load(self, m, info: ExtensionInfo, app=None):
+        extension = Extension(info, app)
+        for attr in dir(m):
+            fn = getattr(m, attr, None)
+            if fn is not None and inspect.isfunction(fn):
+                event = getattr(fn, constants.FEATURE_TYPE, None)
+                if event is not None:
+                    if extension.features.get(event, None) is None:
+                        extension.features[event] = []
+                    extension.features[event].append(fn)
+        return extension
+
+    async def reload(self, info: ExtensionInfo, app=None) -> Extension:
+        for item in self.paths:
+            m = importlib.reload('.extensions.{}'.format(info.name), item)
+            self._load(m, info, app)

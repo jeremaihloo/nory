@@ -3,10 +3,12 @@ import logging
 __all_keys = []
 
 
-def sort_app_dependency(maps: list, rs=[], min_set=set()):
+def sort_dependency(maps: list, rs=[], min_set=None):
     if len(maps) == 0:
         return rs
-
+    if min_set is None:
+        min_set = set(list())
+        
     maps = [(k, v) for k, v in maps if k not in min_set]
 
     keys = [x[0] for x in maps]
@@ -19,19 +21,20 @@ def sort_app_dependency(maps: list, rs=[], min_set=set()):
 
     deps = set([x[1] for x in maps])
     min_set = set(__all_keys) - set(rs) - deps
-
+    if len(min_set) == 0:
+        return rs
     rs.extend(min_set)
 
-    return sort_app_dependency(maps, rs, min_set)
+    return sort_dependency(maps, rs, min_set)
 
 
-def sort_app_info_by_dependency(app_infos):
+def sort_extension_dependency(app_infos):
     maps = []
     for item in app_infos:
         for dep in item.dependency:
             maps.append((item, dep))
     logging.info('dependency mappings:{}'.format(maps))
-    sorted_deps = sort_app_dependency(maps)
+    sorted_deps = sort_dependency(maps)
 
     def get_info_by_name(name):
         for item in app_infos:

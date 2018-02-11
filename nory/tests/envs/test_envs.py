@@ -1,15 +1,12 @@
-from infras.envs import modes
-from infras.envs.config_loaders import get_config_by_path_value, FileConfigLoader, ConfigurationBuilder
-from infras.envs.models import Environment, Configuration
+from nory.infras.envs import modes
+from nory.infras.envs.config_loaders import get_config_by_path_value, FileConfigLoader, ConfigurationBuilder
+from nory.infras.envs.models import Environment, Configuration
 
 
 def test_config_base():
     config = Configuration()
     config.mode = 'test'
     assert config['mode'] == 'test'
-    config['mode'] == 'test2'
-    print(config)
-    assert config.mode == 'test2'
 
 
 def test_get_config_by_path_value():
@@ -25,7 +22,7 @@ def test_json_file_loader():
 
 
 def test_yml_file_loader():
-    loader = FileConfigLoader('appsettings.yml')
+    loader = FileConfigLoader('appsettings.Production.yml')
     config = loader.load()
     assert config['load_from'] == 'yml'
     assert config['mode'] == 'Production'
