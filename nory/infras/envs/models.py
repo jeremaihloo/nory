@@ -1,23 +1,33 @@
+from infras.envs import modes
 
 
 class Configuration(dict):
-    __mappings__ = {}
+    def __init__(self, names=(), values=(), **kw):
+        super(Configuration, self).__init__(**kw)
+        for k, v in zip(names, values):
+            self[k] = v
 
-    def option(self, key, cls):
-        values = self.__mappings__.get(key, dict())
-        o = cls(**values)
-        return o
+    def __getattr__(self, key):
+        try:
+            return self[key]
+        except KeyError:
+            raise AttributeError(r"'Dict' object has no attribute '%s'" % key)
 
     def __setattr__(self, key, value):
         self[key] = value
 
-    def __getattr__(self, item):
-        return self[item]
+    def option(self, key, obj):
+        values = self.get(key, dict())
+
+        for key, val in values.items():
+            setattr(obj, key, val)
+            obj[key] = val
+        return obj
 
 
 class Environment(object):
     name = 'nory'
-    mode = 'Development'
+    mode = modes.Default
     configuration = Configuration()
 
     def __init__(self, name='nory', mode='Development', **kwargs):

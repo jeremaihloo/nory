@@ -7,7 +7,7 @@ from infras import utils
 from infras.exts import features
 from infras.exts.app_info_loaders import load_app_info
 from infras.exts.dependency import sort_app_info_by_dependency
-from infras.exts.models import App
+from infras.exts.models import Extension
 
 
 def get_apps_paths():
@@ -62,7 +62,7 @@ class AppManager(object):
 
     async def load_app_entries(self, app_infos):
         for item in app_infos:
-            app = App(item, self.ncms_application)
+            app = Extension(item, self.ncms_application)
 
             if item.name in self.pre_installed_apps and not utils.ncms_has_been_installed():
                 item.enabled = True

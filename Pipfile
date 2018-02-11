@@ -71,6 +71,7 @@ werkzeug = "==0.13"
 wrapt = "==1.10.11"
 yarl = "==0.15.0"
 injector = "*"
+simplejson = "*"
 
 
 [dev-packages]

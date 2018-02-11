@@ -5,7 +5,7 @@ from infras import constants
 from infras.exts import features
 
 
-class AppInfo(object):
+class ExtensionInfo(object):
     def __init__(self, name, version, description, author, home_page, indexs, dependency, static, enabled, locale):
         self.name = name
         self.version = version
@@ -19,7 +19,7 @@ class AppInfo(object):
         self.locale = locale
 
 
-class App(object):
+class Extension(object):
     def __init__(self, info, ncms_application):
         self.info = info
         self.ncms_application = ncms_application

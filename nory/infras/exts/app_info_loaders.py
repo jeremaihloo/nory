@@ -4,7 +4,7 @@ import logging
 import os
 import yaml
 
-from infras.exts.models import AppInfo
+from infras.exts.models import ExtensionInfo
 
 
 class AppInfoLoader(object):
@@ -17,7 +17,7 @@ class PyInfoLoader(AppInfoLoader):
 
     def load(self, name):
         info_m = importlib.import_module('extensions.{}.info'.format(name))
-        app_info = AppInfo(
+        app_info = ExtensionInfo(
             name=name,
             author=getattr(info_m, '__author__', 'None'),
             version=getattr(info_m, '__version__', 'None'),
@@ -40,7 +40,7 @@ class AppYamlInfoLoader(AppInfoLoader):
         path = os.path.join(abs_p, 'extensions/{}/{}'.format(name, 'app.yaml'))
         app_info = yaml.load(open(path))
         logging.debug('app_info from yaml:{}'.format(app_info))
-        app_info = AppInfo(
+        app_info = ExtensionInfo(
             name=name,
             author=app_info.get('author', ''),
             version=app_info.get('version', ''),
