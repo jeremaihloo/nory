@@ -21,26 +21,16 @@ class ExtensionInfo(object):
 
 
 class Extension(object):
-    def __init__(self, info, loader, app=None):
+    def __init__(self, info, app=None):
         self.info = info
         self.app = app
         self.init_features()
-
-        self.loader = loader
 
     def init_features(self):
         self.features = {}
         for item in dir(features):
             if item.startswith('__FEATURE'):
                 self.features[item] = []
-
-    async def load(self):
-        await self.loader.load(self.info, app=self.app)
-
-    async def reload(self):
-        self.init_features()
-        m = importlib.reload('extensions.{}.__init__'.format(self.info.name))
-        self._load(m)
 
     async def on_installing(self):
         fs = self.get_worked_features(features.__FEATURE_ON_APP_INSTALLING__)
@@ -85,6 +75,7 @@ class ExtensionLoader(object):
         for item in self.paths:
             m = importlib.import_module('.extensions.{}'.format(info.name), item)
             if m is not None:
+                self.logger.debug('import module {}'.format(m))
                 return await self._load(m, info, app)
         # TODO: raize exception
         raise ExtensionLoadError()

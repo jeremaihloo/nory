@@ -36,24 +36,3 @@ class NoryHost(object):
         self.loop = asyncio.get_event_loop()
         self.loop.run_until_complete(nory.init(self.loop))
         self.loop.run_forever()
-
-
-def graceful(env: NoryEnvironment):
-    n = Nory(env)
-
-    def onSigInt(signo, frame):
-        print('Shutdown...')
-        n.shutdown()
-
-    def onSigTerm(signo, frame):
-        print('Shutdown...')
-        n.shutdown()
-
-    def onSigKill(signo, frame):
-        print('Shutdown...')
-        n.shutdown()
-
-    signal.signal(signal.SIGINT, onSigInt)
-    signal.signal(signal.SIGTERM, onSigTerm)
-
-    return n

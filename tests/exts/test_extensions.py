@@ -25,7 +25,7 @@ def test_info_sort():
 
 @pytest.mark.asyncio
 async def test_extension_loader():
-    info = load_extension_info('demo-a')
+    info = load_extension_info('demo-b')
     loader = ExtensionLoader(paths=[__package__])
     extension = await loader.load(info)
     assert len(extension.features[features.__FEATURE_ROUTING__]) == 1
@@ -33,7 +33,11 @@ async def test_extension_loader():
 
 @pytest.mark.asyncio
 async def test_load_extension_manager():
-    manager = ExtensionManager()
+    loader = ExtensionLoader(paths=[__package__])
+    manager = ExtensionManager(loader)
     await manager.load_extensions()
-    assert len(manager.extensions) == 2
+    assert len(manager.extensions.keys()) == 2
+    for key, val in manager.extensions.items():
+        assert key in ('demo-a', 'demo-b')
+        assert len(val.get_worked_features(features.__FEATURE_ROUTING__)) == 1
     assert len(manager.get_worked_features(features.__FEATURE_ROUTING__)) == 2

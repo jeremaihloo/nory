@@ -37,6 +37,7 @@ class ExtensionManager(object):
     async def load_extensions(self):
         self.logger.info('start loading extensions')
         extension_names = get_extensions_paths()
+        self.logger.debug('extension_names:{}'.format(extension_names))
 
         extension_infos = await self.load_extension_infos(extension_names)
         extensions = await self.load_extension_entries(extension_infos)
@@ -62,13 +63,12 @@ class ExtensionManager(object):
 
     async def load_extension_entries(self, extension_infos):
         for item in extension_infos:
-            extension = Extension(item, self.loader, self.app)
 
             if item.name:
                 item.enabled = True
             try:
                 if item.enabled:
-                    await extension.load()
+                    extension = await self.loader.load(item, self.app)
                     self.extensions[item.name] = extension
                     self.logger.info('[load_extensions] extension [{}] loaded'.format(item.name))
                 else:
