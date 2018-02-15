@@ -14,4 +14,4 @@ class Jinja2Options(Configuration):
 class WebOptions(Configuration):
     def __init__(self):
         self.host = '0.0.0.0'
-        self.port = 9000
+        self.port = 8989

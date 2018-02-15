@@ -121,4 +121,4 @@ async def data_factory(app, handler):
                 logger.info('request form: %s' % str(request.__data__))
         return await handler(request)
 
-        return parse_data
+    return parse_data

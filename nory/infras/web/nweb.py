@@ -2,25 +2,54 @@ import inspect
 import logging
 from aiohttp import web
 import asyncio
+
+from aiohttp.web import Application
+
+from nory.infras.envs.models import Environment
 from nory.infras.exts import features
 from nory.infras.exts.managers import ExtensionManager
+from nory.infras.services import Nory
 from nory.infras.web.helper import beautify_http_method
-from nory.infras.web.middlewares import logger_factory, auth_factory, data_factory, response_factory
-from nory.infras.web.models import Jinja2Options, WebOptions
+from nory.infras.web.models import WebOptions
 from nory.infras.web.req import RequestHandler
-from nory.infras.web.uses import JinJa2, Statics
+from nory.infras.web.module_features import JinJa2, Statics
 
 
-class NoryWebService(object):
+class NoryWebService(Nory):
 
-    def __init__(self, _logger: logging.Logger,
-                 _ext_manager: ExtensionManager,
-                 _jinja2_options: Jinja2Options,
-                 _web_options: WebOptions):
-        self._logger = _logger
-        self._ext_manager = _ext_manager
-        self._web_options = _web_options
-        self._jinja2_options = _jinja2_options
+    def __init__(self, app: Application, loop: asyncio.AbstractEventLoop, web_options: WebOptions):
+        self.app = app
+        self.loop = loop
+        self.web_options = web_options
+
+    def on_startup(self):
+        web.run_app(self.app, loop=self.loop, **self.web_options)
+
+    def on_cleanup(self):
+        raise NotImplementedError()
+
+
+class WebBuilder(object):
+    def __init__(self, env: Environment, logger: logging.Logger, ext_manager: ExtensionManager,
+                 web_options: WebOptions):
+        self.env = env
+
+        self.logger = logger
+        self.ext_manager = ext_manager
+        self.web_options = web_options
+
+        self.middlewares = []
+        self.module_features = []
+
+    def use_middlewares(self, middlewares):
+        if not isinstance(middlewares, list):
+            middlewares = [middlewares]
+        self.middlewares.extend(middlewares)
+
+    def use_module_features(self, ms):
+        if not isinstance(ms, list):
+            ms = [ms]
+        self.module_features.extend(ms)
 
     def add_route(self, app, fn):
         method = getattr(fn, '__method__', None)
@@ -29,7 +58,7 @@ class NoryWebService(object):
             raise ValueError('@get or @post not defined in %s.' % str(fn))
         if not asyncio.iscoroutinefunction(fn) and not inspect.isgeneratorfunction(fn):
             fn = asyncio.coroutine(fn)
-        logging.info(
+        self.logger.info(
             '[add route] [%s] %s => %s(%s)' % (
                 beautify_http_method(method), path, fn.__name__,
                 ', '.join(inspect.signature(fn).parameters.keys())))
@@ -39,32 +68,29 @@ class NoryWebService(object):
             params = [x for x in inspect.signature(fn).parameters.keys()]
             item(method, path, params)
 
-    def add_routes(self, app, app_manager: ExtensionManager):
+    def add_routes(self, app: Application, app_manager: ExtensionManager):
         routes = app_manager.get_worked_features(features.__FEATURE_ROUTING__)
-        self._logger.info('routes {}'.format(routes))
+        self.logger.info('routes {}'.format(routes))
         for item in routes:
             self.add_route(app, item)
 
-    async def use(self, module, app, _logger: logging.Logger, _ext_manager: ExtensionManager, **kwargs):
+    async def use(self, module, app, _logger: logging.Logger, _ext_manager: ExtensionManager, env: Environment):
 
         m = module()
-        m.initialize(app, _logger, _ext_manager, **kwargs)
+        m.initialize(app, _logger, _ext_manager, env)
 
-    async def init(self, loop):
-        app = web.Application(loop=loop, middlewares=[
-            logger_factory, auth_factory, data_factory, response_factory
-        ])
+    def build(self) -> NoryWebService:
+        loop = asyncio.get_event_loop()
+        app = web.Application(loop=loop, middlewares=self.middlewares)
+        loop.run_until_complete(self._build(app))
+        return NoryWebService(app, loop, self.web_options)
 
-        await self._ext_manager.load_extensions()
+    async def _build(self, app: Application):
+        await self.ext_manager.load_extensions()
 
-        app.app_manager = self._ext_manager
+        app.app_manager = self.ext_manager
 
-        await self.use(JinJa2, app, self._logger, self._ext_manager, **self._jinja2_options)
-        await self.use(Statics, app, self._logger, self._ext_manager, **dict())
+        await self.use(JinJa2, app, self.logger, self.ext_manager, self.env)
+        await self.use(Statics, app, self.logger, self.ext_manager, self.env)
 
-        self.add_routes(app, self._ext_manager)
-
-        srv = await loop.create_server(app.make_handler(), self._web_options.host, self._web_options.port)
-
-        self._logger.info('server started at http://{}:{}...'.format(self._web_options.host, self._web_options.port))
-        return srv
+        self.add_routes(app, self.ext_manager)

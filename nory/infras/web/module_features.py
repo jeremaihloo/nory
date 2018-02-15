@@ -6,16 +6,18 @@ from nory.infras import constants
 from nory.infras.envs.models import Environment
 from nory.infras.exts import features
 from nory.infras.exts.managers import ExtensionManager
+from nory.infras.web.models import Jinja2Options
 
 
 class UseModule(object):
-    def initialize(self, app, _logger: logging.Logger, _ext_manager: ExtensionManager, **kwargs):
-        pass
+    def initialize(self, app, _logger: logging.Logger, _ext_manager: ExtensionManager, env: Environment):
+        raise NotImplementedError()
 
 
 class JinJa2(UseModule):
-    def initialize(self, app, _logger: logging.Logger, _ext_manager: ExtensionManager, **kw):
-
+    def initialize(self, app, _logger: logging.Logger, _ext_manager: ExtensionManager, env: Environment):
+        kw = Jinja2Options()
+        env.configuration.option('jinjia2', kw)
         _logger.info('[init jinja2] ...')
         options = dict(
             autoescape=kw.get('autoescape', True),
@@ -37,7 +39,7 @@ class JinJa2(UseModule):
 
 
 class Statics(UseModule):
-    def initialize(self, app, _logger: logging.Logger, _ext_manager: ExtensionManager, **kwargs):
+    def initialize(self, app, _logger: logging.Logger, _ext_manager: ExtensionManager, env: Environment):
 
         for item in _ext_manager.extensions.values():
             if not item.info.enabled:
@@ -47,7 +49,7 @@ class Statics(UseModule):
                 path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'extensions', item.info.name,
                                     item.info.static[k])
                 try:
-                    self.add_static(app, os.path.join(item.info.name, k), path, logger)
+                    self.add_static(app, os.path.join(item.info.name, k), path, _logger)
                 except Exception as e:
                     _logger.warning('[add_statics] add app [{}] static error'.format(item.info.name))
 
