@@ -61,6 +61,8 @@ class Extension(object):
     def get_worked_features(self, event):
         app_features = [x for x in self.features[event]]
         enabled_features = [x for x in app_features if getattr(x, 'enabled', True)]
+        for item in enabled_features:
+            setattr(item, '__extension__', self)
         return enabled_features
 
 

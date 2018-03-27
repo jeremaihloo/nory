@@ -90,6 +90,7 @@ class WebBuilder(object):
         return NoryWebService(app, loop, self.web_options)
 
     async def _build(self, app: Application):
+        app.db = dict()
         self.ext_manager.app = app
         await self.ext_manager.load_extensions()
 

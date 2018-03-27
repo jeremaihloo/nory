@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from nory import Extension
 from nory.infras.errors import NcmsWebApiError
 from nory.infras.exts.managers import ExtensionManager
 
@@ -61,11 +62,29 @@ def has_request_arg(fn):
     return found
 
 
+def has_db_args(fn):
+    sig = inspect.signature(fn)
+    params = sig.parameters
+    found = False
+    for name, param in params.items():
+        if name == 'db':
+            found = True
+            continue
+        if found and (
+                param.kind != inspect.Parameter.VAR_POSITIONAL
+                and param.kind != inspect.Parameter.KEYWORD_ONLY
+                and param.kind != inspect.Parameter.VAR_KEYWORD):
+            raise ValueError(
+                'request parameter must be the last named parameter in function: %s%s' % (fn.__name__, str(sig)))
+    return found
+
+
 class RequestHandler(object):
     def __init__(self, app, fn):
         self._app = app
         self._func = fn
         self._has_request_arg = has_request_arg(fn)
+        self._has_db_args = has_db_args(fn)
         self._has_var_kw_arg = has_var_kw_arg(fn)
         self._has_named_kw_args = has_named_kw_args(fn)
         self._named_kw_args = get_named_kw_args(fn)
@@ -111,6 +130,9 @@ class RequestHandler(object):
                 kw[k] = v
         if self._has_request_arg:
             kw['request'] = request
+        if self._has_db_args:
+            extension = getattr(self._func, '__extension__')  # type: Extension
+            kw['db'] = self._app.db.get(extension.info.name, None)
         # check required kw:
         if self._required_kw_args:
             for name in self._required_kw_args:

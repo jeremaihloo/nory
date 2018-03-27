@@ -7,7 +7,7 @@ from nory.infras.exts.decorators import feature
 from nory.infras.exts.managers import ExtensionManager
 from nory.infras.web.decorators import get
 from nory.infras.web.module_features import UseModule
-from aiorm import Model, IntegerField, CharField, DbContext, DbSet
+from aiorm import Model, IntegerField, CharField, DbContext, DbSet, UUIDField
 
 
 class DbConfig(Configuration):
@@ -31,7 +31,7 @@ class DataBaseModule(UseModule):
 
 
 class Demo(Model):
-    id = IntegerField(primary_key=True)
+    id = UUIDField(primary_key=True)
     name = CharField()
 
 
@@ -41,18 +41,24 @@ class SampleDbContext(DbContext):
 
 @feature(features.__FEATURE_ROUTING__, 'demo-a', 'demo-a')
 @get('/')
-async def get_demo():
-    return '200'
+async def get_demo(db: SampleDbContext):
+    demo = Demo(name='jeremaihloo')
+    await db.demos.add(demo)
+    res = await db.demos.select_query().run()
+    res = await res.fetch_one()
+    return res
 
 
 @feature(features.__FEATURE_ON_APP_INSTALLING__, 'demo-install', 'demo-install')
 async def create_data(context: FeatureContext):
-    # database.create_tables([Demo], safe=True)
     config = MainConfig()
     context.env.configuration.option('db', config)
     db = SampleDbContext(context.app.loop, **config)
+    context.app.db['demo-a'] = db
+
     await db.begin()
     try:
+        await db.drop_tables([Demo])
         await db.create_tables([Demo])
     except:
         pass
