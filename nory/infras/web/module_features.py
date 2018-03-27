@@ -3,11 +3,11 @@ import os
 from jinja2 import FileSystemLoader
 
 from nory.infras import constants
-from nory.infras.envs.models import Environment
+from nory.infras.envs.configs import Environment
 from nory.infras.exts import features
 from nory.infras.exts.managers import ExtensionManager
 from nory.infras.web.models import Jinja2Options
-
+from jinja2 import Environment as Jinja2Enviroment
 
 class UseModule(object):
     def initialize(self, app, _logger: logging.Logger, _ext_manager: ExtensionManager, env: Environment):
@@ -30,7 +30,7 @@ class JinJa2(UseModule):
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'extensions')
         _logger.info('[init_jinja2] set jinja2 template path: %s' % path)
 
-        env = Environment(loader=FileSystemLoader(path), **options)
+        env = Jinja2Enviroment(loader=FileSystemLoader(path), **options)
         filters = _ext_manager.get_worked_features(features.__FEATURE_TEMPLATE_FILTER__)
         if filters is not None:
             for f in filters:

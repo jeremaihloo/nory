@@ -1,4 +1,4 @@
-from nory.infras.envs.models import Configuration
+from nory.infras.envs.configs import Configuration
 
 
 class Jinja2Options(Configuration):

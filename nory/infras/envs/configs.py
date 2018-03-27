@@ -4,7 +4,12 @@ import os
 
 import yaml
 
-from .models import modes, Configuration, Environment
+from nory.infras.envs import modes
+
+import logging
+
+logger = logging.getLogger('envs')
+logger.setLevel(logging.DEBUG)
 
 
 class ConfigLoader(object):
@@ -90,17 +95,45 @@ def get_config_mode_by_filename(filename):
     return modes.Default
 
 
-class ConfigurationBuilder(object):
-    def __init__(self, env: Environment):
-        self.env = env
+class Configuration(dict):
+    def __init__(self, names=(), values=(), **kw):
+        super(Configuration, self).__init__(**kw)
+        for k, v in zip(names, values):
+            self[k] = v
+
         self.loader_entities = []
 
-    def add_file_by_prefix(self, filename_prefix: str):
+        self.config_files = []
+
+    def __getattr__(self, key):
+        try:
+            return self[key]
+        except KeyError:
+            raise AttributeError(r"'Dict' object has no attribute '%s'" % key)
+
+    def __setattr__(self, key, value):
+        self[key] = value
+
+    def option(self, key, obj):
+        values = self.get(key, dict())
+        obj.update(values)
+        return obj
+
+    @property
+    def mode(self):
+        return self.get('mode', modes.Development)
+
+    def add_file_by_prefix(self, filename_prefix: str, follow_mode=True):
         paths = os.path.split(filename_prefix)
-        d, filename = os.path.join('./' if paths[0] == '' else paths[0]), paths[-1]
+        d, filename = os.path.join('.' if paths[0] == '' else paths[0]), paths[-1]
         files = os.listdir(d)
         config_files = [x for x in files if x.startswith(filename_prefix)]
-        config_files = [x for x in config_files if get_config_mode_by_filename(x) == self.env.mode]
+
+        if follow_mode:
+            config_files = [x for x in config_files if get_config_mode_by_filename(x) == self.mode]
+
+        self.config_files.extend(config_files)
+        self.config_files = list(set(self.config_files))
 
         for item in config_files:
             self.add_file_by_name(os.path.join(d, item))
@@ -108,17 +141,20 @@ class ConfigurationBuilder(object):
 
     def add_file_by_name(self, filename):
         loader = FileConfigLoader(filename)
-        self.env.configuration.update(loader.load())
+        self.update(loader.load())
         self.loader_entities.append(loader)
         return self
 
     def add_by_env_mode(self, mode=None, dir_path='.'):
         if mode is None:
-            mode = self.env.mode
+            mode = self.mode
 
         files = os.listdir(dir_path)
         files = [x for x in files if os.path.splitext(x)[1] in FileConfigLoader.__config_file_loaders__.keys()]
         files = [x for x in files if get_config_mode_by_filename(x) == mode]
+
+        self.config_files.extend(files)
+        self.config_files = list(set(self.config_files))
 
         for item in files:
             self.add_file_by_name(os.path.join(dir_path, item))
@@ -126,8 +162,21 @@ class ConfigurationBuilder(object):
 
     def set(self, path, value):
         m = get_config_by_path_value(path, value)
-        self.env.configuration.update(m)
+        self.update(m)
         return self
 
-    def build(self) -> Configuration:
-        return self.env.configuration
+
+class Environment(object):
+    name = 'nory'
+    mode = modes.Default
+    configuration = Configuration()
+
+    def __init__(self, name, root_path, **kwargs):
+        self.name = name
+        self.root_path = root_path
+        for key, val in kwargs.items():
+            self.configuration[key] = val
+
+    @property
+    def mode(self):
+        return self.configuration.get('mode', modes.Development)

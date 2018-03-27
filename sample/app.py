@@ -1,22 +1,13 @@
-import logging
-
-from nory.application import NoryHost
-from nory.infras.envs import modes
-from nory.infras.envs.config_loaders import ConfigurationBuilder
-from nory.infras.envs.models import Environment
-from nory.infras.web.nweb import NoryWebService
-
-
-class NcmsWebService(NoryWebService):
-    name = '__main__'
-
+import os
+from nory.infras.web.middlewares import logger_factory, auth_factory, data_factory, response_factory
+from nory.infras.web.nweb import WebBuilder
 
 if __name__ == '__main__':
-    env = Environment(mode=modes.Development)
-    env.configuration = ConfigurationBuilder(env).add_file_by_prefix('appsettings').build()
+    root_path = os.path.dirname(__file__)
 
-    logger = logging.getLogger('sample')
-    logger.setLevel(logging.DEBUG)
+    web_builder = WebBuilder('sample', root_path)
+    web_builder.env.configuration.add_file_by_prefix('appsettings', follow_mode=False)
+    web_builder.use_middlewares([logger_factory, auth_factory, data_factory, response_factory])
+    web_builder.use_ext_manager(['sample'])
 
-    host = NoryHost(ext_load_paths=['sample'], name='nory', env=env, logger=logger)
-    host.start()
+    web_builder.build().start()

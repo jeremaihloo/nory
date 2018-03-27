@@ -1,3 +1,4 @@
+import os
 import pytest
 
 from nory.infras.exts import features
@@ -5,7 +6,7 @@ from nory.infras.exts.models import ExtensionLoader
 from nory.infras.exts.info_loaders import load_extension_info
 from nory.infras.exts.dependency import sort_extension_dependency
 from nory.infras.exts.managers import ExtensionManager
-
+from nory.infras.envs.configs import Environment
 
 @pytest.mark.asyncio
 async def test_load_info():
@@ -34,7 +35,7 @@ async def test_extension_loader():
 @pytest.mark.asyncio
 async def test_load_extension_manager():
     loader = ExtensionLoader(paths=[__package__])
-    manager = ExtensionManager(loader)
+    manager = ExtensionManager(Environment('test', os.path.dirname(__file__)), loader)
     await manager.load_extensions()
     assert len(manager.extensions.keys()) == 2
     for key, val in manager.extensions.items():

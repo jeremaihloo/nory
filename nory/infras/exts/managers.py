@@ -3,14 +3,14 @@ __auth__
 """
 import logging
 import os
-import simplejson
+
+from nory.infras.envs.configs import Environment
 from nory.infras.exts.info_loaders import load_extension_info
 from nory.infras.exts.dependency import sort_extension_dependency
-from nory.infras.exts.models import Extension, ExtensionLoader
+from nory.infras.exts.models import ExtensionLoader
 
 
-def get_extensions_paths():
-    abs_p = os.path.abspath('.')
+def get_extensions_paths(abs_p):
     extensions = os.listdir(os.path.join(abs_p, 'extensions'))
 
     extensions = list(
@@ -19,7 +19,8 @@ def get_extensions_paths():
 
 
 class ExtensionManager(object):
-    def __init__(self, loader: ExtensionLoader, app=None, logger: logging.Logger = None):
+    def __init__(self, env: Environment, loader: ExtensionLoader, app=None, logger: logging.Logger = None):
+        self.env = env
         self.app = app
         self.extensions = {}
         self.logger = logger if logger is not None else logging.getLogger('extension_manager')
@@ -36,7 +37,7 @@ class ExtensionManager(object):
 
     async def load_extensions(self):
         self.logger.info('start loading extensions')
-        extension_names = get_extensions_paths()
+        extension_names = get_extensions_paths(self.env.root_path)
         self.logger.debug('extension_names:{}'.format(extension_names))
 
         extension_infos = await self.load_extension_infos(extension_names)
@@ -55,6 +56,7 @@ class ExtensionManager(object):
                     self.logger.debug('[load_extension_info] found loader for [{}]'.format(item))
             except Exception as e:
                 self.logger.exception('[load_extension_infos] load extension info [{}] error', item, e)
+                raise e
         extension_infos = sort_extension_dependency(extension_infos)
 
         self.logger.info(

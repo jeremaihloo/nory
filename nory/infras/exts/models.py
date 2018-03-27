@@ -4,6 +4,7 @@ import logging
 
 from nory.infras import constants
 from nory.infras.exts import features
+from nory.infras.exts.contexts import FeatureContext
 
 
 class ExtensionInfo(object):
@@ -21,7 +22,8 @@ class ExtensionInfo(object):
 
 
 class Extension(object):
-    def __init__(self, info, app=None):
+    def __init__(self, env, info, app=None):
+        self.env = env
         self.info = info
         self.app = app
         self.init_features()
@@ -42,11 +44,11 @@ class Extension(object):
 
     async def do_features(self, fs):
         for item in fs:
-            await item(self.ncms_application)
+            await item(FeatureContext(self.env, self.app))
 
     async def on_uninstall(self):
         fs = self.get_worked_features(features.__FEATURE_ON_APP_UNINSTALLING__)
-        await self.do_features()
+        await self.do_features(fs)
 
     async def on_enable_feature(self, fs):
         for f in fs:
@@ -67,9 +69,10 @@ class ExtensionLoadError(Exception):
 
 
 class ExtensionLoader(object):
-    def __init__(self, paths, logger: logging = None):
+    def __init__(self, env, paths, logger=None):
+        self.env = env
         self.paths = paths
-        self.logger = logger if logger is not None else logging.getLogger('extension_loader')
+        self.logger = logger or logging.getLogger('extension')
 
     async def load(self, info: ExtensionInfo, app=None) -> Extension:
         for item in self.paths:
@@ -81,7 +84,7 @@ class ExtensionLoader(object):
         raise ExtensionLoadError()
 
     async def _load(self, m, info: ExtensionInfo, app=None):
-        extension = Extension(info, app)
+        extension = Extension(self.env, info, app)
         for attr in dir(m):
             fn = getattr(m, attr, None)
             if fn is not None and inspect.isfunction(fn):

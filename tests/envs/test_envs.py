@@ -1,6 +1,6 @@
 from nory.infras.envs import modes
-from nory.infras.envs.config_loaders import get_config_by_path_value, FileConfigLoader, ConfigurationBuilder
-from nory.infras.envs.models import Environment, Configuration
+from nory.infras.envs.configs import get_config_by_path_value, FileConfigLoader
+from nory.infras.envs.configs import Configuration
 
 
 def test_config_base():
@@ -29,31 +29,31 @@ def test_yml_file_loader():
 
 
 def test_builder_add_file_by_name():
-    builder = ConfigurationBuilder(Environment(modes.Development))
-    builder.add_file_by_name('appsettings.json')
-    config = builder.build()
-    assert config['load_from'] == 'json'
-    assert config['mode'] == 'Default'
+    configuration = Configuration()
+    configuration.add_file_by_name('appsettings.json')
+    assert len(configuration.config_files) == 1
+    assert configuration['load_from'] == 'json'
+    assert configuration['mode'] == 'Default'
 
 
 def test_builder_add_file_by_prefix():
-    builder = ConfigurationBuilder(Environment(modes.Development))
-    builder.add_file_by_prefix('appsettings')
-    config = builder.build()
-    assert config['load_from'] == 'json'
-    assert config['mode'] == 'Development'
+    configuration = Configuration()
+    configuration.add_file_by_prefix('appsettings')
+    assert len(configuration.config_files) == 1
+    configuration.add_file_by_prefix('appsettings', follow_mode=False)
+    assert len(configuration.config_files) == 3
+    assert configuration['load_from'] == 'json'
+    assert configuration['mode'] == 'Development'
 
 
 def test_builder_add_by_mode():
-    builder = ConfigurationBuilder(Environment(modes.Development))
-    builder.add_by_env_mode(modes.Development)
-    config = builder.build()
-
-    assert config['load_by'] == 'mode'
-    assert config['load_from'] == 'json'
-    assert config['mode'] == 'option_overide'
-    assert config.load_by == 'mode'
-    assert config.mode == 'option_overide'
+    configuration = Configuration()
+    configuration.add_by_env_mode(modes.Development)
+    assert configuration['load_by'] == 'mode'
+    assert configuration['load_from'] == 'json'
+    assert configuration['mode'] == 'option_overide'
+    assert configuration.load_by == 'mode'
+    assert configuration.mode == 'option_overide'
 
 
 class AppSettings(Configuration):
@@ -62,10 +62,9 @@ class AppSettings(Configuration):
 
 
 def test_option():
-    builder = ConfigurationBuilder(Environment(modes.Development))
-    builder.add_file_by_prefix('option')
-    config = builder.build()
+    configuration = Configuration()
+    configuration.add_file_by_prefix('option')
     o = AppSettings()
-    config.option('web', o)
+    o = configuration.option('web', o)
     assert o['url'] == 'localhost'
     assert o.url == 'localhost'

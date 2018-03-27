@@ -5,41 +5,45 @@ import asyncio
 
 from aiohttp.web import Application
 
-from nory.infras.envs.models import Environment
+from nory.infras.envs.configs import Environment
 from nory.infras.exts import features
 from nory.infras.exts.managers import ExtensionManager
-from nory.infras.services import Nory
+from nory.infras.exts.models import ExtensionLoader
 from nory.infras.web.helper import beautify_http_method
 from nory.infras.web.models import WebOptions
 from nory.infras.web.req import RequestHandler
 from nory.infras.web.module_features import JinJa2, Statics
 
 
-class NoryWebService(Nory):
+class NoryWebService(object):
 
     def __init__(self, app: Application, loop: asyncio.AbstractEventLoop, web_options: WebOptions):
         self.app = app
         self.loop = loop
         self.web_options = web_options
 
-    def on_startup(self):
+    def start(self):
         web.run_app(self.app, loop=self.loop, **self.web_options)
 
-    def on_cleanup(self):
+    def stop(self):
         raise NotImplementedError()
 
 
 class WebBuilder(object):
-    def __init__(self, env: Environment, logger: logging.Logger, ext_manager: ExtensionManager,
-                 web_options: WebOptions):
-        self.env = env
+    def __init__(self, name, root_path):
+        self.env = Environment(name, root_path)
 
-        self.logger = logger
-        self.ext_manager = ext_manager
-        self.web_options = web_options
+        self.logger = logging.getLogger('nory')
+        self.ext_manager = None  # type: ExtensionManager
+
+        self.web_options = WebOptions()
+        self.web_options = self.env.configuration.option('web', self.web_options)
 
         self.middlewares = []
         self.module_features = []
+
+    def use_ext_manager(self, paths):
+        self.ext_manager = ExtensionManager(self.env, ExtensionLoader(self.env, paths))
 
     def use_middlewares(self, middlewares):
         if not isinstance(middlewares, list):
@@ -86,6 +90,7 @@ class WebBuilder(object):
         return NoryWebService(app, loop, self.web_options)
 
     async def _build(self, app: Application):
+        self.ext_manager.app = app
         await self.ext_manager.load_extensions()
 
         app.app_manager = self.ext_manager
