@@ -3,21 +3,23 @@ import pytest
 
 from nory.infras.exts import features
 from nory.infras.exts.models import ExtensionLoader
-from nory.infras.exts.info_loaders import load_extension_info
+from nory.infras.exts.info_loaders import ExtensionInfoLoader
 from nory.infras.exts.dependency import sort_extension_dependency
 from nory.infras.exts.managers import ExtensionManager
 from nory.infras.envs.configs import Environment
 
+loader = ExtensionLoader(None, paths=[os.path.abspath('../extensions')])
+info_loader = ExtensionInfoLoader(None, loader)
 
 @pytest.mark.asyncio
 async def test_load_info():
-    info_a = load_extension_info('demo-a')
+    info_a = info_loader.load('demo-a')
     assert info_a.name == 'demo-a'
 
 
 def test_info_sort():
-    info_b = load_extension_info('demo-b')
-    info_a = load_extension_info('demo-a')
+    info_b = info_loader.load('demo-b')
+    info_a = info_loader.load('demo-a')
 
     r = sort_extension_dependency([info_a, info_b])
     assert isinstance(r, list)
@@ -27,7 +29,7 @@ def test_info_sort():
 
 @pytest.mark.asyncio
 async def test_extension_loader():
-    info = load_extension_info('demo-b')
+    info = info_loader.load('demo-b')
     loader = ExtensionLoader(paths=[__package__])
     extension = await loader.load(info)
     assert len(extension.features[features.__FEATURE_ROUTING__]) == 1
