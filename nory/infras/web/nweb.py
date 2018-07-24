@@ -23,7 +23,7 @@ class NoryWebService(object):
         self.web_options = web_options
 
     def start(self):
-        web.run_app(self.app, loop=self.loop, **self.web_options)
+        web.run_app(self.app, **self.web_options)
 
     def stop(self):
         raise NotImplementedError()
@@ -91,6 +91,8 @@ class WebBuilder(object):
 
     async def _build(self, app: Application):
         app.db = dict()
+        self.env.configuration.option('web', self.web_options)
+
         self.ext_manager.app = app
         await self.ext_manager.load_extensions()
 

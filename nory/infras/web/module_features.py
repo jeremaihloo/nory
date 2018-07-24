@@ -27,7 +27,7 @@ class JinJa2(UseModule):
             variable_end_string=kw.get('variable_end_string', '}}'),
             auto_reload=kw.get('auto_reload', True)
         )
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'extensions')
+        path = os.path.join(env.root_path, 'extensions')
         _logger.info('[init_jinja2] set jinja2 template path: %s' % path)
 
         env = Jinja2Enviroment(loader=FileSystemLoader(path), **options)
@@ -46,12 +46,13 @@ class Statics(UseModule):
                 continue
 
             for k in item.info.static.keys():
-                path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'extensions', item.info.name,
+                path = os.path.join(env.root_path, 'extensions', item.info.name,
                                     item.info.static[k])
                 try:
                     self.add_static(app, os.path.join(item.info.name, k), path, _logger)
                 except Exception as e:
                     _logger.warning('[add_statics] add app [{}] static error'.format(item.info.name))
+                    _logger.exception(e)
 
     def add_static(self, app, app_name, path, _logger):
         # path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')

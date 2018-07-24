@@ -5,7 +5,7 @@ import logging
 import os
 
 from nory.infras.envs.configs import Environment
-from nory.infras.exts.info_loaders import load_extension_info
+from nory.infras.exts.info_loaders import ExtensionInfoLoader
 from nory.infras.exts.dependency import sort_extension_dependency
 from nory.infras.exts.models import ExtensionLoader
 
@@ -48,9 +48,10 @@ class ExtensionManager(object):
 
     async def load_extension_infos(self, extension_names):
         extension_infos = []
+        info_loader = ExtensionInfoLoader(self.env, self.loader)
         for item in extension_names:
             try:
-                info = load_extension_info(item)
+                info = info_loader.load(item)
                 if info:
                     extension_infos.append(info)
                     self.logger.debug('[load_extension_info] found loader for [{}]'.format(item))
@@ -88,5 +89,4 @@ class ExtensionManager(object):
         for item in enabled_extensions:
             enabled_features = item.get_worked_features(event)
             fs.extend(enabled_features)
-        self.logger.debug('[get_worked_features] {}'.format(fs))
         return fs

@@ -31,7 +31,6 @@ def test_yml_file_loader():
 def test_builder_add_file_by_name():
     configuration = Configuration()
     configuration.add_file_by_name('appsettings.json')
-    assert len(configuration.config_files) == 1
     assert configuration['load_from'] == 'json'
     assert configuration['mode'] == 'Default'
 

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='nory',
-    version='1',
+    version='0.0.1',
     description='A simple web framework base on aiohttp',
     url='http://github.com/jeremaihloo/nory',
     author='jeremaihloo',
@@ -10,7 +10,7 @@ setup(
     license='MIT',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
     zip_safe=False,
-    # entry_points={
-    #     'console_scripts': ['nory=nory.hotting:main'],
-    # }
+    entry_points={
+        'console_scripts': ['nory=nory.infras.cli:cli'],
+    }
 )

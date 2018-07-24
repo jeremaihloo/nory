@@ -8,6 +8,7 @@ from nory.infras.exts.dependency import sort_extension_dependency
 from nory.infras.exts.managers import ExtensionManager
 from nory.infras.envs.configs import Environment
 
+
 @pytest.mark.asyncio
 async def test_load_info():
     info_a = load_extension_info('demo-a')
@@ -32,10 +33,12 @@ async def test_extension_loader():
     assert len(extension.features[features.__FEATURE_ROUTING__]) == 1
     assert len(extension.get_worked_features(features.__FEATURE_ROUTING__)) == 1
 
+
 @pytest.mark.asyncio
 async def test_load_extension_manager():
-    loader = ExtensionLoader(paths=[__package__])
-    manager = ExtensionManager(Environment('test', os.path.dirname(__file__)), loader)
+    env = Environment('test', os.path.dirname(__file__))
+    loader = ExtensionLoader(env, paths=[__package__])
+    manager = ExtensionManager(env, loader)
     await manager.load_extensions()
     assert len(manager.extensions.keys()) == 2
     for key, val in manager.extensions.items():

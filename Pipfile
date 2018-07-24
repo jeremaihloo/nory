@@ -5,8 +5,14 @@ name = "pypi"
 
 [packages]
 "b734c24" = {path = "/Users/jj/code/private/aiorm", editable = true}
+pyyaml = "*"
+aiohttp = "*"
+requests = "*"
+"jinja2" = "*"
+click = "*"
 
 [dev-packages]
+pytest-asyncio = "*"
 
 [requires]
 python_version = "3.6"

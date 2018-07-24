@@ -1,4 +1,6 @@
-import importlib
+import os
+
+import importlib.util as imps
 import inspect
 import logging
 
@@ -6,9 +8,12 @@ from nory.infras import constants
 from nory.infras.exts import features
 from nory.infras.exts.contexts import FeatureContext
 
+_logger = logging.getLogger('nory')
+
 
 class ExtensionInfo(object):
-    def __init__(self, name, version, description, author, home_page, indexs, dependency, static, enabled, locale):
+    def __init__(self, name, version, description, author, home_page, indexs, dependency, static, enabled, locale,
+                 load_path):
         self.name = name
         self.version = version
         self.description = description
@@ -19,6 +24,7 @@ class ExtensionInfo(object):
         self.static = static
         self.enabled = enabled
         self.locale = locale
+        self.load_path = load_path
 
 
 class Extension(object):
@@ -36,6 +42,8 @@ class Extension(object):
 
     async def on_installing(self):
         fs = self.get_worked_features(features.__FEATURE_ON_APP_INSTALLING__)
+        if len(fs) > 0:
+            _logger.info('on_install : {}'.format(fs))
         await self.do_features(fs)
 
     async def on_loading(self):
@@ -75,13 +83,15 @@ class ExtensionLoader(object):
         self.env = env
         self.paths = paths
         self.logger = logger or logging.getLogger('extension')
+        self.logger.setLevel(logging.DEBUG)
 
     async def load(self, info: ExtensionInfo, app=None) -> Extension:
-        for item in self.paths:
-            m = importlib.import_module('.extensions.{}'.format(info.name), item)
-            if m is not None:
-                self.logger.debug('import module {}'.format(m))
-                return await self._load(m, info, app)
+        spec = imps.spec_from_file_location(info.name, os.path.join(info.load_path, '__init__.py'))
+        m = imps.module_from_spec(spec)
+        self.logger.info('Loading {} from {}'.format(info.name, info.load_path))
+        if m is not None:
+            self.logger.debug('import module {}'.format(m))
+            return await self._load(m, info, app)
         # TODO: raize exception
         raise ExtensionLoadError()
 
