@@ -41,13 +41,16 @@ class JinJa2(UseModule):
 class Statics(UseModule):
     def initialize(self, app, _logger: logging.Logger, _ext_manager: ExtensionManager, env: Environment):
 
+        _logger.info('Starting add statics')
+
         for item in _ext_manager.extensions.values():
             if not item.info.enabled:
                 continue
 
+            _logger.info('adding static {}'.format(item.info.name))
+
             for k in item.info.static.keys():
-                path = os.path.join(env.root_path, 'extensions', item.info.name,
-                                    item.info.static[k])
+                path = os.path.join(item.info.load_path, item.info.static[k])
                 try:
                     self.add_static(app, os.path.join(item.info.name, k), path, _logger)
                 except Exception as e:
@@ -55,8 +58,7 @@ class Statics(UseModule):
                     _logger.exception(e)
 
     def add_static(self, app, app_name, path, _logger):
-        # path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
         if not os.path.exists(path):
             raise Exception('add static error dir not exists : {}'.format(path))
-        app.router.add_static('/extensions/' + app_name, path)
-        _logger.info('add static %s => %s' % ('/extensions/' + app_name, path))
+        app.router.add_static('/' + app_name, path)
+        _logger.info('added static %s => %s' % ('/' + app_name, path))
