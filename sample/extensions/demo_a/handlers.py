@@ -1,4 +1,5 @@
 import logging
+from uuid import uuid4
 
 from nory.infras.envs.configs import Configuration, Environment
 from nory.infras.exts import features
@@ -31,7 +32,7 @@ class DataBaseModule(UseModule):
 
 
 class Demo(Model):
-    id = UUIDField(primary_key=True)
+    id = UUIDField(primary_key=True, default=uuid4)
     name = CharField()
 
 
@@ -44,8 +45,7 @@ class SampleDbContext(DbContext):
 async def get_demo(db: SampleDbContext):
     demo = Demo(name='jeremaihloo')
     await db.demos.add(demo)
-    res = await db.demos.select_query().run()
-    res = await res.fetch_one()
+    res = await db.fetch_all(db.demos.select_query())
     return res
 
 
@@ -54,7 +54,7 @@ async def create_data(context: FeatureContext):
     config = MainConfig()
     context.env.configuration.option('db', config)
     db = SampleDbContext(context.app.loop, **config)
-    context.app.db['demo-a'] = db
+    context.app.db['demo_a'] = db
 
     await db.begin()
     try:

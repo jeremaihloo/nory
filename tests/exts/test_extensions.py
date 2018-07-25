@@ -1,6 +1,5 @@
 import os
 import pytest
-
 from nory.infras.exts import features
 from nory.infras.exts.models import ExtensionLoader
 from nory.infras.exts.info_loaders import ExtensionInfoLoader
@@ -33,7 +32,6 @@ def test_extension_loader():
     extension = loader.load(info)
     assert len(extension.features[features.__FEATURE_ROUTING__]) == 1
     assert len(extension.get_worked_features(features.__FEATURE_ROUTING__)) == 1
-    print('....')
 
 
 @pytest.mark.asyncio
@@ -44,6 +42,6 @@ async def test_load_extension_manager():
     await manager.load_extensions()
     assert len(manager.extensions.keys()) == 2
     for key, val in manager.extensions.items():
-        assert key in ('demo-a', 'demo-b')
+        assert key in ('demo_a', 'demo_b')
         assert len(val.get_worked_features(features.__FEATURE_ROUTING__)) == 1
     assert len(manager.get_worked_features(features.__FEATURE_ROUTING__)) == 2
