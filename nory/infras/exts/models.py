@@ -85,19 +85,42 @@ class ExtensionLoader(object):
         self.logger = logger or logging.getLogger('extension')
         self.logger.setLevel(logging.DEBUG)
 
-    async def load(self, info: ExtensionInfo, app=None) -> Extension:
-        spec = imps.spec_from_file_location(info.name, os.path.join(info.load_path, '__init__.py'))
-        m = imps.module_from_spec(spec)
+    def load(self, info: ExtensionInfo, app=None) -> Extension:
+        import sys
+        [sys.path.insert(0, x) for x in self.paths]
+        print(sys.path)
+        from contextlib import contextmanager
+
+        @contextmanager
+        def add_to_path(p):
+            import sys
+            old_path = sys.path
+            sys.path = sys.path[:]
+            sys.path.insert(0, p)
+            try:
+                yield
+            finally:
+                sys.path = old_path
+
+        with add_to_path(info.load_path):
+            spec = imps.spec_from_file_location('extensions.{}'.format(info.name),
+                                                os.path.join(info.load_path, '__init__.py'))
+            print(os.path.join(info.load_path, '__init__.py'))
+            m = imps.module_from_spec(spec)
+            spec.loader.exec_module(m)
         self.logger.info('Loading {} from {}'.format(info.name, info.load_path))
         if m is not None:
             self.logger.debug('import module {}'.format(m))
-            return await self._load(m, info, app)
+            return self._load(m, info, app)
         # TODO: raize exception
         raise ExtensionLoadError()
 
-    async def _load(self, m, info: ExtensionInfo, app=None):
+    def _load(self, m, info: ExtensionInfo, app=None):
         extension = Extension(self.env, info, app)
-        for attr in dir(m):
+        print(dir(m))
+        items = [x for x in dir(m) if not x.startswith('_')]
+
+        for attr in items:
             fn = getattr(m, attr, None)
             if fn is not None and inspect.isfunction(fn):
                 event = getattr(fn, constants.FEATURE_TYPE, None)
@@ -108,7 +131,7 @@ class ExtensionLoader(object):
                     extension.features[event].append(fn)
         return extension
 
-    async def reload(self, info: ExtensionInfo, app=None) -> Extension:
+    def reload(self, info: ExtensionInfo, app=None) -> Extension:
         for item in self.paths:
             m = importlib.reload('.extensions.{}'.format(info.name), item)
             self._load(m, info, app)
