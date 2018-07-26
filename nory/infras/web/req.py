@@ -62,6 +62,16 @@ def has_request_arg(fn):
     return found
 
 
+def collect_inject_args(fn):
+    sig = inspect.signature(fn)
+    params = sig.parameters
+    names = []
+    for name, param in params.items():
+        if name.startswith('_'):
+            names.append(name)
+    return names
+
+
 def has_db_args(fn):
     sig = inspect.signature(fn)
     params = sig.parameters
@@ -130,9 +140,15 @@ class RequestHandler(object):
                 kw[k] = v
         if self._has_request_arg:
             kw['request'] = request
-        if self._has_db_args:
-            extension = getattr(self._func, '__extension__')  # type: Extension
-            kw['db'] = self._app.db.get(extension.info.name, None)
+
+        # di
+        extension = getattr(self._func, '__extension__')  # type: Extension
+        names = collect_inject_args(self._func)
+        maps = self._app.di.find_by_names(names)
+        print(self._app.di._container)
+        print(names)
+        kw = dict(kw, **maps)
+
         # check required kw:
         if self._required_kw_args:
             for name in self._required_kw_args:

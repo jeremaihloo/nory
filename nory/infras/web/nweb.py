@@ -13,23 +13,9 @@ from nory.infras.web.helper import beautify_http_method
 from nory.infras.web.models import WebOptions
 from nory.infras.web.req import RequestHandler
 from nory.infras.web.module_features import JinJa2, Statics
+from nory.infras.di import di
 
-
-class NoryWebService(object):
-
-    def __init__(self, app: Application, loop: asyncio.AbstractEventLoop, web_options: WebOptions):
-        self.app = app
-        self.loop = loop
-        self.web_options = web_options
-
-    def start(self):
-        web.run_app(self.app, **self.web_options)
-
-    def stop(self):
-        raise NotImplementedError()
-
-
-class WebBuilder(object):
+class Nory(object):
     def __init__(self, name, root_path):
         self.env = Environment(name, root_path)
 
@@ -83,14 +69,15 @@ class WebBuilder(object):
         m = module()
         m.initialize(app, _logger, _ext_manager, env)
 
-    def build(self) -> NoryWebService:
+    def run(self):
         loop = asyncio.get_event_loop()
-        app = web.Application(loop=loop, middlewares=self.middlewares)
-        loop.run_until_complete(self._build(app))
-        return NoryWebService(app, loop, self.web_options)
+        self.app = web.Application(loop=loop, middlewares=self.middlewares)
+        loop.run_until_complete(self._build(self.app))
+
+        web.run_app(self.app, **self.web_options)
 
     async def _build(self, app: Application):
-        app.db = dict()
+        self.app.di = di
         self.env.configuration.option('web', self.web_options)
 
         self.ext_manager.app = app
