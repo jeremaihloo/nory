@@ -15,12 +15,13 @@ from nory.infras.web.req import RequestHandler
 from nory.infras.web.module_features import JinJa2, Statics
 from nory.infras.di import di
 
+
 class Nory(object):
-    def __init__(self, name, root_path):
+    def __init__(self, name, root_path, ext_manager: ExtensionManager = None):
         self.env = Environment(name, root_path)
 
         self.logger = logging.getLogger('nory')
-        self.ext_manager = None  # type: ExtensionManager
+        self.ext_manager = ext_manager  # type: ExtensionManager
 
         self.web_options = WebOptions()
         self.web_options = self.env.configuration.option('web', self.web_options)
@@ -54,7 +55,7 @@ class Nory(object):
                 ', '.join(inspect.signature(fn).parameters.keys())))
         app.router.add_route(method, path, RequestHandler(app, fn))
 
-        for item in app.app_manager.get_worked_features(features.__FEATURE_ADD_ROUTE__):
+        for item in app.ext_manager.get_worked_features(features.__FEATURE_ADD_ROUTE__):
             params = [x for x in inspect.signature(fn).parameters.keys()]
             item(method, path, params)
 
@@ -83,7 +84,7 @@ class Nory(object):
         self.ext_manager.app = app
         await self.ext_manager.load_extensions()
 
-        app.app_manager = self.ext_manager
+        app.ext_manager = self.ext_manager
 
         await self.use(JinJa2, app, self.logger, self.ext_manager, self.env)
         await self.use(Statics, app, self.logger, self.ext_manager, self.env)

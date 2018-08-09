@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 from nory.infras.exts.models import Extension
 from nory.infras.errors import NcmsWebApiError
-from nory.infras.exts.managers import ExtensionManager
 
 __author__ = 'Michael Liao'
 
-import asyncio, os, inspect, logging
+import inspect, logging
 
 from urllib import parse
 
@@ -145,8 +144,6 @@ class RequestHandler(object):
         extension = getattr(self._func, '__extension__')  # type: Extension
         names = collect_inject_args(self._func)
         maps = self._app.di.find_by_names(names)
-        print(self._app.di._container)
-        print(names)
         kw = dict(kw, **maps)
 
         # check required kw:

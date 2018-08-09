@@ -27,8 +27,8 @@ async def auth_factory(app, handler):
         logger.info('auth user: %s %s' % (request.method, request.path))
         flag = False
         logger.info(
-            '[auth_provider] : {}'.format(app.app_manager.get_worked_features(features.__FEATURE_AUTHING__)))
-        for fn in app.app_manager.get_worked_features(features.__FEATURE_AUTHING__):
+            '[auth_provider] : {}'.format(app.ext_manager.get_worked_features(features.__FEATURE_AUTHING__)))
+        for fn in app.ext_manager.get_worked_features(features.__FEATURE_AUTHING__):
             auth_flag, msg = await fn(app, request)
             if auth_flag:
                 logger.info('[auth] : [{}] passed'.format(getattr(fn, constants.FEATURE_NAME)))
@@ -37,7 +37,7 @@ async def auth_factory(app, handler):
                 logger.info('[auth] : [{}] un_pass'.format(getattr(fn, constants.FEATURE_NAME)))
 
         if not flag:
-            for fn in app.app_manager.get_worked_features(features.__FEATURE_AUTH_FALSE__):
+            for fn in app.ext_manager.get_worked_features(features.__FEATURE_AUTH_FALSE__):
                 await fn(app, request)
         return await handler(request)
 
